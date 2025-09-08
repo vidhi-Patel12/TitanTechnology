@@ -3,344 +3,388 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Hero Section -->
-<section class="hero-solutions parallax" data-aos="fade-down">
+@{
+    ViewBag.Title = "Solutions";
+}
+
+<div class="hero-area-form style-one d-flex align-items-center">
     <div class="container">
-        <div class="hero-content">
-            <h1>Innovative SAP Solutions</h1>
-            <p>Seamlessly integrated solutions that extend the power of your SAP ecosystem</p>
-            <div class="hero-buttons">
-                <a href="#solutions" class="hero-btn">Explore Solutions</a>
-                <a href="#contact" class="hero-btn-outline">Request Demo</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Solutions Overview -->
-<section id="solutions" class="solutions-overview">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="section-title">Our Integrated Solutions</h2>
-            <div class="divider bg-primary mx-auto"></div>
-            <p class="lead">Cutting-edge solutions designed to enhance your SAP investment</p>
-        </div>
-
-        <div class="solutions-grid">
-            <!-- B2B E-commerce -->
-            <div class="solution-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="solution-icon">
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-                <h3>B2B E-commerce</h3>
-                <p>Integrated e-commerce platform for seamless B2B transactions</p>
-                <div class="solution-features">
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>SAP-integrated catalog management</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Real-time pricing and inventory</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Customer-specific pricing rules</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Multi-channel order management</span>
-                    </div>
-                </div>
-                <a href="#" class="solution-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- Custom AI/ML -->
-            <div class="solution-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="solution-icon">
-                    <i class="fas fa-brain"></i>
-                </div>
-                <h3>Custom AI/ML</h3>
-                <p>Intelligent solutions powered by artificial intelligence and machine learning</p>
-                <div class="solution-features">
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Predictive analytics for forecasting</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Automated decision-making</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Natural language processing</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Intelligent process automation</span>
-                    </div>
-                </div>
-                <a href="#" class="solution-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- EXIM -->
-            <div class="solution-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="solution-icon">
-                    <i class="fas fa-globe"></i>
-                </div>
-                <h3>EXIM</h3>
-                <p>Comprehensive export-import management for global trade</p>
-                <div class="solution-features">
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Customs compliance management</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Duty calculation and optimization</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Documentation automation</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Regulatory reporting</span>
-                    </div>
-                </div>
-                <a href="#" class="solution-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- E-invoicing -->
-            <div class="solution-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="solution-icon">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                </div>
-                <h3>E-invoicing</h3>
-                <p>Electronic invoicing solution for compliance and efficiency</p>
-                <div class="solution-features">
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Government compliance (e.g., GST, VAT)</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Automated invoice validation</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Real-time status tracking</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Digital signature integration</span>
-                    </div>
-                </div>
-                <a href="#" class="solution-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Integration Section -->
-<section class="integration-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6" data-aos="fade-right">
-                <h2 class="section-title">Seamless SAP Integration</h2>
-                <p class="lead">Our solutions are designed to integrate seamlessly with your SAP ecosystem</p>
-                <div class="integration-features">
-                    <div class="integration-item">
-                        <div class="integration-icon">
-                            <i class="fas fa-plug"></i>
-                        </div>
-                        <div class="integration-text">
-                            <h4>Native SAP Integration</h4>
-                            <p>Built on SAP platforms and technologies for seamless compatibility</p>
-                        </div>
-                    </div>
-                    <div class="integration-item">
-                        <div class="integration-icon">
-                            <i class="fas fa-sync-alt"></i>
-                        </div>
-                        <div class="integration-text">
-                            <h4>Real-time Data Sync</h4>
-                            <p>Instant synchronization between SAP and our solutions</p>
-                        </div>
-                    </div>
-                    <div class="integration-item">
-                        <div class="integration-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="integration-text">
-                            <h4>Enterprise Security</h4>
-                            <p>Robust security measures to protect your sensitive business data</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6" data-aos="fade-left">
-                <div class="integration-image">
-                    <img src="~/images/sap-integration.jpg" alt="SAP Integration" class="img-fluid rounded shadow-lg">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Benefits Section -->
-<section class="benefits-section">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="section-title">Key Benefits</h2>
-            <div class="divider bg-primary mx-auto"></div>
-            <p class="lead">Why choose our integrated solutions</p>
-        </div>
-
-        <div class="benefits-grid">
-            <div class="benefit-item" data-aos="zoom-in" data-aos-delay="100">
-                <div class="benefit-icon">
-                    <i class="fas fa-rocket"></i>
-                </div>
-                <h4>Accelerated Implementation</h4>
-                <p>Deploy solutions 50% faster with our pre-configured templates</p>
-            </div>
-
-            <div class="benefit-item" data-aos="zoom-in" data-aos-delay="200">
-                <div class="benefit-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h4>Increased ROI</h4>
-                <p>Maximize your SAP investment with enhanced functionality</p>
-            </div>
-
-            <div class="benefit-item" data-aos="zoom-in" data-aos-delay="300">
-                <div class="benefit-icon">
-                    <i class="fas fa-cogs"></i>
-                </div>
-                <h4>Process Optimization</h4>
-                <p>Streamline operations and reduce manual work by up to 70%</p>
-            </div>
-
-            <div class="benefit-item" data-aos="zoom-in" data-aos-delay="400">
-                <div class="benefit-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h4>Enhanced User Experience</h4>
-                <p>Intuitive interfaces that increase user adoption</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Case Studies Section -->
-<section class="case-studies-section">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="section-title">Success Stories</h2>
-            <div class="divider bg-primary mx-auto"></div>
-            <p class="lead">See how our solutions have transformed businesses</p>
-        </div>
-
-        <div class="case-studies-slider">
-            <div class="case-study-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="case-study-image">
-                    <img src="~/images/case-study-1.jpg" alt="B2B E-commerce Case Study" class="img-fluid">
-                </div>
-                <div class="case-study-content">
-                    <div class="case-study-tag">B2B E-commerce</div>
-                    <h4>Global Manufacturer Transforms Online Sales</h4>
-                    <p>How a leading manufacturer implemented our B2B e-commerce solution to increase online sales by 120%.</p>
-                    <a href="#" class="case-study-link">Read Full Story <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="case-study-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="case-study-image">
-                    <img src="~/images/case-study-2.jpg" alt="AI/ML Case Study" class="img-fluid">
-                </div>
-                <div class="case-study-content">
-                    <div class="case-study-tag">AI/ML</div>
-                    <h4>Retailer Optimizes Inventory with AI</h4>
-                    <p>How a major retailer reduced inventory costs by 35% using our AI-powered forecasting solution.</p>
-                    <a href="#" class="case-study-link">Read Full Story <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="case-study-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="case-study-image">
-                    <img src="~/images/case-study-3.jpg" alt="E-invoicing Case Study" class="img-fluid">
-                </div>
-                <div class="case-study-content">
-                    <div class="case-study-tag">E-invoicing</div>
-                    <h4>Logistics Company Streamlines Compliance</h4>
-                    <p>How a global logistics company achieved 100% e-invoicing compliance with our solution.</p>
-                    <a href="#" class="case-study-link">Read Full Story <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8" data-aos="fade-right">
-                <h2>Ready to Transform Your Business?</h2>
-                <p>Let our solutions help you unlock the full potential of your SAP investment</p>
-            </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0" data-aos="fade-left">
-                <a href="#contact" class="btn btn-light btn-lg px-4">Schedule a Demo</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Contact Section -->
-<section id="contact" class="contact parallax">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="section-title text-white">Request a Solution Demo</h2>
-            <div class="divider bg-white mx-auto"></div>
-            <p class="lead text-white">Let our experts show you how our solutions can transform your business</p>
-        </div>
         <div class="row">
-            <div class="col-lg-6 mx-auto" data-aos="fade-up" data-aos-delay="200">
-                <form class="contact-form bg-white p-4 rounded shadow">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" placeholder="Name" required />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" placeholder="Company Name" required />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <input type="email" class="form-control" placeholder="Email" required />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <input type="tel" class="form-control" placeholder="Mobile" required />
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <select class="form-control">
-                            <option value="">Select Solution</option>
-                            <option value="b2b">B2B E-commerce</option>
-                            <option value="aiml">Custom AI/ML</option>
-                            <option value="exim">EXIM</option>
-                            <option value="einvoicing">E-invoicing</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <textarea class="form-control" placeholder="Message" rows="4" required></textarea>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-dark btn-lg px-4">Submit</button>
-                    </div>
-                </form>
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Solutions</h4>
+                    <ul>
+                        <li><a asp-action="Solutions" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Solutions</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</section>
+</div>
+
+<div class="service-area inner-style">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="section-title center inner-style">
+                    <h4>What We Provides?</h4>
+                    <h1>Solutions Fully Intergated with SAP</h1>
+                    <h3>Tailored Solutions. Seamless Integration.Reliable Support.</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- g-4 adds spacing between cards -->
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-8.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>B2B E-commerce Services</h4>
+                        <p>We deliver end-to-end B2B e-commerce solutions to help businesses streamline transactions, enhance customer experiences, and accelerate growth.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal1">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-2.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>Custom AI/ML Solutions</h4>
+                        <p>Unlock the power of data with our custom AI and Machine Learning services.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal2">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-3.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>EXIM (Export-Import) Services</h4>
+                        <p>Our EXIM services simplify the complexities of international trade.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal3">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-4.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>E-Invoicing Solutions</h4>
+                        <p>We offer robust e-invoicing solutions that streamline billing processes, ensure regulatory compliance, and improve cash flow management.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal4">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="subscribe-area style-three">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="section-title left inner-style">
+                    <h1>Why Choose Titan Technology for SAP?</h1>
+                </div>
+            </div>
+            <div class="col-lg-6" style="color : white">
+                <h4 style="color : white">We deliver more than support—we deliver peace of mind.</h4>
+                <ul>
+                    <li>• End-to-end SAP BASIS services tailored for reliability and performance</li>
+                    <li>• Expert support for improved system stability and uptime</li>
+                    <li>• Simplified system maintenance and proactive monitoring</li>
+                    <li>• Enhanced operational efficiency through optimized SAP environments</li>
+                    <li>• Strategic guidance for digital growth and innovation</li>
+                    <li>• Certified consultants committed to your success</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!--==================================================-->
+<!-- End Toptech Subscribe Area Style Three -->
+<!--==================================================-->
+<!--==================================================-->
+<!-- Start Toptech Process Area Style Three-->
+<!--==================================================-->
+<div class="process-area style-three inner">
+    <div class="container">
+        <div class="row add-bg">
+            <div class="col-lg-4 col-md-6">
+                <div class="single-process-box">
+                    <div class="process-icon">
+                        <img src="~/assets/images/home-3/process-1.png" alt="">
+                    </div>
+                    <div class="process-content">
+                        @*  <h4>Register</h4> *@
+                        <h4>
+                            <a asp-action="Register" asp-controller="Auth">Register</a>
+                        </h4>
+                        <p>Create your account to explore opportunities, access exclusive features, and stay connected with us.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-process-box">
+                    <div class="process-icon">
+                        <img src="~/assets/images/home-3/process-2.png" alt="">
+                    </div>
+                    <div class="process-content">
+                        <h4>
+                            <a asp-action="About" asp-controller="Home">About Us</a>
+                        </h4>
+                        <p>We are committed to delivering innovative solutions that empower businesses and individuals to grow and succeed.</p>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-process-box">
+                    <div class="process-icon">
+                        <img src="~/assets/images/home-3/process-3.png" alt="">
+                    </div>
+                    <div class="process-content">
+                        <h4>
+                            <a asp-action="ContactUs" asp-controller="Home">Contact Us</a>
+                        </h4>
+                        <p>Have questions or need assistance? Get in touch with us anytime - we’re here to help you.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Service Details Modal -->
+<div class="modal fade" id="serviceModal1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    B2B E-commerce Services
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">We deliver end-to-end B2B e-commerce solutions to help businesses streamline transactions, enhance customer experiences, and accelerate growth. From platform development to integration with ERP systems, our expertise ensures your online business runs efficiently and scales seamlessly with market demands.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • Tailored B2B Solutions
+                        </li>
+                        <li>• Seamless ERP Integrations</li>
+                        <li>• Scalable Architecture</li>
+                        <li>• Enhanced Customer Experience</li>
+                        <li>• Secure Payment & Logistics Integration</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/SapImage.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal2" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    Custom AI/ML Solutions
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">Unlock the power of data with our custom AI and Machine Learning services. We build intelligent solutions tailored to your specific business challenges  from predictive analytics to automation  helping you stay ahead in a rapidly evolving digital landscape.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • AI Strategy & Consulting
+                        </li>
+                        <li>• Custom Model Development</li>
+                        <li>
+                            • Predictive & Prescriptive Analytics
+                        </li>
+                        <li>• Intelligent Automation</li>
+                        <li>• Data-Driven Decision Making</li>
+                        <li>• Scalable AI Infrastructure</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/sap_Rollout.jpeg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal3" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP Migration Services
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">Modernize your enterprise with our secure, low-disruption SAP migration services. Whether moving to SAP S/4HANA or transitioning to the cloud, we ensure a seamless migration journey supported by performance tuning, expert advisory, and post-migration stabilization.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • End-to-End System Analysis & Migration Blueprint
+                        </li>
+                        <li>• Legacy Data Cleansing & Migration Execution</li>
+                        <li>• SAP S/4HANA, RISE with SAP & Cloud Migrations</li>
+                        <li>• Downtime Minimization Planning</li>
+                        <li>• Post-Migration Performance Optimization</li>
+                        <li>• Dedicated Hypercare & Ongoing Support</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/SapMigrationService.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal4" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP Staffing
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">Accelerate your SAP initiatives with access to a curated network of SAP-certified professionals. Our flexible staffing solutions ensure the right expertise, at the right time, to drive your projects forward—efficiently and cost-effectively.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • Certified SAP Functional & Technical Experts
+                        </li>
+                        <li>• Contract, Full-Time & Project-Based Staffing</li>
+                        <li>• Global Network of Pre-Vetted SAP Talent</li>
+                        <li>• Rapid Onboarding & Knowledge Transfer</li>
+                        <li>• Domain-Specific Consultant Placement</li>
+                        <li>• Scalable Resourcing to Match Project Phases</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/SapStaffing.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal5" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP AMS
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">Our SAP AMS delivers proactive, SLA-driven support to ensure high system availability, performance, and continuous improvement. With 24/7 monitoring, rapid issue resolution, and functional enhancements, we keep your SAP environment running at its peak.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • Round-the-Clock Monitoring & Support (24x7)
+                        </li>
+                        <li>• Incident, Change & Problem Management</li>
+                        <li>• Strict SLAs for Uptime & Response</li>
+                        <li>• Functional & Technical Optimization</li>
+                        <li>• Continuous Enhancement & Cost Control</li>
+                        <li>• Flexible, Scalable Support Models</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/SapAMS images.webp" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal6" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP Integration
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">We help you create a connected enterprise through seamless SAP integration with third-party systems and platforms. From real-time data flow to intelligent process orchestration, we ensure your technology ecosystem operates in harmony.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • Full-Spectrum SAP Integration Services
+                        </li>
+                        <li>• Middleware Expertise (SAP PI/PO, SAP CPI)</li>
+                        <li>• Real-Time Data Exchange & Synchronization</li>
+                        <li>• Secure APIs & Custom Connector Development</li>
+                        <li>• Scalable & Resilient Architecture Design</li>
+                        <li>• Comprehensive Integration Testing & QA</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img height="200px" width="320px" id="serviceModalImage" src="~/assets/images/SapIntegration image.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .single-service-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* push content + button apart */
+        height: 100%; /* ensures all cards stretch equally */
+    }
+
+    .service-content {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+        .service-content p {
+            flex-grow: 1; /* take remaining space so button stays at bottom */
+        }
+
+        .service-content a {
+            margin-top: auto; /* push button to bottom */
+            align-self: center; /* keep button centered horizontally */
+        }
+
+</style>

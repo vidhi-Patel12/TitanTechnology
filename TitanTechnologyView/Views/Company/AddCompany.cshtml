@@ -7,20 +7,14 @@
         <label asp-for="CompanyCode"></label>
 
         @if (string.IsNullOrEmpty(Model.CompanyCode))
-
         {
-            <!-- Editable for Add -->
             <input asp-for="CompanyCode" class="form-control" />
-
         }
 
         else
-
         {
-            <!-- Readonly for Edit -->
             <input type="text" value="@Model.CompanyCode" class="form-control" readonly />
             <input type="hidden" asp-for="CompanyCode" />
-
         }
     </div>
 

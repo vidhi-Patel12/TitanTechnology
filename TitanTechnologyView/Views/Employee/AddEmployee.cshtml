@@ -2,219 +2,287 @@
 
 @{
     ViewData["Title"] = Model.EmployeeId == 0 ? "Add Employee" : "Edit Employee";
+    var apiOrigin = (string)(ViewBag.ApiOrigin ?? "");
 }
 
-<h2>@ViewData["Title"]</h2>
-
-<form asp-action="SaveEmployee" enctype="multipart/form-data" method="post">
-    <input type="hidden" asp-for="EmployeeId" />
-    <input type="hidden" asp-for="AadharUpload" />
-    <input type="hidden" asp-for="PanUpload" />
-    <input type="hidden" asp-for="Cheque1Upload" />
-    <input type="hidden" asp-for="Aadhar2Upload" />
-    <input type="hidden" asp-for="PanUpload2" />
-    <input type="hidden" asp-for="Cheque2Upload" />
-
-    <div class="form-group">
-        <label asp-for="EmployeeType"></label>
-        <input asp-for="EmployeeType" class="form-control" />
-        <span asp-validation-for="EmployeeType" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CompanyCode"></label>
-        <input asp-for="CompanyCode" class="form-control" />
-        <span asp-validation-for="CompanyCode" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="VendorId"></label>
-        <input asp-for="VendorId" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="AltName"></label>
-        <input asp-for="AltName" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Age"></label>
-        <input asp-for="Age" class="form-control" type="number" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="SkillSet"></label>
-        <input asp-for="SkillSet" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Experience"></label>
-        <input asp-for="Experience" class="form-control" type="number" step="0.1" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TimingAvailability"></label>
-        <input asp-for="TimingAvailability" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ContactNumber1"></label>
-        <input asp-for="ContactNumber1" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ContactNumber2"></label>
-        <input asp-for="ContactNumber2" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Remarks"></label>
-        <textarea asp-for="Remarks" class="form-control"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ReferredBy"></label>
-        <input asp-for="ReferredBy" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CreatedBy"></label>
-        <input asp-for="CreatedBy" class="form-control" />
-    </div>
-
-    <h4>Documents</h4>
-    <div class="form-group">
-        <label asp-for="NdaFile">NDA File</label>
-        @if (!string.IsNullOrEmpty(Model.NdaUpload))
-        {
-            <div>
-                <a href="@($"{ViewBag.ApiOrigin}{Model.NdaUpload}")" target="_blank">View existing NDA</a>
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Employees</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Employees</li>
+                    </ul>
+                </div>
             </div>
-        }
-        <input asp-for="NdaFile" type="file" class="form-control" />
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="AadharFile1">Aadhar File 1</label>
-        @if (!string.IsNullOrEmpty(Model.AadharUpload))
-        {
-            <div>
-                <a href="@($"{ViewBag.ApiOrigin}{Model.AadharUpload}")" target="_blank">View existing Aadhar</a>
+<div class="contact-area style-three inner">
+    <div class="container">
+        <div class="row add-white-bg align-items-center">
+            <div class="col-lg-12 col-md-12">
+                <div class="single-contact-box">
+                    <div class="contact-contetn">
+                        <h4>Employee</h4>
+                    </div>
+                    <form asp-controller="Employee" asp-action="SaveEmployee" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="EmployeeId" />
+                        <input type="hidden" asp-for="NdaUpload" />
+                        <input type="hidden" asp-for="AadharUpload" />
+                        <input type="hidden" asp-for="PanUpload" />
+                        <input type="hidden" asp-for="Cheque1Upload" />
+                        <input type="hidden" asp-for="Aadhar2Upload" />
+                        <input type="hidden" asp-for="PanUpload2" />
+                        <input type="hidden" asp-for="Cheque2Upload" />
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="EmployeeType" type="text" placeholder="Employee Type" required />
+                                    <span asp-validation-for="EmployeeType" class="text-danger"></span>
+
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="CompanyCode" type="text" placeholder="Company Code" required />
+                                    <span asp-validation-for="CompanyCode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="VendorId" class="form-control"
+                                            asp-items="@(ViewBag.Vendors != null
+                                                                 ? new SelectList(ViewBag.Vendors, "VendorId", "VendorName", Model?.VendorId)
+                                                                 : new List<SelectListItem>())">
+                                        <option value="">-- Select Vendor --</option>
+                                    </select>
+                                    <span asp-validation-for="VendorId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="Name" type="text" placeholder="Name" required />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AltName" type="text" placeholder="AltName" required />
+                                    <span asp-validation-for="AltName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="Age" type="text" placeholder="Age" required />
+                                    <span asp-validation-for="Age" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="SkillSet" type="text" placeholder="Skill Set" required />
+                                    <span asp-validation-for="SkillSet" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="Experience" type="text" placeholder="Experience" required />
+                                    <span asp-validation-for="Experience" class="text-danger"></span>
+                                </div>
+                            </div>
+    
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="TimingAvailability" type="text" placeholder="Timing Availability" required />
+                                    <span asp-validation-for="TimingAvailability" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="ContactNumber1" type="text" placeholder="ContactNumber1" required />
+                                    <span asp-validation-for="ContactNumber1" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="ContactNumber2" type="text" placeholder="ContactNumber2" required />
+                                    <span asp-validation-for="ContactNumber2" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="Remarks" type="text" placeholder="Remarks" required />
+                                    <span asp-validation-for="Remarks" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="ReferredBy" type="text" placeholder="Referred By" required />
+                                    <span asp-validation-for="ReferredBy" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="CreatedBy" type="text" placeholder="Created By" required />
+                                    <span asp-validation-for="CreatedBy" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr class="my-1" />
+
+                            <div class="col-lg-2"><p class="text-end">NDAFile</p></div>
+                            <div class="col-lg-4">
+                                @if (!string.IsNullOrWhiteSpace(Model.NdaUpload))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.NdaUpload}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="NdaFile" type="file" />
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">AdharCard Upload</p></div>
+                            <div class="col-lg-4">
+                                @if (!string.IsNullOrWhiteSpace(Model.AadharUpload))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.AadharUpload}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="AadharFile1" type="file" />
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="PanNumber" type="text" placeholder="Pan Number" required />
+                                    <span asp-validation-for="PanNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">PAN Card Upload</p></div>
+                            <div class="col-lg-4">
+                                @if (!string.IsNullOrWhiteSpace(Model.PanUpload))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.PanUpload}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="PanFile1" type="file" />
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountNumber1" type="text" placeholder="Account Number1" required />
+                                    <span asp-validation-for="AccountNumber1" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="IfscCode1" type="text" placeholder="IfscCode1" required />
+                                    <span asp-validation-for="IfscCode1" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountName1" type="text" placeholder="AccountName1" required />
+                                    <span asp-validation-for="AccountName1" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">Cheque Upload</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Cheque1Upload))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.Cheque1Upload}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="ChequeFile1" type="file" />
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">AdharCard2Upload</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Aadhar2Upload))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.Aadhar2Upload}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="AadharFile2" type="file" />
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="PanNumber2" type="text" placeholder="Pan Number2" required />
+                                    <span asp-validation-for="PanNumber2" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                        
+                            <div class="col-lg-2"><p class="text-end">PAN Card2 Upload</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.PanUpload2))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.PanUpload2}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="PanFile2" type="file" />
+                            </div>
+
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountNumber2" type="text" placeholder="Account Number2" required />
+                                    <span asp-validation-for="AccountNumber2" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="IfscCode2" type="text" placeholder="IfscCode 2" required />
+                                    <span asp-validation-for="IfscCode2" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountName2" type="text" placeholder="Account Name2" required />
+                                    <span asp-validation-for="AccountName2" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">Cheque2 Upload</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Cheque2Upload))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.Cheque2Upload}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="ChequeFile2" type="file" />
+                            </div>
+                            
+                            <div class="d-flex gap-3 mt-4">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    @(Model.EmployeeId == 0 ? "Add Employee" : "Update Employee")
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-        }
-        <input asp-for="AadharFile1" type="file" class="form-control" />
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="PanNumber"></label>
-        <input asp-for="PanNumber" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PanFile1">PAN File 1</label>
-        @if (!string.IsNullOrEmpty(Model.PanUpload))
-        {
-            <div>
-                <a href="@($"{ViewBag.ApiOrigin}{Model.PanUpload}")" target="_blank">View existing PAN</a>
-            </div>
-        }
-        <input asp-for="PanFile1" type="file" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="AccountNumber1"></label>
-        <input asp-for="AccountNumber1" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="IfscCode1"></label>
-        <input asp-for="IfscCode1" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="AccountName1"></label>
-        <input asp-for="AccountName1" class="form-control" />
-    </div>
-
-
-    <div class="form-group">
-        <label asp-for="ChequeFile1">Cheque File 1</label>
-        @if (!string.IsNullOrEmpty(Model.Cheque1Upload))
-        {
-            <div>
-                <a href="@($"{ViewBag.ApiOrigin}{Model.Cheque1Upload}")" target="_blank">View existing Cheque</a>
-            </div>
-        }
-        <input asp-for="ChequeFile1" type="file" class="form-control" />
-    </div>
-
-    <h4>Account 2</h4>
-    <div class="form-group">
-        <label asp-for="AadharFile2">Aadhar File 2</label>
-        @if (!string.IsNullOrEmpty(Model.Aadhar2Upload))
-        {
-            <div>
-                <a href="@($"{ViewBag.ApiOrigin}{Model.Aadhar2Upload}")" target="_blank">View existing Aadhar 2</a>
-            </div>
-        }
-        <input asp-for="AadharFile2" type="file" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PanNumber2"></label>
-        <input asp-for="PanNumber2" class="form-control" />
-    </div>
-
-
-    <div class="form-group">
-        <label asp-for="PanFile2">PAN File 2</label>
-        @if (!string.IsNullOrEmpty(Model.PanUpload2))
-        {
-            <div>
-                <a href="@($"{ViewBag.ApiOrigin}{Model.PanUpload2}")" target="_blank">View existing PAN 2</a>
-            </div>
-        }
-        <input asp-for="PanFile2" type="file" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="AccountNumber2"></label>
-        <input asp-for="AccountNumber2" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="IfscCode2"></label>
-        <input asp-for="IfscCode2" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="AccountName2"></label>
-        <input asp-for="AccountName2" class="form-control" />
-    </div>
-
-
-    <div class="form-group">
-        <label asp-for="ChequeFile2">Cheque File 2</label>
-        @if (!string.IsNullOrEmpty(Model.Cheque2Upload))
-        {
-            <div>
-                <a href="@($"{ViewBag.ApiOrigin}{Model.Cheque2Upload}")" target="_blank">View existing Cheque 2</a>
-            </div>
-        }
-        <input asp-for="ChequeFile2" type="file" class="form-control" />
-    </div>
-
-
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

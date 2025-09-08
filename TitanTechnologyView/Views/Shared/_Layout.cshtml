@@ -13,6 +13,8 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="56x56" href="~/assets/images/fav-icon/icon.png">
     <!-- bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="~/assets/css/bootstrap.min.css" type="text/css" media="all">
     <!-- carousel CSS -->
     <link rel="stylesheet" href="~/assets/css/owl.carousel.min.css" type="text/css" media="all">
@@ -40,6 +42,8 @@
     <link rel="stylesheet" href="~/assets/css/coustom-animation.css" type="text/css" media="all">
     <!-- modernizr js -->
     <script src="assets/js/vendor/modernizr-3.5.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @* @RenderSection("Styles", required: false)  <!-- 👈 add this --> *@
 </head>
 
 <body>
@@ -60,7 +64,8 @@
                 <div class="row align-items-center">
                     <div class="col-lg-3">
                         <div class="header-logo">
-                            <a href="index.html"><img src="assets/images/logo-1.png" alt="logo"></a>
+                            <a href="index.html"><img height="100px" src="~/assets/images/home-1/Titan.png"  alt="logo"></a>
+                            
                         </div>
                     </div>
                     <div class="col-lg-9">
@@ -75,8 +80,8 @@
                                     <ul class="sub-menu">
                                         <li><a asp-action="Index" asp-controller="Company">Company</a></li>
                                         <li><a href="mission.html">Vendor </a></li>
-                                        <li><a href="team.html">Employee</a></li>
-                                        <li><a href="team-details.html">Customer </a></li>
+                                        <li><a asp-action="Index" asp-controller="Employee">Employee</a></li>
+                                        <li><a asp-action="Index" asp-controller="Customer">Customer </a></li>
                                         <li><a asp-action="Index" asp-controller="ProjectMaster">Project</a></li>
                                     </ul>
                                 </li>
@@ -131,21 +136,21 @@
                 <div class="row align-items-center">
                     <div class="col-lg-3">
                         <div class="header-logo">
-                            <a href="index.html"><img src="assets/images/logo-1.png" alt="logo"></a>
+                            <a href="index.html"><img height="100px" src="~/assets/images/home-1/Titan.png" alt="logo"></a>
                         </div>
                     </div>
                     <div class="col-lg-9">
                         <div class="header-menu">
                             <ul>
                                 <li>
-                                    <a href="#">Home</a>
+                                    <a asp-action="Index" asp-controller="Home">Home</a>
                                 </li>
 
                                 <li>
-                                    <a href="#">Services</a>
+                                    <a asp-action="Services" asp-controller="Home">Services</a>
                                 </li>
                                 <li>
-                                    <a href="#">Solutions</a>
+                                    <a asp-action="Solutions" asp-controller="Home">Solutions</a>
                                 </li>
                                 <li>
                                     <a href="#">About us</a>
@@ -181,7 +186,7 @@
                         </li>
 
                         <li>
-                            <a href="#">Services</a>
+                            <a asp-action="Services" asp-controller="Home">Services</a>
                         </li>
                         <li>
                             <a href="#">Solutions</a>
@@ -331,5 +336,6 @@
     <script src="~/assets/js/coustom-carousel.js"></script>
     <script src="~/assets/js/scroll-up.js"></script>
 
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
