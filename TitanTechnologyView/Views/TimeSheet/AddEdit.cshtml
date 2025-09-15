@@ -2,68 +2,241 @@
 
 @{
     ViewData["Title"] = Model.TimesheetId == 0 ? "Add Timesheet" : "Edit Timesheet";
+    var apiOrigin = (string)(ViewBag.ApiOrigin ?? "");
 }
 
-<h2>@ViewData["Title"]</h2>
-
-<form asp-action="SaveTimeSheet" method="post">
-    @Html.AntiForgeryToken()
-
-    <input type="hidden" asp-for="TimesheetId" />
-
-    <div class="form-group">
-        <label asp-for="ProjectCode"></label>
-        <input asp-for="ProjectCode" class="form-control" />
-        <span asp-validation-for="ProjectCode" class="text-danger"></span>
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Timesheets</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Timesheets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="EmployeeId"></label>
-        <input asp-for="EmployeeId" class="form-control" />
-        <span asp-validation-for="EmployeeId" class="text-danger"></span>
+<div class="contact-area style-three inner">
+    <div class="container">
+        <div class="row add-white-bg align-items-center">
+            <div class="col-lg-12 col-md-12">
+                <div class="single-contact-box">
+                    <div class="contact-contetn">
+                        <h4>Timesheet</h4>
+                    </div>
+                    <form asp-controller="TimeSheet" asp-action="SaveTimeSheet" method="post" enctype="multipart/form-data">
+                        
+                        <input type="hidden" asp-for="TimesheetId" />
+                        
+                        <div class="row">
+                            <!-- Project -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="single-input-box">
+                                    <label asp-for="ProjectCode" class="form-label">Project Code</label>
+                                    <select asp-for="ProjectCode" class="form-select" required>
+                                        <option value="">-- Select ProjectCode --</option>
+                                        @if (ViewBag.Projects != null)
+                                        {
+                                            foreach (var project in (List<TitanTechnologyView.Models.ProjectMaster>)ViewBag.Projects)
+                                            {
+                                                <option value="@project.ProjectCode">@project.ProjectCode</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="ProjectCode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Employee -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <label asp-for="EmployeeId" class="form-label">Employee</label>
+                                    <select asp-for="EmployeeId"
+                                            asp-items="@(ViewBag.Employees != null
+                                            ? new SelectList(ViewBag.Employees, "EmployeeId", "DisplayName", Model?.EmployeeId)
+                                            : new List<SelectListItem>())"
+                                            class="form-select" required>
+                                        <option value="">-- Select Employee --</option>
+                                    </select>
+                                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="TimesheetType" class="form-control" required>
+                                        <option value="">-- Select Timesheet Type --</option>
+                                        <option value="Monthly">Monthly</option>
+                                        <option value="Fixed">Fixed</option>
+                                        <option value="Project">Project</option>
+                                        <option value="Quarterly">Quarterly</option>
+                                    </select>
+                                    <span asp-validation-for="TimesheetType" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="MonthYear" type="month" id="MonthYear" placeholder="MonthYear" required />
+                                    <span asp-validation-for="MonthYear" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- StartDate -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <label asp-for="StartDate" class="form-label" style="color:black">Start Date</label>
+                                     <input asp-for="StartDate" type="date" id="StartDate" readonly />
+                                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- EndDate -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <label asp-for="EndDate" class="form-label" style="color:black">End Date</label>
+                                    <input asp-for="EndDate" type="date" id="EndDate" readonly />
+                                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                                </div>
+                            </div>
+    
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="Status" class="form-control" required>
+                                        <option value="">-- Select Status --</option>
+                                            <option value="Salary Paid">Salary Paid</option>
+                                            <option value="Approved">Approved</option>
+                                            <option value="Invoiced">Invoiced</option>
+                                            <option value="Submitted">Submitted</option>                                                                                   
+                                    </select>
+                                        <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            
+                            <!-- Duplicate Error Message -->
+                            <div class="col-lg-12 mb-3">
+                                <div id="duplicateError" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+
+                            <div class="d-flex gap-3 mt-4">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    Save
+                                   @*  @(Model.EmployeeId == 0 ? "Save" : "Save") *@
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="TimesheetType"></label>
-        <input asp-for="TimesheetType" class="form-control" />
-        <span asp-validation-for="TimesheetType" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="MonthYear"></label>
-        <input asp-for="MonthYear" class="form-control" />
-        <span asp-validation-for="MonthYear" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="StartDate"></label>
-        <input asp-for="StartDate" type="date" class="form-control" />
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="EndDate"></label>
-        <input asp-for="EndDate" type="date" class="form-control" />
-        <span asp-validation-for="EndDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Status"></label>
-        <select asp-for="Status" class="form-control">
-            <option value="">-- Select Status --</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
-        </select>
-        <span asp-validation-for="Status" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // --- Auto set StartDate & EndDate based on MonthYear ---
+            function formatDateLocal(d) {
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, "0");
+                const dd = String(d.getDate()).padStart(2, "0");
+                return `${yyyy}-${mm}-${dd}`;
+            } 
+            
+            function updateDatesFromMonthYear() {
+                let monthYearVal = $("#MonthYear").val();
+                let timesheetType = $("#TimesheetType").val();
+
+                if (!monthYearVal) {
+                    $("#StartDate").val("");
+                    $("#EndDate").val("");
+                    return;
+                }
+
+                const parts = monthYearVal.split("-");
+                if (parts.length !== 2) return;
+
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10);
+
+                const startDate = new Date(year, month - 1, 1);
+                let endDate;
+
+                switch (timesheetType) {
+                    case "Monthly":
+                        // End of the same month
+                        endDate = new Date(year, month, 0); // last day of month
+                        break;
+                    case "Quarterly":
+                        // Add 3 months
+                        endDate = new Date(year, month + 2, 0); // last day of 3rd month
+                        break;
+                    case "Fixed":
+                    case "Project":
+                        // You can set custom logic or keep monthly default
+                        endDate = new Date(year, month, 0);
+                        break;
+                    default:
+                        endDate = new Date(year, month, 0);
+                        break;
+                }
+
+                $("#StartDate").val(formatDateLocal(startDate));
+                $("#EndDate").val(formatDateLocal(endDate));
+            }
+
+            // Trigger on change
+            $("#MonthYear, #TimesheetType").on("change", updateDatesFromMonthYear);
+            updateDatesFromMonthYear();
+
+            // --- Duplicate Check via AJAX ---
+            function checkDuplicate() {
+                var projectCode = $("#ProjectCode").val();
+                var employeeId = $("#EmployeeId").val();
+                var timesheetType = $("#TimesheetType").val();
+                var monthYear = $("#MonthYear").val();
+                var timesheetId = $("#TimesheetId").val();
+
+                if (projectCode && employeeId && timesheetType && monthYear) {
+                    $.get("@Url.Action("CheckDuplicate", "Timesheet")",
+                        {
+                            projectCode: projectCode,
+                            employeeId: employeeId,
+                            timesheetType: timesheetType,
+                            monthYear: monthYear,
+                            timesheetId: timesheetId
+                        },
+                        function (data) {
+                            if (data.isDuplicate) {
+                                $("#duplicateError").text("❌ You can't enter duplicate values for Project, Employee, Type and Month/Year.");
+                                $("#duplicateError").show();
+                            } else {
+                                $("#duplicateError").hide();
+                            }
+                        });
+                } else {
+                    $("#duplicateError").hide();
+                }
+            }
+
+            $("#ProjectCode, #EmployeeId, #TimesheetType, #MonthYear").on("change", checkDuplicate);
+
+            $("form").on("submit", function (e) {
+                if ($("#duplicateError").is(":visible")) {
+                    e.preventDefault();
+                    alert("Please fix errors before submitting.");
+                }
+            });
+        });
+    </script>
 }

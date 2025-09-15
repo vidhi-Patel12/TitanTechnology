@@ -1,0 +1,230 @@
+﻿@model TitanTechnologyView.Models.TimeSheetEntry
+
+@{
+    ViewData["Title"] = Model.EntryId == 0 ? "Add Timesheet Entry" : "Edit Timesheet Entry";
+    var apiOrigin = (string)(ViewBag.ApiOrigin ?? "");
+}
+
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Timesheet Entrys</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Timesheet Entrys</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-area style-three inner">
+    <div class="container">
+        <div class="row add-white-bg align-items-center">
+            <div class="col-lg-12 col-md-12">
+                <div class="single-contact-box">
+                    <div class="contact-contetn">
+                        <h4>Timesheet Entry</h4>
+                    </div>
+                    <form asp-controller="TimesheetEntry" asp-action="SaveEntry" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="EntryId" />
+
+                        <div class="row">
+                            <!-- Project -->
+                            @* <div class="col-lg-6 mb-3">
+                                <div class="single-input-box">
+                                    <select asp-for="TimesheetId" class="form-select" required>
+                                        <option value="">-- Select TimesheetId --</option>
+                                        @if (ViewBag.Timesheets != null)
+                                        {
+                                            foreach (var ts in (List<TitanTechnologyView.Models.Timesheet>)ViewBag.Timesheets)
+                                            {
+                                                <option value="@ts.TimesheetId">@ts.TimesheetId</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="TimesheetId" class="text-danger"></span>
+                                </div>
+                            </div> *@
+                            
+                            <div class="col-lg-6 mb-3">
+                                <div class="single-input-box">
+                                    <select asp-for="TimesheetId"
+                                            asp-items="ViewBag.Timesheets"
+                                            class="form-select"
+                                            id="TimesheetId"
+                                            required>
+                                        <option value="">-- Select Timesheet --</option>
+                                    </select>
+                                    <span asp-validation-for="TimesheetId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <div class="single-input-box">
+                                    <input asp-for="EntryDate" type="date" id="EntryDate" placeholder="EntryDate" required />
+                                    <span asp-validation-for="EntryDate" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="DayName" type="text" placeholder="DayName" required />
+                                    <span asp-validation-for="DayName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="HoursWorked" type="number" placeholder="HoursWorked" required />
+                                    <span asp-validation-for="HoursWorked" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="ShortDescription" type="text" placeholder="ShortDescription" required />
+                                    <span asp-validation-for="ShortDescription" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="Location" type="text" placeholder="Location" required />
+                                    <span asp-validation-for="Location" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="Attendance" class="form-control" required>
+                                        <option value="Working">Working</option>
+                                        <option value="Full Leave">Full Leave</option>
+                                        <option value="Half Leave">Half Leave</option>
+                                        <option value="Weekly Off">WeeklyOff</option>
+                                        <option value="Holiday">Holiday</option>
+                                        <option value="Optional Holiday">Optional Holiday</option>
+                                    </select>
+                                    <span asp-validation-for="Attendance" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="ExtraDay" class="form-control" required>
+                                        <option value="">-- Select Extradays --</option>
+                                        <option value="Without CompOff">Extra days without comp off</option>
+                                        <option value="With CompOff">Extra days with comp off</option>
+                                    </select>
+                                    <span asp-validation-for="ExtraDay" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-3 mt-4">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    Save
+                                    @*  @(Model.EmployeeId == 0 ? "Save" : "Save") *@
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Duplicate Entry Modal -->
+<div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="duplicateModalLabel">Duplicate Entry Found</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                This Entry Date already exists for the selected Timesheet.<br />
+                Do you want to edit it instead?
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="duplicateNo" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" id="duplicateYes" class="btn btn-primary">Yes, Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var timesheetDates = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.TimesheetDates));
+
+            var timesheetSelect = document.getElementById('TimesheetId');
+            var entryDateInput = document.getElementById('EntryDate');
+            var duplicateEntryId = null;
+
+            // Initialize Bootstrap modal once
+            var duplicateModalEl = document.getElementById('duplicateModal');
+            var duplicateModal = new bootstrap.Modal(duplicateModalEl);
+
+            // --- Date range for selected timesheet ---
+            function updateEntryDateRange() {
+                var selectedId = timesheetSelect.value;
+                if (selectedId && timesheetDates[selectedId]) {
+                    entryDateInput.min = timesheetDates[selectedId].StartDate;
+                    entryDateInput.max = timesheetDates[selectedId].EndDate;
+                    if (entryDateInput.value < entryDateInput.min || entryDateInput.value > entryDateInput.max) {
+                        entryDateInput.value = '';
+                    }
+                } else {
+                    entryDateInput.min = '';
+                    entryDateInput.max = '';
+                }
+            }
+
+            timesheetSelect.addEventListener('change', updateEntryDateRange);
+            updateEntryDateRange();
+
+            // --- Check duplicate on date change ---
+            entryDateInput.addEventListener("change", function () {
+                duplicateEntryId = null;
+                var timesheetId = timesheetSelect.value;
+                var entryDate = entryDateInput.value;
+                var currentEntryId = document.querySelector("input[name='EntryId']").value || 0;
+
+                if (timesheetId && entryDate) {
+                    var formattedDate = new Date(entryDate).toISOString().split("T")[0];
+
+                    fetch(`/TimesheetEntry/CheckDuplicate?timesheetId=${timesheetId}&entryDate=${formattedDate}&entryId=${currentEntryId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                duplicateEntryId = data.entryId;
+                                duplicateModal.show();
+                            }
+                        })
+                        .catch(err => console.error("Error checking duplicate:", err));
+                }
+            });
+
+            // Modal actions
+            document.getElementById("duplicateYes").addEventListener("click", function () {
+                if (duplicateEntryId) {
+                    window.location.href = `/TimesheetEntry/AddEdit/${duplicateEntryId}`;
+                }
+            });
+
+            document.getElementById("duplicateNo").addEventListener("click", function () {
+                entryDateInput.value = "";
+            });
+        });
+    </script>
+}

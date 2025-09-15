@@ -27,82 +27,6 @@
         </a>
     </div>
 
-    @* <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-body ">
-            <table id="employeesTable" class="table table-striped table-hover align-middle" style="width:100%">
-                <thead class="table-dark">
-                    <tr>
-                        <th>EmployeeType</th>
-                        <th>CompanyCode</th>
-                        <th>VendorId</th>
-                        <th>Name</th>
-                        <th>AltName</th>
-                        <th>Age</th>
-                        <th>SkillSet</th>
-                        <th>Experience</th>
-                        <th>Timing Availability</th>
-                        <th>ContactNumber1</th>
-                        <th>ContactNumber2</th>
-                        <th>Remarks</th>
-                        <th>ReferredBy</th>
-                        <th>CreatedBy</th>
-                        <th>PanNumber</th>
-                        <th>AccountNumber1</th>
-                        <th>IfscCode1</th>
-                        <th>AccountName1</th>
-                        <th>PanNumber2</th>
-                        <th>AccountNumber2</th>
-                        <th>IfscCode2</th>
-                        <th>AccountName2</th>
-                        <th class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.EmployeeType</td>
-                            <td>@item.CompanyCode</td>
-                            <td>@item.VendorId</td>
-                            <td>@item.Name</td>
-                            <td>@item.AltName</td>
-                            <td>@item.Age</td>
-                            <td>@item.SkillSet</td>
-                            <td>@item.Experience</td>
-                            <td>@item.TimingAvailability</td>
-                            <td>@item.ContactNumber1</td>
-                            <td>@item.ContactNumber2</td>
-                            <td>@item.Remarks</td>
-                            <td>@item.ReferredBy</td>
-                            <td>@item.CreatedBy</td>
-                            <td>@item.PanNumber</td>
-                            <td>@item.AccountNumber1</td>
-                            <td>@item.IfscCode1</td>
-                            <td>@item.AccountName1</td>
-                            <td>@item.PanNumber2</td>
-                            <td>@item.AccountNumber2</td>
-                            <td>@item.IfscCode2</td>
-                            <td>@item.AccountName2</td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <a asp-action="AddEmployee" asp-route-id="@item.EmployeeId"
-                                       class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-danger"
-                                       data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                       data-id="@item.EmployeeId" title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div> *@
-
     <div class="table-responsive">
         <table id="employeesTable" class="table table-striped table-hover align-middle" style="width:100%">
             <thead class="table-dark">
@@ -176,7 +100,6 @@
             </tbody>
         </table>
     </div>
-
 </div>
 
 <!-- Delete Confirmation Modal -->
@@ -188,7 +111,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete this customer? This action cannot be undone.
+                Are you sure you want to delete this employee? This action cannot be undone.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -224,11 +147,17 @@
         var deleteModal = document.getElementById('deleteModal');
         deleteModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
-            var customerId = button.getAttribute('data-id');
-            deleteUrl = '/Customer/Delete/' + customerId;
+            var employeeId = button.getAttribute('data-id');
+            deleteUrl = '/Employee/Delete/' + employeeId;
             document.getElementById('confirmDeleteBtn').setAttribute('href', deleteUrl);
         });
     </script>
 }
+
+
+
+
+
+
 
 

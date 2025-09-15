@@ -13,7 +13,7 @@ namespace TitanTechnologyView.Models
 
         [ForeignKey("EmployeeMaster")]
         public int EmployeeId { get; set; }
-
+        public string? Name { get; set; }
         public string EmployeeType { get; set; }
         public string Technology { get; set; }
         public string AllocationType { get; set; }

@@ -3,15 +3,268 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="about-page">
-    <h1>About Us</h1>
-    <p>
-        Titan Technology delivers smart, scalable SAP solutions designed to
-        streamline operations and drive growth. We focus on innovation, quality,
-        and customer success.
-    </p>
-    <p>
-        Our team of experts ensures end-to-end support, from consulting to
-        implementation, with a strong commitment to excellence.
-    </p>
+<link href="~/css/aboutus.css" rel="stylesheet" />
+
+
+
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mt-5">
+                <div class="breadcumb-content">
+                    <h4>About Us</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>About</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="about-area inner-style-one">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="about-left">
+                    <div class="about-thumb">
+                        <img src="~/assets/images/about-inner/about-thumb.png" alt="">
+                    </div>
+                    <div class="abour-award-box">
+                        <div class="about-award-icon">
+                            <img src="~/assets/images/about-inner/about-award-icon.png" alt="">
+                        </div>
+                        <div class="about-award-content">
+                            <h4>Award Wining</h4>
+                            <p>Best Services</p>
+                        </div>
+                    </div>
+                    <div class="about-conuter-box">
+                        <div class="about-counter-icon">
+                            <img src="~/assets/images/about-inner/about-counter-icon.png" alt="">
+                        </div>
+                        <div class="about-counter-content odometer-wrapper" data-count="283">
+                            <h4>150</h4>
+                            <span>+</span>
+                            <p>Satisfied Customers</p>
+                        </div>
+                    </div>
+                    <div class="about-shape">
+                        <img src="~/assets/images/about-inner/about-shape.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="abour-right">
+                    <div class="section-title left inner-style">
+                        <h4>Proven Impact. Measurable Success.</h4>
+                        <h1>Your Trusted Partner in SAP Excellence.</h1>
+                        <p class="section-desc">
+                            At Titan Technology, we empower businesses to thrive in a dynamic digital world through intelligent,
+                            efficient, and customized SAP solutions. With deep industry expertise and a commitment to innovation,
+                            we help organizations streamline operations, drive performance, and unlock their full potential.
+                        </p>
+
+
+                        <h1>Empowering Business Growth with SAP Expertise</h1>
+                        <p class="section-desc">
+                            At Titan Technology, we deliver smart, scalable SAP solutions that help businesses streamline
+                            operations and drive growth. With deep industry knowledge and technical strength, our team supports clients through every step—from implementation and rollout to migration and ongoing support.
+                        </p>
+                    </div>
+                    @* <div class="row align-items-center">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="about-list-item">
+                                <ul>
+                                    <li><i class="bi bi-check"></i>Company and Research</li>
+                                    <li><i class="bi bi-check"></i>Business and research</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="about-text">
+                                <div class="about-number">
+                                    <h4>45%</h4>
+                                </div>
+                                <div class="about-text-content">
+                                    <h4>Solution Business</h4>
+                                    <p>Level is high</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-company">
+                        <div class="about-company-icon">
+                            <i class="bi bi-quote"></i>
+                        </div>
+                        <div class="about-company-desc">
+                            <p>If you are accused of committing a crime, you will the very best criminal defense attorneys.</p>
+                        </div>
+                    </div>
+                    <div class="toptech-button inner-style">
+                        <a href="#">More About<i class="bi bi-arrow-right-short"></i></a>
+                    </div> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="counter-area style-two">
+    <div class="container">
+        <div class="counter-grid">
+
+            <div class="counter-box">
+                <div class="counter-content">
+                    <h4>150</h4><span>+</span>
+                    <p style="width: 168px;">Satisfied Customers</p>
+                </div>
+            </div>
+
+            <div class="counter-box">
+                <div class="counter-content">
+                    <h4>350</h4><span>+</span>
+                    <p style="margin-left: -25px;">Team</p>
+                </div>
+            </div>
+
+            <div class="counter-box">
+                <div class="counter-content">
+                    <h4>10</h4><span>+</span>
+                    <p>Vertical Served</p>
+                </div>
+            </div>
+
+            <div class="counter-box">
+                <div class="counter-content">
+                    <h4>10</h4><span>+</span>
+                    <p style="width: 175px;">Certified Consultant</p>
+                </div>
+            </div>
+
+            <div class="counter-box">
+                <div class="counter-content">
+                    <h4>14</h4><span>+</span>
+                    <p style="width: 175px;">Years of Experience</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="feature-area style-three">
+    <div class="container" style="margin-top: 180px;">
+        <div class="row margin-top">
+            <div class="col-lg-4 col-md-6">
+                <div class="single-feature-box">
+                    <div class="feature-icon">
+                        <img src="~/assets/images/home-3/why-icon-01.svg" alt="">
+                    </div>
+                    <div class="feature-content">
+                        <h4>Industry-Driven Expertise</h4>
+                        <p>
+                            14+ years of domain experience led by engineering professionals
+                            ensures your SAP project is practical, efficient, and aligned with industry standards.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-feature-box">
+                    <div class="feature-icon">
+                        <img src="~/assets/images/home-3/why-icon-02.svg" alt="">
+                    </div>
+                    <div class="feature-content">
+                        <h4>Tailored, Collaborative Approach</h4>
+                        <p>We listen, understand, and deliver SAP solutions that fit your unique business goals—always keeping the bigger picture in focus.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-feature-box">
+                    <div class="feature-icon">
+                        <img src="~/assets/images/home-3/why-icon-03.svg" alt="">
+                    </div>
+                    <div class="feature-content">
+                        <h4>Leadership-Level Commitment</h4>
+                        <p>Our senior team is hands-on, ensuring quality, consistency, and a true partnership approach in every project.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-feature-box">
+                    <div class="feature-icon">
+                        <img src="~/assets/images/home-3/why-icon-04.svg" alt="">
+                    </div>
+                    <div class="feature-content">
+                        <h4>Proven Results Across Industries</h4>
+                        <p>From manufacturing to retail, our track record shows how we’ve helped businesses succeed with smart SAP solutions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-feature-box">
+                    <div class="feature-icon">
+                        <img src="~/assets/images/home-3/why-icon-05.svg" alt="">
+                    </div>
+                    <div class="feature-content">
+                        <h4>Transparent, Reliable Support</h4>
+                        <p>Count on our expert team for honest guidance, fast response, and dependable post-implementation support.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-feature-box">
+                    <div class="feature-icon">
+                        <img src="~/assets/images/home-3/why-icon-06.svg" alt="">
+                    </div>
+                    <div class="feature-content">
+                        <h4>Built for the Future</h4>
+                        <p>Our scalable SAP solutions are designed to grow with you, keeping your business agile and future-ready.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="contact-area-info style-three  mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="contact-icon">
+                    <img src="~/assets/images/home-3/contact-icon.png" alt="">
+                </div>
+                <div class="contact-content">
+                    <h6>Call Us Anytime</h6>
+                    <h1>+980 123 (4567) 890</h1>
+                    <p>
+                        Professionally optimize interdependent intellectual interoperable
+                        best practices. Progressively fabricate
+                    </p>
+                </div>
+                <div class="toptech-button inner-style">
+                    <a asp-action="ContactUs" asp-controller="Home">Let’s Talk<i class="bi bi-arrow-right-short"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="contact-right">
+                    <div class="contact-thumb">
+                        <img src="~/assets/images/home-3/contact-thumb.png" alt="">
+                    </div>
+                    <div class="contact-shape">
+                        <img src="~/assets/images/home-3/contact-shape.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

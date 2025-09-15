@@ -41,24 +41,51 @@
                         <input type="hidden" asp-for="Cheque2Upload" />
 
                         <div class="row">
-                            <div class="col-lg-6">
+                            @*  <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="EmployeeType" type="text" placeholder="Employee Type" required />
                                     <span asp-validation-for="EmployeeType" class="text-danger"></span>
 
                                 </div>
-                            </div>
+                            </div> *@
                             
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 mb-4">
                                 <div class="single-input-box">
-                                    <input asp-for="CompanyCode" type="text" placeholder="Company Code" required />
-                                    <span asp-validation-for="CompanyCode" class="text-danger"></span>
+                                    <select asp-for="EmployeeType" class="form-control" required>
+                                        <option value="">-- Select Employee Type --</option>
+                                        <option value="Commission">Commission</option>
+                                        <option value="Client Payroll">Client Payroll</option>
+                                        <option value="Permanent">Permanent</option>
+                                        <option value="Freelancing">Freelancing</option>
+                                        <option value="C2H">C2H</option>
+                                    </select>
+                                    <span asp-validation-for="EmployeeType" class="text-danger"></span>
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <select asp-for="VendorId" class="form-control"
+                                    <select asp-for="CompanyCode"
+                                            class="form-select"
+                                            asp-items="@(ViewBag.Companys != null
+                                            ? new SelectList(ViewBag.Companys, "CompanyCode", "CompanyName", Model?.CompanyCode)
+                                            : new List<SelectListItem>())">
+                                        <option value="">-- Select Company Name --</option>
+                                    </select>
+                                    <span asp-validation-for="CompanyCode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            @* <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="CompanyCode" type="text" placeholder="Company Code" required />
+                                    <span asp-validation-for="CompanyCode" class="text-danger"></span>
+                                </div>
+                            </div> *@
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="VendorId" 
                                             asp-items="@(ViewBag.Vendors != null
                                                                  ? new SelectList(ViewBag.Vendors, "VendorId", "VendorName", Model?.VendorId)
                                                                  : new List<SelectListItem>())">
@@ -104,11 +131,18 @@
                             </div>
     
                             <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="TimingAvailability" type="text" placeholder="Timing Availability" required />
-                                    <span asp-validation-for="TimingAvailability" class="text-danger"></span>
-                                </div>
+                            <div class="single-input-box">
+                                <select asp-for="TimingAvailability" class="form-control" required>
+                                    <option value="">-- Select Timing Availability --</option>
+                                    <option value="EU">EU</option>
+                                    <option value="INDIA">INDIA</option>
+                                    <option value="US">US</option>
+                                    <option value="AUS">AUS</option>
+                                </select>
+                                <span asp-validation-for="TimingAvailability" class="text-danger"></span>
                             </div>
+                            </div>
+
                             
                             <div class="col-lg-6">
                                 <div class="single-input-box">
@@ -145,7 +179,16 @@
                                 </div>
                             </div>
 
+
+
                             <hr class="my-1" />
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="PanNumber" type="text" placeholder="Pan Number" required />
+                                    <span asp-validation-for="PanNumber" class="text-danger"></span>
+                                </div>
+                            </div>
 
                             <div class="col-lg-2"><p class="text-end">NDAFile</p></div>
                             <div class="col-lg-4">
@@ -154,6 +197,13 @@
                                     <div><a href="@($"{apiOrigin}{Model.NdaUpload}")" target="_blank">View existing file</a></div>
                                 }
                                 <input asp-for="NdaFile" type="file" />
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountNumber1" type="text" placeholder="Account Number1" required />
+                                    <span asp-validation-for="AccountNumber1" class="text-danger"></span>
+                                </div>
                             </div>
 
                             <div class="col-lg-2"><p class="text-end">AdharCard Upload</p></div>
@@ -167,10 +217,11 @@
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="PanNumber" type="text" placeholder="Pan Number" required />
-                                    <span asp-validation-for="PanNumber" class="text-danger"></span>
+                                    <input asp-for="IfscCode1" type="text" placeholder="IfscCode1" required />
+                                    <span asp-validation-for="IfscCode1" class="text-danger"></span>
                                 </div>
                             </div>
+
 
                             <div class="col-lg-2"><p class="text-end">PAN Card Upload</p></div>
                             <div class="col-lg-4">
@@ -181,20 +232,9 @@
                                 <input asp-for="PanFile1" type="file" />
                             </div>
 
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="AccountNumber1" type="text" placeholder="Account Number1" required />
-                                    <span asp-validation-for="AccountNumber1" class="text-danger"></span>
-                                </div>
-                            </div>
+                            
 
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="IfscCode1" type="text" placeholder="IfscCode1" required />
-                                    <span asp-validation-for="IfscCode1" class="text-danger"></span>
-                                </div>
-                            </div>
-
+                            
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="AccountName1" type="text" placeholder="AccountName1" required />
@@ -212,6 +252,13 @@
                                 <input asp-for="ChequeFile1" type="file" />
                             </div>
 
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="PanNumber2" type="text" placeholder="Pan Number2" required />
+                                    <span asp-validation-for="PanNumber2" class="text-danger"></span>
+                                </div>
+                            </div>
+
                             <div class="col-lg-2"><p class="text-end">AdharCard2Upload</p></div>
                             <div class="col-lg-4">
 
@@ -221,11 +268,11 @@
                                 }
                                 <input asp-for="AadharFile2" type="file" />
                             </div>
-                            
+
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="PanNumber2" type="text" placeholder="Pan Number2" required />
-                                    <span asp-validation-for="PanNumber2" class="text-danger"></span>
+                                    <input asp-for="AccountNumber2" type="text" placeholder="Account Number2" required />
+                                    <span asp-validation-for="AccountNumber2" class="text-danger"></span>
                                 </div>
                             </div>
 
@@ -241,13 +288,7 @@
                             </div>
 
 
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="AccountNumber2" type="text" placeholder="Account Number2" required />
-                                    <span asp-validation-for="AccountNumber2" class="text-danger"></span>
-                                </div>
-                            </div>
-
+                            
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="IfscCode2" type="text" placeholder="IfscCode 2" required />
@@ -255,12 +296,6 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="AccountName2" type="text" placeholder="Account Name2" required />
-                                    <span asp-validation-for="AccountName2" class="text-danger"></span>
-                                </div>
-                            </div>
 
                             <div class="col-lg-2"><p class="text-end">Cheque2 Upload</p></div>
                             <div class="col-lg-4">
@@ -271,10 +306,17 @@
                                 }
                                 <input asp-for="ChequeFile2" type="file" />
                             </div>
-                            
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountName2" type="text" placeholder="Account Name2" required />
+                                    <span asp-validation-for="AccountName2" class="text-danger"></span>
+                                </div>
+                            </div>
+
                             <div class="d-flex gap-3 mt-4">
                                 <button type="submit" class="btn btn-primary px-4">
-                                    @(Model.EmployeeId == 0 ? "Add Employee" : "Update Employee")
+                                    @(Model.EmployeeId == 0 ? "Save" : "Save")
                                 </button>
                                 <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
                             </div>

@@ -2,7 +2,7 @@
 <html lang="en-US">
 
    @{
-        var userRole = Context.Request.Cookies["UserRole"];
+                    var userRole = Context.Request.Cookies["UserRole"];
 }
 <head>
     <meta charset="UTF-8">
@@ -64,32 +64,37 @@
                 <div class="row align-items-center">
                     <div class="col-lg-3">
                         <div class="header-logo">
-                            <a href="index.html"><img height="100px" src="~/assets/images/home-1/Titan.png"  alt="logo"></a>
-                            
+                            <a href="index.html"><img height="100px" src="~/assets/images/home-1/Titan.png" alt="logo"></a>
+
                         </div>
                     </div>
                     <div class="col-lg-9">
                         <div class="header-menu">
                             <ul>
                                 <li class="menu-item-has-children">
-                                    <a asp-action="Index" asp-controller="Admin">Home</a>
+                                    <a asp-action="Index" asp-controller="Home">Home</a>
                                 </li>
-                               
+
                                 <li class="menu-item-has-children">
                                     <a href="#">Masters<i class="fas fa-chevron-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a asp-action="Index" asp-controller="Company">Company</a></li>
-                                        <li><a href="mission.html">Vendor </a></li>
-                                        <li><a asp-action="Index" asp-controller="Employee">Employee</a></li>
                                         <li><a asp-action="Index" asp-controller="Customer">Customer </a></li>
-                                        <li><a asp-action="Index" asp-controller="ProjectMaster">Project</a></li>
+                                        <li><a asp-action="Index" asp-controller="Employee">Employee</a></li>
+                                        <li><a asp-action="Index" asp-controller="Vendor"> Vendor </a></li>
+                                        <li><a asp-action="Index" asp-controller="ProjectEmployee">Project Employee</a></li>
+                                        <li><a asp-action="Index" asp-controller="ProjectMaster">Project Master</a></li>
+                                        <li><a asp-action="Index" asp-controller="TimeSheet">Timesheet</a></li>
+                                        <li><a asp-action="Index" asp-controller="TimesheetEntry">Timesheet Entry</a></li>
+
                                     </ul>
                                 </li>
-                                
+
                             </ul>
-                           
+
                             <div class="header-button">
-                                <a asp-action="" asp-controller="">Welcome,Admin</a>
+                                <a asp-action="" asp-controller="">Welcome, Admin</a>
+                                <a asp-action="Logout" asp-controller="Auth">Logout</a>
                             </div>
                         </div>
                     </div>
@@ -104,33 +109,33 @@
                 <nav class="header-menu">
                     <ul class="nav_scroll">
                         <li class="menu-item-has-children">
-                            <a href="#">Home</a>                           
+                            <a asp-action="Index" asp-controller="Home">Home</a>
                         </li>
 
                         <li class="menu-item-has-children">
                             <a href="#">Masters<i class="fas fa-chevron-down"></i></a>
                             <ul class="sub-menu">
                                 <li><a asp-action="Index" asp-controller="Company">Company</a></li>
-                                <li><a href="mission.html">Vendor </a></li>
-                                <li><a href="team.html">Employee</a></li>
-                                <li><a href="team-details.html">Customer </a></li>
-                                <li><a asp-action="Index" asp-controller="ProjectMaster">Project</a></li>
+                                <li><a asp-action="Index" asp-controller="Customer">Customer </a></li>
+                                <li><a asp-action="Index" asp-controller="Employee">Employee</a></li>
+                                <li><a asp-action="Index" asp-controller="Vendor"> Vendor </a></li>
+                                <li><a asp-action="Index" asp-controller="ProjectEmployee">Project Employee</a></li>
+                                <li><a asp-action="Index" asp-controller="ProjectMaster">Project Master</a></li>
+                                <li><a asp-action="Index" asp-controller="TimeSheet">Timesheet</a></li>
+                                <li><a asp-action="Index" asp-controller="TimesheetEntry">Timesheet Entry</a></li>
+
                             </ul>
                         </li>
-                     
+
                     </ul>
                 </nav>
             </div>
         </div>
-       
-
         <!-- End Main Menu Area -->
-        
     }
-    else
+    else if (userRole == "Company")
     {
         <!-- Start Toptech Header Area -->
-
         <div class="header-area" id="sticky-header">
             <div class="container">
                 <div class="row align-items-center">
@@ -145,7 +150,123 @@
                                 <li>
                                     <a asp-action="Index" asp-controller="Home">Home</a>
                                 </li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="Company">Company</a>
+                                </li>
+                            </ul>
+                            <div class="header-search-icon search-box-outer">
+                                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                            </div>
+                            <div class="header-button">
+                                <a asp-action="Logout" asp-controller="Auth">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+
+        <!-- End Toptech Header Area Style One-->
+        <!-- Start Main Menu Area -->
+
+
+        <div class="mobile-menu-area sticky d-sm-block d-md-block d-lg-none ">
+            <div class="mobile-menu">
+                <nav class="header-menu">
+                    <ul class="nav_scroll">
+                        <li>
+                            <a asp-action="Index" asp-controller="Home">Home</a>
+                        </li>
+                        <li>
+                            <a asp-action="Index" asp-controller="Company">Company</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- End Main Menu Area -->
+    }
+
+    else if (userRole == "Employee")
+    {
+        <!-- Start Toptech Header Area -->
+        <div class="header-area" id="sticky-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3">
+                        <div class="header-logo">
+                            <a href="index.html">
+                                <img src="~/assets/images/home-1/header-logo.png" alt="logo" style="margin-bottom: -50px;margin-top: -45px;height:200px; width: 230px;" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="header-menu">
+                            <ul>
+                                <li>
+                                    <a asp-action="Index" asp-controller="Home">Home</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="Employee">Employee</a>
+                                </li>
+                            </ul>
+                            <div class="header-search-icon search-box-outer">
+                                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                            </div>
+                            <div class="header-button">
+                                <a asp-action="Logout" asp-controller="Auth">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- End Toptech Header Area Style One-->
+        <!-- Start Main Menu Area -->
+
+
+        <div class="mobile-menu-area sticky d-sm-block d-md-block d-lg-none ">
+            <div class="mobile-menu">
+                <nav class="header-menu">
+                    <ul class="nav_scroll">
+                        <li>
+                            <a asp-action="Index" asp-controller="Home">Home</a>
+                        </li>
+                        <li>
+                            <a asp-action="Index" asp-controller="Company">Company</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- End Main Menu Area -->
+    }
+
+    else
+    {
+        <!-- Start Toptech Header Area -->
+
+        <div class="header-area" id="sticky-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3">
+                        <div class="header-logo">
+                            <a href="index.html">
+                                <img src="~/assets/images/home-1/header-logo.png" alt="logo" style="margin-bottom: -50px;margin-top: -45px;height:200px; width: 230px; " />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="header-menu">
+                            <ul>
+                                <li>
+                                    <a asp-action="Index" asp-controller="Home">Home</a>
+                                </li>
                                 <li>
                                     <a asp-action="Services" asp-controller="Home">Services</a>
                                 </li>
@@ -153,12 +274,14 @@
                                     <a asp-action="Solutions" asp-controller="Home">Solutions</a>
                                 </li>
                                 <li>
-                                    <a href="#">About us</a>
+                                    <a asp-action="About" asp-controller="Home">About us</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Contact" asp-controller="Home">Contact us</a>
                                 </li>
 
-                                <li><a href="contact.html">Contact us</a></li>
                                 <li>
-                                    <a href="#">Careers</a>
+                                    <a asp-action="Careers" asp-controller="Home">Careers</a>
                                 </li>
                             </ul>
                             <div class="header-search-icon search-box-outer">
@@ -176,28 +299,28 @@
         <!-- End Toptech Header Area Style One-->
         <!-- Start Main Menu Area -->
 
-       
+
         <div class="mobile-menu-area sticky d-sm-block d-md-block d-lg-none ">
             <div class="mobile-menu">
                 <nav class="header-menu">
                     <ul class="nav_scroll">
                         <li>
-                            <a href="#">Home</a>
+                            <a asp-action="Index" asp-controller="Home">Home</a>
                         </li>
-
                         <li>
                             <a asp-action="Services" asp-controller="Home">Services</a>
                         </li>
                         <li>
-                            <a href="#">Solutions</a>
+                            <a asp-action="Solutions" asp-controller="Home">Solutions</a>
                         </li>
                         <li>
-                            <a href="#">About us</a>
+                            <a asp-action="About" asp-controller="Home">About us</a>
                         </li>
-
-                        <li><a href="contact.html">Contact us</a></li>
                         <li>
-                            <a href="#">Careers</a>
+                            <a asp-action="Contact" asp-controller="Home">Contact us</a>
+                        </li>
+                        <li>
+                            <a asp-action="Careers" asp-controller="Home">Solutions</a>
                         </li>
                     </ul>
                 </nav>

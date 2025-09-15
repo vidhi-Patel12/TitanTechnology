@@ -1,7 +1,8 @@
 ﻿// Controllers/CustomerController.cs
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
+using TitanTechnologyView.Helpers;
 using TitanTechnologyView.Models;
 
 namespace TitanTechnologyView.Controllers
@@ -9,14 +10,14 @@ namespace TitanTechnologyView.Controllers
     public class CustomerController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _apiUrl;
+        private readonly string _apiOrigin;
 
-        // API endpoints
-        private readonly string _apiOrigin = "https://localhost:44368";            // for files
-        private readonly string _apiUrl = "https://localhost:44368/api/Customer"; // for JSON + POST
-
-        public CustomerController(IHttpClientFactory httpClientFactory)
+        public CustomerController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
+            _apiUrl = $"{apiSettings.Value.BaseUrl}/Customer";
+            _apiOrigin = apiSettings.Value.Origin;
         }
 
         [HttpGet]
@@ -28,11 +29,26 @@ namespace TitanTechnologyView.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 ViewBag.Error = "API call failed: " + response.StatusCode;
-                return View(new List<CustomerFormDto>());
+                return View(new List<CustomerMaster>());
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var customers = JsonConvert.DeserializeObject<List<CustomerFormDto>>(json) ?? new();
+            var customers = JsonConvert.DeserializeObject<List<CustomerMaster>>(json) ?? new();
+
+            var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
+            var companies = new List<CompanyMasterDto>();
+            if (companyResponse.IsSuccessStatusCode)
+            {
+                var companyJson = await companyResponse.Content.ReadAsStringAsync();
+                companies = JsonConvert.DeserializeObject<List<CompanyMasterDto>>(companyJson) ?? new();
+            }
+
+            // 3. Map CompanyName into each customer
+            foreach (var customer in customers)
+            {
+                customer.CompanyName = companies.FirstOrDefault(c => c.CompanyCode == customer.CompanyCode)?.CompanyName;
+            }
+
             return View(customers);
         }
 
@@ -40,35 +56,35 @@ namespace TitanTechnologyView.Controllers
         public async Task<IActionResult> AddCustomer(int id = 0)
         {
             ViewBag.ApiOrigin = _apiOrigin; // so the view can build absolute links
+            var client = _httpClientFactory.CreateClient();
+
+            var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
+            var companies = new List<CompanyMasterDto>();
+
+            if (companyResponse.IsSuccessStatusCode)
+            {
+                var companyJson = await companyResponse.Content.ReadAsStringAsync();
+                companies = JsonConvert.DeserializeObject<List<CompanyMasterDto>>(companyJson) ?? new List<CompanyMasterDto>();
+            }
+            ViewBag.Companys = companies;
 
             if (id == 0)
+            {
                 return View(new CustomerFormDto());
+            }
 
-            var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiUrl}/{id}");
-            if (!response.IsSuccessStatusCode) return NotFound();
+            if (!response.IsSuccessStatusCode)
+            {
+                return NotFound();
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             var model = JsonConvert.DeserializeObject<CustomerFormDto>(json) ?? new CustomerFormDto();
-            return View(model);
-        }
 
-        // Helper: guess mime type by file extension
-        private static string GuessMime(string fileName)
-        {
-            var ext = Path.GetExtension(fileName)?.ToLowerInvariant();
-            return ext switch
-            {
-                ".pdf" => "application/pdf",
-                ".doc" => "application/msword",
-                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                ".xls" => "application/vnd.ms-excel",
-                ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                ".png" => "image/png",
-                ".jpg" or ".jpeg" => "image/jpeg",
-                ".txt" => "text/plain",
-                _ => "application/octet-stream"
-            };
+            ViewBag.SelectedCompanyName = companies.FirstOrDefault(e => e.CompanyCode == model.CompanyCode)?.CompanyName;
+
+            return View(model);
         }
 
         [HttpPost]
@@ -95,43 +111,20 @@ namespace TitanTechnologyView.Controllers
             content.Add(new StringContent(model.ContactPersonNumber ?? ""), "ContactPersonNumber");
             content.Add(new StringContent(model.PaymentTerms ?? ""), "PaymentTerms");
 
-            // local function to attach new-or-existing file
-            async Task AttachAsync(string field, IFormFile? newFile, string? existingRelativeUrl)
-            {
-                if (newFile != null)
-                {
-                    var sc = new StreamContent(newFile.OpenReadStream());
-                    sc.Headers.ContentType = new MediaTypeHeaderValue(newFile.ContentType);
-                    content.Add(sc, field, newFile.FileName);
-                    return;
-                }
+            // local function to attach new-or-existing file    
+            await content.AttachFileAsync(client, "AgreementFile1", model.AgreementFile1, model.Agreement1, _apiOrigin);
+            await content.AttachFileAsync(client, "AgreementFile2", model.AgreementFile2, model.Agreement2, _apiOrigin);
+            await content.AttachFileAsync(client, "AgreementFile3", model.AgreementFile3, model.Agreement3, _apiOrigin);
+            await content.AttachFileAsync(client, "AgreementFile4", model.AgreementFile4, model.Agreement4, _apiOrigin);
 
-                // No new file: if we have an existing path like "/agreements/abc.pdf", fetch it from API and re-attach
-                if (!string.IsNullOrWhiteSpace(existingRelativeUrl))
-                {
-                    var absoluteUrl = existingRelativeUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                        ? existingRelativeUrl
-                        : $"{_apiOrigin}{existingRelativeUrl}";
-
-                    var fileBytes = await client.GetByteArrayAsync(absoluteUrl);
-                    var fileName = Path.GetFileName(existingRelativeUrl);
-                    var ba = new ByteArrayContent(fileBytes);
-                    ba.Headers.ContentType = new MediaTypeHeaderValue(GuessMime(fileName));
-                    content.Add(ba, field, fileName);
-                }
-                // else: nothing attached -> API will null it
-            }
-
-            await AttachAsync("AgreementFile1", model.AgreementFile1, model.Agreement1);
-            await AttachAsync("AgreementFile2", model.AgreementFile2, model.Agreement2);
-            await AttachAsync("AgreementFile3", model.AgreementFile3, model.Agreement3);
-            await AttachAsync("AgreementFile4", model.AgreementFile4, model.Agreement4);
 
             // Your API uses POST for both insert/update
             var response = await client.PostAsync(_apiUrl, content);
 
             if (response.IsSuccessStatusCode)
+            {
                 return RedirectToAction("Index");
+            }
 
             // on error, redisplay form
             ViewBag.ApiOrigin = _apiOrigin;

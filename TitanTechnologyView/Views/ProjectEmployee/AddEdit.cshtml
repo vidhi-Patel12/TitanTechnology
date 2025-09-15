@@ -1,137 +1,317 @@
 ﻿@model TitanTechnologyView.Models.ProjectEmployee
 
 @{
-    ViewData["Title"] = Model.Id == 0 ? "Add Project Employee" : "Edit Project Employee";
+    ViewData["Title"] = Model.Id == 0 ? "Add ProjectEmployee" : "Edit ProjectEmployee";
+    var apiOrigin = (string)(ViewBag.ApiOrigin ?? "");
 }
 
-<h2 class="mb-3">@ViewData["Title"]</h2>
-
-<form asp-action="Save" method="post">
-    <input type="hidden" asp-for="Id" />
-
-    <div class="form-group mb-2">
-        <label asp-for="ProjectCode" class="form-label"></label>
-        <input asp-for="ProjectCode" class="form-control" />
-        <span asp-validation-for="ProjectCode" class="text-danger"></span>
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Project Employees</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Project Employees</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="form-group mb-2">
-        <label asp-for="EmployeeId" class="form-label"></label>
-        <input asp-for="EmployeeId" class="form-control" />
-        <span asp-validation-for="EmployeeId" class="text-danger"></span>
+
+<div class="contact-area style-three inner">
+    <div class="container">
+        <div class="row add-white-bg align-items-center">
+            <div class="col-lg-12 col-md-12">
+                <div class="single-contact-box">
+                    <div class="contact-contetn">
+                        <h4>ProjectEmployee</h4>
+                    </div>
+                    <form asp-controller="ProjectEmployee" asp-action="Save" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="row">
+                            <div class="col-lg-6 mb-4">
+                                <div class="single-input-box">
+                                    <select asp-for="ProjectCode" class="form-select" required>
+                                        <option value="">-- Select ProjectCode --</option>
+                                        @foreach (var project in (List<TitanTechnologyView.Models.ProjectMaster>)ViewBag.Projects)
+                                        {
+                                            <option value="@project.ProjectCode"
+                                                    selected="@(Model.ProjectCode == project.ProjectCode ? "selected" : null)">
+                                                @project.ProjectCode
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="ProjectCode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+@*                             <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="CompanyCode"
+                                            class="form-select"
+                                            asp-items="@(ViewBag.Companys != null
+                                                                                        ? new SelectList(ViewBag.Companys, "CompanyCode", "CompanyName", Model?.CompanyCode)
+                                                                                        : new List<SelectListItem>())">
+                                        <option value="">-- Select Company Name --</option>
+                                    </select>
+                                    <span asp-validation-for="CompanyCode" class="text-danger"></span>
+                                </div>
+                            </div>
+ *@
+
+
+                            <!-- Employee -->
+                            <div class="col-lg-6 ">
+                                <div class="single-input-box">
+                                    <select asp-for="EmployeeId"
+                                        asp-items="@(ViewBag.Employees != null
+                                        ? new SelectList(ViewBag.Employees, "EmployeeId", "Name", Model?.EmployeeId)
+                                        : new List<SelectListItem>())"
+                                            class="form-select" required>
+                                        <option value="">-- Select Employee --</option>
+                                    </select>
+                                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                                                                    
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="EmployeeType" type="text" placeholder="EmployeeType" required />
+                                    <span asp-validation-for="EmployeeType" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Technology Dropdown -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="Technology" class="form-select" required>
+                                        <option value="">-- Select Technology --</option>
+                                        <option value="SAP" selected="@(Model?.Technology == "SAP")">SAP</option>
+                                        <option value="NonSAP" selected="@(Model?.Technology == "NonSAP")">Non-SAP</option>
+                                    </select>
+                                    <span asp-validation-for="Technology" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Allocation Type Dropdown -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="AllocationType" class="form-select" required>
+                                        <option value="">-- Select Allocation Type --</option>
+                                        <option value="Fixed" selected="@(Model?.AllocationType == "Fixed")">Fixed</option>
+                                        <option value="T&M" selected="@(Model?.AllocationType == "T&M")">T&M</option>
+                                        <option value="Monthly" selected="@(Model?.AllocationType == "Monthly")">Monthly</option>
+                                    </select>
+                                    <span asp-validation-for="AllocationType" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="CommissionType" type="text" placeholder="Commission Type" required />
+                                    <span asp-validation-for="CommissionType" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="ConsultantRate" type="number" step="0.01" placeholder="Consultant Rate" required />
+                                    <span asp-validation-for="ConsultantRate" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="RateUnit" type="text" placeholder="RateUnit" required />
+                                    <span asp-validation-for="RateUnit" class="text-danger"></span>
+                                </div>
+                            </div>
+
+@*                             <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="TimesheetType" type="text" placeholder="Timesheet Type" required />
+                                    <span asp-validation-for="TimesheetType" class="text-danger"></span>
+                                </div>
+                            </div>
+ *@
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="TimesheetType" class="form-control" required>
+                                        <option value="">-- Select Timesheet Type --</option>
+                                        <option value="Fixed">Fixed</option>
+                                        <option value="Project">Project</option>
+                                        <option value="Quarterly">Quarterly</option>
+                                        <option value="Monthly">Monthly</option>
+                                    </select>
+                                    <span asp-validation-for="TimesheetType" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+                            <!-- SAP Module Dropdown -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="SapModule" class="form-select" required>
+                                        <option value="">-- Select SAP Module --</option>
+                                        <option value="SAP SD" selected="@(Model?.SapModule == "SAP SD")">SAP SD</option>
+                                        <option value="SAP MM" selected="@(Model?.SapModule == "SAP MM")">SAP MM</option>
+                                        <option value="SAP PP" selected="@(Model?.SapModule == "SAP PP")">SAP PP</option>
+                                        <option value="SAP QM" selected="@(Model?.SapModule == "SAP QM")">SAP QM</option>
+                                        <option value="SAP PM" selected="@(Model?.SapModule == "SAP PM")">SAP PM</option>
+                                        <option value="SAP FICO" selected="@(Model?.SapModule == "SAP FICO")">SAP FICO</option>
+                                        <option value="SAP ABAP" selected="@(Model?.SapModule == "SAP ABAP")">SAP ABAP</option>
+                                        <option value="SAP BASIS" selected="@(Model?.SapModule == "SAP BASIS")">SAP BASIS</option>
+                                    </select>
+                                    <span asp-validation-for="SapModule" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <label asp-for="EmployeeStartDate" class="form-label" style="color:black">Start Date</label>
+                                    <input asp-for="EmployeeStartDate" type="date" id="EmployeeStartDate" placeholder="Employee Start Date" required />
+                                    <span asp-validation-for="EmployeeStartDate" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <label asp-for="EmployeeEndDate" class="form-label" style="color:black">End Date</label>
+                                    <input asp-for="EmployeeEndDate" id="EmployeeEndDate" type="date" placeholder="Employee End Date" required />
+                                    <span asp-validation-for="EmployeeEndDate" class="text-danger"></span>
+                                    <span id="dateError" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                        
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="CycleStartDay" type="number" placeholder="CycleStartDay" required />
+                                    <span asp-validation-for="CycleStartDay" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="CycleEndDay" type="number" placeholder="CycleEndDay" required />
+                                    <span asp-validation-for="CycleEndDay" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="PaymentMode" type="text" placeholder="PaymentMode" required />
+                                    <span asp-validation-for="PaymentMode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                           @*  <div class="col-lg-6">
+                                <div class="form-check">
+                                  
+                                    <input type="checkbox" id="TimesheetRequired" name="TimesheetRequired" value="true"
+                                           class="form-check-input"
+                                           @(Model.TimesheetRequired == true ? "checked" : "") />
+
+                                    <label for="TimesheetRequired" class="form-check-label">Timesheet Required</label>
+                                    <span asp-validation-for="TimesheetRequired" class="text-danger"></span>
+                                </div>
+                            </div> *@
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="CustomerRate" type="number" placeholder="CustomerRate" step="0.01" required />
+                                    <span asp-validation-for="CustomerRate" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            @* <div class="col-lg-6">
+                                <div class="form-check">
+                                    <input type="checkbox" id="Inactive" name="Inactive" value="true"
+                                           class="form-check-input"
+                                           @(Model.Inactive == true ? "checked" : "") />
+                                    <label for="Inactive" class="form-check-label">Inactive</label>
+                                    <span asp-validation-for="Inactive" class="text-danger"></span>
+                                </div>
+                            </div> *@
+                        
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="SalaryPaymentDays" type="number" placeholder="SalaryPaymentDays" required />
+                                    <span asp-validation-for="SalaryPaymentDays" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="TdsPercent" type="number" step="0.01" placeholder="TdsPercent" required />
+                                    <span asp-validation-for="TdsPercent" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountPreference" type="text" placeholder="AccountPreference" required />
+                                    <span asp-validation-for="AccountPreference" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="TextFields" type="text" placeholder="TextFields" required />
+                                    <span asp-validation-for="TextFields" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-3 mt-4">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    Save 
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="EmployeeType" class="form-label"></label>
-        <input asp-for="EmployeeType" class="form-control" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="Technology" class="form-label"></label>
-        <input asp-for="Technology" class="form-control" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="AllocationType" class="form-label"></label>
-        <input asp-for="AllocationType" class="form-control" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="CommissionType" class="form-label"></label>
-        <input asp-for="CommissionType" class="form-control" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="ConsultantRate" class="form-label"></label>
-        <input asp-for="ConsultantRate" class="form-control" type="number" step="0.01" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="RateUnit" class="form-label"></label>
-        <input asp-for="RateUnit" class="form-control" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="TimesheetType" class="form-label"></label>
-        <input asp-for="TimesheetType" class="form-control" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="SapModule" class="form-label"></label>
-        <input asp-for="SapModule" class="form-control" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="EmployeeStartDate" class="form-label"></label>
-        <input asp-for="EmployeeStartDate" type="date" class="form-control" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="EmployeeEndDate" class="form-label"></label>
-        <input asp-for="EmployeeEndDate" type="date" class="form-control" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="CycleStartDay" class="form-label"></label>
-        <input asp-for="CycleStartDay" class="form-control" type="number" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="CycleEndDay" class="form-label"></label>
-        <input asp-for="CycleEndDay" class="form-control" type="number" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="PaymentMode" class="form-label"></label>
-        <input asp-for="PaymentMode" class="form-control" />
-    </div>
-
-    @* TimesheetRequired *@
-    <div class="form-check">
-        <input type="checkbox" name="TimesheetRequired" value="true"
-               @(Model.TimesheetRequired == true ? "checked" : "") class="form-check-input" />
-        <label class="form-check-label" for="TimesheetRequired">Timesheet Required</label>
-    </div>
-
-
-    <div class="form-group mb-2">
-        <label asp-for="CustomerRate" class="form-label"></label>
-        <input asp-for="CustomerRate" class="form-control" type="number" step="0.01" />
-    </div>
-
-    @* Inactive *@
-    <div class="form-check">
-        <input type="checkbox" name="Inactive" value="true"
-               @(Model.Inactive == true ? "checked" : "") class="form-check-input" />
-        <label class="form-check-label" for="Inactive">Inactive</label>
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="SalaryPaymentDays" class="form-label"></label>
-        <input asp-for="SalaryPaymentDays" class="form-control" type="number" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="TdsPercent" class="form-label"></label>
-        <input asp-for="TdsPercent" class="form-control" type="number" step="0.01" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label asp-for="AccountPreference" class="form-label"></label>
-        <input asp-for="AccountPreference" class="form-control" />
-    </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="TextFields" class="form-label"></label>
-        <textarea asp-for="TextFields" class="form-control"></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
-
+</div>
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const startDateInput = document.getElementById("EmployeeStartDate");
+            const endDateInput = document.getElementById("EmployeeEndDate");
+            const errorSpan = document.getElementById("dateError");
+
+            function validateDates() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                if (startDateInput.value && endDateInput.value) {
+                    if (endDate < startDate) {
+                        errorSpan.textContent = "End Date cannot be before Start Date.";
+                        endDateInput.value = ""; // clear invalid input
+                    } else {
+                        errorSpan.textContent = "";
+                    }
+                }
+            }
+
+            startDateInput.addEventListener("change", function () {
+                // ensure end date can't be set before start date
+                endDateInput.min = startDateInput.value;
+                validateDates();
+            });
+
+            endDateInput.addEventListener("change", validateDates);
+        });
+    </script>
 }
+

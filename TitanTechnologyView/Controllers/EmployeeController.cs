@@ -19,7 +19,7 @@ namespace TitanTechnologyView.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()                
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync(_apiUrl);
@@ -53,29 +53,54 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> AddEmployee(int id = 0)
         {
-
             // 1. Fetch vendor list from API
-            var client = _httpClientFactory.CreateClient();
             ViewBag.ApiOrigin = _apiOrigin;
-            var vendorResponse = await client.GetAsync($"{_apiOrigin}/api/Vendor");
+            var client = _httpClientFactory.CreateClient();
 
+            var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
+            var companys = new List<CompanyMasterDto>();
+
+            if (companyResponse.IsSuccessStatusCode)
+            {
+                var companyJson = await companyResponse.Content.ReadAsStringAsync();
+                companys = JsonConvert.DeserializeObject<List<CompanyMasterDto>>(companyJson) ?? new List<CompanyMasterDto>();
+            }
+            ViewBag.Companys = companys;
+
+
+            var vendorResponse = await client.GetAsync($"{_apiOrigin}/api/Vendor");
             var vendors = new List<VendorDto>();
             if (vendorResponse.IsSuccessStatusCode)
             {
                 var vendorJson = await vendorResponse.Content.ReadAsStringAsync();
-                vendors = JsonConvert.DeserializeObject<List<VendorDto>>(vendorJson) ?? new();
+                vendors = JsonConvert.DeserializeObject<List<VendorDto>>(vendorJson) ?? new List<VendorDto>();
             }
             ViewBag.Vendors = vendors;
 
-
             if (id == 0)
+            {
                 return View(new EmployeeFormDto());
+            }
 
             var response = await client.GetAsync($"{_apiUrl}/{id}");
             if (!response.IsSuccessStatusCode) return NotFound();
 
             var json = await response.Content.ReadAsStringAsync();
             var model = JsonConvert.DeserializeObject<EmployeeFormDto>(json) ?? new EmployeeFormDto();
+
+            if (model.VendorId.HasValue)
+            {
+                var vendor = vendors.FirstOrDefault(v => v.VendorId == model.VendorId.Value);
+                if (vendor != null)
+                    model.VendorName = vendor.VendorName;
+            }
+
+            var company = companys.FirstOrDefault(e => e.CompanyCode == model.CompanyCode);
+
+            if (company != null)
+            {
+                ViewBag.SelectedCompanyName = company.CompanyName;
+            }
             return View(model);
         }
 
@@ -104,7 +129,12 @@ namespace TitanTechnologyView.Controllers
       
             if (!ModelState.IsValid)
             {
-                ViewBag.ApiOrigin = _apiOrigin;
+                var vendorResponse = await client.GetAsync($"{_apiOrigin}/api/Vendor");
+                if (vendorResponse.IsSuccessStatusCode)
+                {
+                    var vendorJson = await vendorResponse.Content.ReadAsStringAsync();
+                    ViewBag.Vendors = JsonConvert.DeserializeObject<List<VendorDto>>(vendorJson);
+                }
                 return View("AddEmployee", model);
             }
 
@@ -153,7 +183,7 @@ namespace TitanTechnologyView.Controllers
                 {
                     var absoluteUrl = existingRelativeUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
                         ? existingRelativeUrl
-                        : $"{_apiOrigin}{existingRelativeUrl}";
+                        : new Uri(new Uri(_apiOrigin), existingRelativeUrl).ToString(); // Use Uri to combine properly
 
                     var fileBytes = await client.GetByteArrayAsync(absoluteUrl);
                     var fileName = Path.GetFileName(existingRelativeUrl);
@@ -161,6 +191,7 @@ namespace TitanTechnologyView.Controllers
                     ba.Headers.ContentType = new MediaTypeHeaderValue(GuessMime(fileName));
                     content.Add(ba, field, fileName);
                 }
+
                 // else nothing → API will clear it
             }
 

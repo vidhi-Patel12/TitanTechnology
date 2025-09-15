@@ -210,7 +210,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
    <!--Toptech Hero Area Css Style One-->
 =========================================================---*/
 .style-one.hero-area {
-    background: url(../images/home-1/sapbg1img.jpg);
+    background: url(../images/home-1/hero-bg.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -230,7 +230,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
     font-weight: 600;
     color: #fff;
     text-transform: uppercase;
-    margin: 0 0 21px;
+    margin: -315px 0 21px;
 }
 
 .style-one .hero-content h1 {
@@ -292,7 +292,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
 }
 
 .style-one.feature-area .row.margin-top {
-    margin-top: -91px;
+    margin-top: -180px;
 }
 
 .style-one .flip-box {
@@ -605,7 +605,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
 .style-one.service-area .flip-box-inner {
     position: relative;
     width: auto;
-    height: 257px;
+    height: 310px;
     text-align: left;
     transition: transform 0.8s;
     transform-style: preserve-3d;
@@ -2313,7 +2313,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    padding: 75px 0 63px;
+    padding: 24px 0 13px;
 }
 
 .style-two .counter-box {
@@ -3753,7 +3753,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    padding: 111px 0 293px;
+    padding: 47px 0 230px;
 }
 
 .style-three.subscribe-area .section-title.left h1 {
@@ -4111,7 +4111,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
    <!--Toptech About Area Css Inner Style One-->
 =========================================================---*/
 .inner-style-one.about-area {
-    background: url(../images/about-inner/about-bg.jpg);
+    /*background: url(../images/about-inner/about-bg.jpg);*/
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -6037,7 +6037,7 @@ button.icons {
    <!--Toptech Careers Area Css-->
 =========================================================---*/
 .inner-style.careers-area {
-    padding: 119px 0 95px;
+    padding: 119px 0 1px;
     background: #F5F8FD;
 }
 

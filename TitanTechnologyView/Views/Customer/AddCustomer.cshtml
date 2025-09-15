@@ -41,13 +41,17 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    @* <input type="text" id="firstName" name="FirstName" placeholder="First Name" required>
-                                    <span id="firstNameError" class="text-danger"></span> *@
-                                    <input asp-for="CompanyCode" type="text" placeholder="Company Code"  required/>
+                                    <select asp-for="CompanyCode"
+                                            class="form-select"
+                                            asp-items="@(ViewBag.Companys != null
+                                            ? new SelectList(ViewBag.Companys, "CompanyCode", "CompanyName", Model?.CompanyCode)
+                                            : new List<SelectListItem>())">
+                                        <option value="">-- Select Company Name --</option>
+                                    </select>
                                     <span asp-validation-for="CompanyCode" class="text-danger"></span>
-
                                 </div>
                             </div>
+
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                    @*  <input type="text" id="lastName" name="LastName" placeholder="Last Name" required>
@@ -157,8 +161,8 @@
 
                             <div class="d-flex gap-3 mt-4">
                                 <button type="submit" class="btn btn-primary px-4">
-                                    @(Model.CustomerId == 0 ? "Add Customer" : "Update Customer")
-                                </button>
+                                   Save @* @(Model.CustomerId == 0 ? "Add Customer" : "Update Customer") *@
+                                </button> 
                                 <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
                             </div>
                         </div>

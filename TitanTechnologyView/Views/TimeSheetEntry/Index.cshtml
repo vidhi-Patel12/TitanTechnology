@@ -1,6 +1,6 @@
-﻿@model IEnumerable<TitanTechnologyView.Models.Timesheet>
+﻿@model IEnumerable<TitanTechnologyView.Models.TimeSheetEntry>
 @{
-    ViewBag.Title = "Timesheet List";
+    ViewBag.Title = "Timesheet Entries";
 }
 
 <div class="hero-area-form style-one d-flex align-items-center">
@@ -8,11 +8,11 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>ProjectEmployees</h4>
+                    <h4>Timesheet Entrys</h4>
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
-                        <li>Timesheets</li>
+                        <li>Timesheet Entrys</li>
                     </ul>
                 </div>
             </div>
@@ -21,9 +21,9 @@
 </div>
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold">Timesheets</h2>
+        <h2 class="fw-bold">TimesheetEntrys</h2>
         <a asp-action="AddEdit" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> Add Timesheet
+            <i class="bi bi-plus-circle"></i> Add TimesheetEntry
         </a>
     </div>
 
@@ -31,13 +31,14 @@
         <table id="timesheetsTable" class="table table-striped table-hover align-middle" style="width:100%">
             <thead class="table-dark">
                 <tr>
-                    <th>ProjectCode</th>
-                    <th>EmployeeName</th>
-                    <th>TimesheetType</th>
-                    <th>MonthYear</th>
-                    <th>StartDate</th>
-                    <th>EndDate</th>
-                    <th>Status</th>
+                    <th>Entry Date</th>
+                    <th>Timesheet</th>
+                    <th>Day</th>
+                    <th>Hours</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Attendance</th>
+                    <th>Extra Day</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
@@ -45,22 +46,23 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.ProjectCode</td>
-                        <td>@item.Name</td>
-                        <td>@item.TimesheetType</td>
-                        <td>@item.MonthYear</td>
-                        <td>@string.Format("{0:dd-MM-yyyy}", item.StartDate)</td>
-                        <td>@string.Format("{0:dd-MM-yyyy}", item.EndDate)</td>
-                        <td>@item.Status</td>
+                        <td>@string.Format("{0:dd-MM-yyyy}", item.EntryDate)</td>
+                        <td>@item.DisplayText</td>
+                        <td>@item.DayName</td>
+                        <td>@item.HoursWorked</td>
+                        <td>@item.ShortDescription</td>
+                        <td>@item.Location</td>
+                        <td>@item.Attendance</td>
+                        <td>@item.ExtraDay</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
-                                <a asp-action="AddEdit" asp-route-id="@item.TimesheetId"
+                                <a asp-action="AddEdit" asp-route-id="@item.EntryId"
                                    class="btn btn-sm btn-outline-primary" title="Edit">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                                 <a href="javascript:void(0);" class="btn btn-sm btn-outline-danger"
                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                   data-id="@item.TimesheetId" title="Delete">
+                                   data-id="@item.EntryId" title="Delete">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
@@ -81,7 +83,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete this Timesheet? This action cannot be undone.
+                Are you sure you want to delete this TimesheetEntry? This action cannot be undone.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -118,7 +120,7 @@
         deleteModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             var projectEmployeeId = button.getAttribute('data-id');
-            deleteUrl = '/timesheet/Delete/' + projectEmployeeId;
+            deleteUrl = '/timesheetEntry/Delete/' + projectEmployeeId;
             document.getElementById('confirmDeleteBtn').setAttribute('href', deleteUrl);
         });
     </script>
