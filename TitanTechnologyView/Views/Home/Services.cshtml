@@ -1,228 +1,411 @@
-﻿@{
-    ViewData["Title"] = "Services";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿
+@{
+    ViewBag.Title = "Service";
 }
 
-<!-- Hero Section -->
-<section class="hero-services parallax" data-aos="fade-down">
+<div class="hero-area-form style-one d-flex align-items-center">
     <div class="container">
-        <div class="hero-content">
-            <h1>Expert SAP Services</h1>
-            <p>Transform your business with our comprehensive SAP solutions</p>
-            <div class="hero-buttons">
-                <a href="#services" class="hero-btn">Explore Services</a>
-                <a href="#contact" class="hero-btn-outline">Contact Us</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Services Overview -->
-<section id="services" class="services-overview">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="section-title">Our SAP Solutions</h2>
-            <div class="divider bg-primary mx-auto"></div>
-            <p class="lead">Comprehensive services designed to optimize your SAP ecosystem</p>
-        </div>
-
-        <div class="services-grid">
-            <!-- SAP Implementation -->
-            <div class="service-item" data-aos="fade-up" data-aos-delay="100">
-                <div class="service-icon">
-                    <img src="~/icons/sap-implementation.svg" alt="SAP Implementation" />
-                </div>
-                <h3>SAP Implementation</h3>
-                <p>End-to-end implementation with minimal disruption to your operations</p>
-                <ul class="service-features">
-                    <li>Requirement analysis & blueprinting</li>
-                    <li>System configuration & customization</li>
-                    <li>Data migration & testing</li>
-                    <li>User training & go-live support</li>
-                </ul>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- SAP Rollout -->
-            <div class="service-item" data-aos="fade-up" data-aos-delay="200">
-                <div class="service-icon">
-                    <img src="~/icons/sap-rollout.svg" alt="SAP Rollout" />
-                </div>
-                <h3>SAP Rollout</h3>
-                <p>Seamless expansion across multiple locations and business units</p>
-                <ul class="service-features">
-                    <li>Template development & localization</li>
-                    <li>Multi-country deployment</li>
-                    <li>Integration with existing systems</li>
-                    <li>Post-rollout optimization</li>
-                </ul>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- SAP Migration -->
-            <div class="service-item" data-aos="fade-up" data-aos-delay="300">
-                <div class="service-icon">
-                    <img src="~/icons/sap-migration.svg" alt="SAP Migration" />
-                </div>
-                <h3>SAP Migration</h3>
-                <p>Smooth transition to SAP S/4HANA and next-generation platforms</p>
-                <ul class="service-features">
-                    <li>System assessment & planning</li>
-                    <li>Data conversion & validation</li>
-                    <li>Custom code adaptation</li>
-                    <li>Cutover planning & execution</li>
-                </ul>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- SAP Staffing -->
-            <div class="service-item" data-aos="fade-up" data-aos-delay="400">
-                <div class="service-icon">
-                    <img src="~/icons/sap-staffing.svg" alt="SAP Staffing" />
-                </div>
-                <h3>SAP Staffing</h3>
-                <p>Expert consultants to augment your team and accelerate projects</p>
-                <ul class="service-features">
-                    <li>On-demand SAP experts</li>
-                    <li>Flexible engagement models</li>
-                    <li>Domain-specific specialists</li>
-                    <li>Knowledge transfer & mentoring</li>
-                </ul>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- SAP AMS -->
-            <div class="service-item" data-aos="fade-up" data-aos-delay="500">
-                <div class="service-icon">
-                    <img src="~/icons/sap-ams.svg" alt="SAP AMS" />
-                </div>
-                <h3>SAP AMS</h3>
-                <p>Comprehensive application management and support services</p>
-                <ul class="service-features">
-                    <li>24/7 system monitoring</li>
-                    <li>Incident & problem management</li>
-                    <li>Change management & enhancements</li>
-                    <li>Performance optimization</li>
-                </ul>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Process Section -->
-<section class="process-section">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="section-title">Our Proven Process</h2>
-            <div class="divider bg-primary mx-auto"></div>
-            <p class="lead">A structured approach to ensure successful SAP implementations</p>
-        </div>
-
-        <div class="process-timeline">
-            <div class="process-step" data-aos="fade-right">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <h4>Discovery & Planning</h4>
-                    <p>Understanding your business requirements and creating a detailed roadmap</p>
-                </div>
-            </div>
-
-            <div class="process-step" data-aos="fade-left">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <h4>Design & Blueprint</h4>
-                    <p>Creating technical specifications and solution architecture</p>
-                </div>
-            </div>
-
-            <div class="process-step" data-aos="fade-right">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <h4>Development & Configuration</h4>
-                    <p>Building and customizing the SAP system to your needs</p>
-                </div>
-            </div>
-
-            <div class="process-step" data-aos="fade-left">
-                <div class="step-number">4</div>
-                <div class="step-content">
-                    <h4>Testing & Training</h4>
-                    <p>Ensuring system quality and preparing your team</p>
-                </div>
-            </div>
-
-            <div class="process-step" data-aos="fade-right">
-                <div class="step-number">5</div>
-                <div class="step-content">
-                    <h4>Deployment & Support</h4>
-                    <p>Go-live assistance and ongoing optimization</p>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a asp-action="Services" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Services</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- CTA Section -->
-<section class="cta-section">
+<div class="service-area inner-style">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="section-title center inner-style">
+                    <h4>What We Provides?</h4>
+                    <h1>Provide Interective IT Solution</h1>
+                    <h1>Business Services</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- g-4 adds spacing between cards -->
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-8.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>SAP Implementation</h4>
+                        <p>We offer end-to-end SAP implementation services tailored to align with your business objectives and industry demands.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal1">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-2.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>SAP Rollout</h4>
+                        <p>Our SAP rollout services enable multinational enterprises to standardize operations across regions while addressing local compliance needs.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal2">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-3.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>SAP Migration Services</h4>
+                        <p>Modernize your enterprise with our secure, low-disruption SAP migration services.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal3">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-4.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>SAP Staffing</h4>
+                        <p>Accelerate your SAP initiatives with access to a curated network of SAP-certified professionals.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal4">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-5.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>SAP AMS</h4>
+                        <p>Our SAP AMS delivers proactive, SLA-driven support to ensure high system availability, performance, and continuous improvement.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal5">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="~/assets/images/service-inner/service-icon-6.png" alt="">
+                    </div>
+                    <div class="service-content">
+                        <h4>SAP Integration</h4>
+                        <p>We help you create a connected enterprise through seamless SAP integration with third-party systems and platforms.</p>
+                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal6">Learn More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+              </div>
+           </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="subscribe-area style-three">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-8" data-aos="fade-right">
-                <h2>Ready to Transform Your SAP Landscape?</h2>
-                <p>Let our experts help you unlock the full potential of your SAP investment</p>
+            <div class="col-lg-6">
+                <div class="section-title left inner-style">
+                    <h1>Why Choose Titan Technology for SAP?</h1>
+                </div>
             </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0" data-aos="fade-left">
-                <a href="#contact" class="btn btn-light btn-lg px-4">Get Started Today</a>
+            <div class="col-lg-6" style="color : white">
+                 <h4  style="color : white">We deliver more than support—we deliver peace of mind.</h4>
+                    <ul>
+                        <li>• End-to-end SAP BASIS services tailored for reliability and performance</li>
+                        <li>• Expert support for improved system stability and uptime</li>
+                        <li>• Simplified system maintenance and proactive monitoring</li>
+                        <li>• Enhanced operational efficiency through optimized SAP environments</li>  
+                        <li>• Strategic guidance for digital growth and innovation</li>   
+                        <li>• Certified consultants committed to your success</li>    
+                    </ul>
             </div>
         </div>
     </div>
-</section>
-
-<!-- Contact Section -->
-<section id="contact" class="contact parallax">
+</div>
+<!--==================================================-->
+<!-- End Toptech Subscribe Area Style Three -->
+<!--==================================================-->
+<!--==================================================-->
+<!-- Start Toptech Process Area Style Three-->
+<!--==================================================-->
+<div class="process-area style-three inner">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="section-title text-white">Connect With Our Experts</h2>
-            <div class="divider bg-white mx-auto"></div>
-            <p class="lead text-white">Let's discuss how we can transform your business with SAP solutions</p>
-        </div>
-        <div class="row">
-            <div class="col-lg-6 mx-auto" data-aos="fade-up" data-aos-delay="200">
-                <form class="contact-form bg-white p-4 rounded shadow">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" placeholder="Name" required />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" placeholder="Company Name" required />
-                        </div>
+        <div class="row add-bg">
+            <div class="col-lg-4 col-md-6">
+                <div class="single-process-box">
+                    <div class="process-icon">
+                        <img src="~/assets/images/home-3/process-1.png" alt="">
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <input type="email" class="form-control" placeholder="Email" required />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <input type="tel" class="form-control" placeholder="Mobile" required />
-                        </div>
+                    <div class="process-content">
+                       @*  <h4>Register</h4> *@
+                        <h4>
+                            <a asp-action="Register" asp-controller="Auth">Register</a>
+                        </h4>
+                        <p>Create your account to explore opportunities, access exclusive features, and stay connected with us.</p>
                     </div>
-                    <div class="mb-3">
-                        <select class="form-control">
-                            <option value="">Select Service</option>
-                            <option value="implementation">SAP Implementation</option>
-                            <option value="rollout">SAP Rollout</option>
-                            <option value="migration">SAP Migration</option>
-                            <option value="staffing">SAP Staffing</option>
-                            <option value="ams">SAP AMS</option>
-                        </select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-process-box">
+                    <div class="process-icon">
+                        <img src="~/assets/images/home-3/process-2.png" alt="">
                     </div>
-                    <div class="mb-3">
-                        <textarea class="form-control" placeholder="Message" rows="4" required></textarea>
+                    <div class="process-content">
+                        <h4>
+                            <a asp-action="About" asp-controller="Home">About Us</a>
+                        </h4>
+                       <p>We are committed to delivering innovative solutions that empower businesses and individuals to grow and succeed.</p>
+
                     </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-dark btn-lg px-4">Submit</button>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-process-box">
+                    <div class="process-icon">
+                        <img src="~/assets/images/home-3/process-3.png" alt="">
                     </div>
-                </form>
+                    <div class="process-content">
+                         <h4>
+                            <a asp-action="ContactUs" asp-controller="Home">Contact Us</a>
+                        </h4>                     
+                        <p>Have questions or need assistance? Get in touch with us anytime - we’re here to help you.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</section>
+</div>
+
+
+
+<!-- Service Details Modal -->
+<div class="modal fade" id="serviceModal1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP Implementation
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">We offer end-to-end SAP implementation services tailored to align with your business objectives and industry demands. Leveraging proven methodologies, deep domain expertise, and SAP-certified tools, we deliver agile, scalable, and future-ready solutions that drive measurable value.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • Strategic SAP Roadmap & Planning
+                        </li>
+                        <li>• Industry-Specific Implementation Expertise</li>
+                        <li>• Custom Configuration & Process Optimization</li>
+                        <li>• Accurate Data Migration & Validation</li>
+                        <li>• End-User Training & Organizational Change Management</li>
+                        <li>• Full Lifecycle Go-Live & Post-Go-Live Support</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/SapImage.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal2" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP Rollout
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">Our SAP rollout services enable multinational enterprises to standardize operations across regions while addressing local compliance needs. With a strong focus on governance and efficiency, we ensure streamlined rollouts that minimize risk and maximize consistency.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • Global Template Development & Localization
+                        </li>
+                        <li>• Compliance with Country-Specific Regulations</li>
+                        <li>• Harmonized Data Structures & Process Alignment</li>
+                        <li>• Centralized Program Governance & Reporting</li>
+                        <li>• Local User Training & Change Enablement</li>
+                        <li>• Risk Mitigation Strategies & Quality Assurance</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/sap_Rollout.jpeg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal3" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP Migration Services
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">Modernize your enterprise with our secure, low-disruption SAP migration services. Whether moving to SAP S/4HANA or transitioning to the cloud, we ensure a seamless migration journey supported by performance tuning, expert advisory, and post-migration stabilization.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • End-to-End System Analysis & Migration Blueprint
+                        </li>
+                        <li>• Legacy Data Cleansing & Migration Execution</li>
+                        <li>• SAP S/4HANA, RISE with SAP & Cloud Migrations</li>
+                        <li>• Downtime Minimization Planning</li>
+                        <li>• Post-Migration Performance Optimization</li>
+                        <li>• Dedicated Hypercare & Ongoing Support</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/SapMigrationService.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal4" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP Staffing
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">Accelerate your SAP initiatives with access to a curated network of SAP-certified professionals. Our flexible staffing solutions ensure the right expertise, at the right time, to drive your projects forward—efficiently and cost-effectively.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • Certified SAP Functional & Technical Experts  
+                        </li>
+                        <li>• Contract, Full-Time & Project-Based Staffing</li>
+                        <li>• Global Network of Pre-Vetted SAP Talent</li>
+                        <li>• Rapid Onboarding & Knowledge Transfer</li>
+                        <li>• Domain-Specific Consultant Placement</li>
+                        <li>• Scalable Resourcing to Match Project Phases</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/SapStaffing.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal5" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP AMS
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">Our SAP AMS delivers proactive, SLA-driven support to ensure high system availability, performance, and continuous improvement. With 24/7 monitoring, rapid issue resolution, and functional enhancements, we keep your SAP environment running at its peak.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • Round-the-Clock Monitoring & Support (24x7)
+                        </li>
+                        <li>• Incident, Change & Problem Management</li>
+                        <li>• Strict SLAs for Uptime & Response</li>
+                        <li>• Functional & Technical Optimization</li>
+                        <li>• Continuous Enhancement & Cost Control</li>
+                        <li>• Flexible, Scalable Support Models</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="serviceModalImage" src="~/assets/images/SapAMS images.webp" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal6" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">
+                    SAP Integration
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <p id="serviceModalDescription">We help you create a connected enterprise through seamless SAP integration with third-party systems and platforms. From real-time data flow to intelligent process orchestration, we ensure your technology ecosystem operates in harmony.</p>
+                    <ul id="serviceModalPoints">
+                        <li>
+                            • Full-Spectrum SAP Integration Services
+                        </li>
+                        <li>• Middleware Expertise (SAP PI/PO, SAP CPI)</li>
+                        <li>• Real-Time Data Exchange & Synchronization</li>
+                        <li>• Secure APIs & Custom Connector Development</li>
+                        <li>• Scalable & Resilient Architecture Design</li>
+                        <li>• Comprehensive Integration Testing & QA</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img  height="200px" width="320px" id="serviceModalImage" src="~/assets/images/SapIntegration image.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .single-service-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* push content + button apart */
+        height: 100%; /* ensures all cards stretch equally */
+    }
+
+    .service-content {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .service-content p {
+        flex-grow: 1; /* take remaining space so button stays at bottom */
+    }
+
+    .service-content a {
+        margin-top: auto; /* push button to bottom */
+        align-self: center; /* keep button centered horizontally */
+    }
+
+</style>

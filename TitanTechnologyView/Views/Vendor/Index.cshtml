@@ -1,65 +1,143 @@
-﻿@model IEnumerable<TitanTechnologyView.Models.VendorMaster>
-
+﻿@model IEnumerable<TitanTechnologyView.Models.VendorDto>
 @{
-    ViewData["Title"] = "Vendors";
+    ViewBag.Title = "Vendors";
 }
 
-<h2>Vendor List</h2>
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Vendors</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Vendors</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="VendorForm" class="btn btn-primary">Add New Vendor</a>
-</p>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Vendors</h2>
+        <a asp-action="VendorForm" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add Vendor
+        </a>
+    </div>
 
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>Vendor ID</th>
-            <th>Company Code</th>
-            <th>Vendor Name</th>
-            <th>GSTN</th>
-            <th>PAN</th>
-            <th>Contact Person</th>
-            <th>Contact Number</th>
-            <th>Payment Terms</th>
-            <th>Bank Name</th>
-            <th>Account Number</th>
-            <th>IFSC Code</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            foreach (var vendor in Model)
-            {
+    <div class="table-responsive">
+        <table id="vendorTable" class="table table-striped table-hover align-middle" style="width:100%">
+            <thead class="table-dark">
                 <tr>
-                    <td>@vendor.VendorId</td>
-                    <td>@vendor.CompanyCode</td>
-                    <td>@vendor.VendorName</td>
-                    <td>@vendor.Gstn</td>
-                    <td>@vendor.PanNumber</td>
-                    <td>@vendor.ContactPersonName</td>
-                    <td>@vendor.ContactPersonNumber</td>
-                    <td>@vendor.PaymentTerms</td>
-                    <td>@vendor.BankAccountName</td>
-                    <td>@vendor.AccountNumber1</td>
-                    <td>@vendor.IfscCode</td>
-                    <td>
-                        <a asp-action="VendorForm" asp-route-id="@vendor.VendorId" class="btn btn-sm btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@vendor.VendorId"
-                           class="btn btn-sm btn-danger"
-                           onclick="return confirm('Are you sure you want to delete this vendor?');">
-                            Delete
-                        </a>
-                    </td>
+                    <th>Company Code</th>
+                    <th>Vendor Name</th>
+                    <th>Address</th>
+                    <th>GSTN</th>
+                    <th>PAN Number</th>
+                    <th>ContactPerson Name</th>
+                    <th>ContactPerson Number</th>
+                    <th>Payment Terms</th>
+                    <th>AccountHolder Name</th>
+                    <th>Account Number</th>
+                    <th>IFSC Code</th>
+                    <th>BankAccount Name</th>
+                    <th class="text-center">Action</th>
                 </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="12" class="text-center text-muted">No vendors found.</td>
-            </tr>
-        }
-    </tbody>
-</table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.CompanyCode</td>
+                        <td>@item.VendorName</td>
+                        <td>@item.Address</td>
+                        <td>@item.Gstn</td>
+                        <td>@item.PanNumber</td>
+                        <td>@item.ContactPersonName</td>
+                        <td>@item.ContactPersonNumber</td>
+                        <td>@item.PaymentTerms</td>
+                        <td>@item.AccountHolderName</td>
+                        <td>@item.AccountNumber1</td>
+                        <td>@item.IfscCode</td>
+                        <td>@item.BankAccountName</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a asp-action="VendorForm" asp-route-id="@item.VendorId"
+                                   class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-outline-danger"
+                                   data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                   data-id="@item.VendorId" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this Vendors? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a id="confirmDeleteBtn" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- DataTables + Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // ✅ Correct table ID for vendors
+            $('#vendorTable').DataTable({
+                scrollX: true,   // enables horizontal scroll
+                autoWidth: false,
+                pageLength: 10,
+                columnDefs: [
+                    { targets: -1, orderable: false } // Disable sorting on Action column
+                ]
+            });
+        });
+
+        // Delete confirmation logic
+        var deleteUrl = "";
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var vendorId = button.getAttribute('data-id');
+            deleteUrl = '/Vendor/Delete/' + vendorId;
+            document.getElementById('confirmDeleteBtn').setAttribute('href', deleteUrl);
+        });
+    </script>
+}
+
+
+
+
+
+

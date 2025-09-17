@@ -1,18 +1,18 @@
 ﻿@model IEnumerable<TitanTechnologyView.Models.CompanyMaster>
-@* @{
+@{
     ViewBag.Title = "Company";
-} *@
+}
 
 <div class="hero-area-form style-one d-flex align-items-center">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>Company</h4>
+                    <h4>Companys</h4>
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
-                        <li>Company</li>
+                        <li>Companys</li>
                     </ul>
                 </div>
             </div>
@@ -20,54 +20,134 @@
     </div>
 </div>
 
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Companys</h2>
+        <a asp-action="AddCompany" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add Company
+        </a>
+    </div>
 
-<h2>Company List</h2>
-<a class="btn btn-primary" asp-action="AddCompany">Add Company</a>
-<br />
-<br />
+    <div class="table-responsive">
+        <table id="companysTable" class="table table-striped table-hover align-middle" style="width:100%">
+            <thead class="table-dark">
+                <tr>
+                    <th>CompanyCode</th>
+                    <th>CompanyName</th>
+                    <th>CompanyAddress</th>
+                    <th>Gstn</th>
+                    <th>PanNumber</th>
+                    <th>ContactPersonName</th>
+                    <th>ContactPersonNumber</th>
+                    <th>PaymentTerms</th>
+                    <th>BankName</th>
+                    <th>AccountName</th>
+                    <th>BankAccountNumber</th>
+                    <th>IFSCCode</th>
+                    <th>Micr</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.CompanyCode</td>
+                        <td>@item.CompanyName</td>
+                        <td>@item.CompanyAddress</td>
+                        <td>@item.Gstn</td>
+                        <td>@item.PanNumber</td>
+                        <td>@item.ContactPersonName</td>
+                        <td>@item.ContactPersonNumber</td>
+                        <td>@item.PaymentTerms</td>
+                        <td>@item.BankName</td>
+                        <td>@item.AccountName</td>
+                        <td>@item.BankAccountNumber</td>
+                        <td>@item.IfscCode</td>
+                        <td>@item.Micr</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a asp-action="AddCompany" asp-route-id="@item.CompanyCode"
+                                   class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-outline-danger"
+                                   data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                   data-id="@item.CompanyCode" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Company Code</th>
-            <th>Company Name</th>
-            <th>Contact Person</th>
-            <th>Bank</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>@item.CompanyCode</td>
-            <td>@item.CompanyName</td>
-            <td>@item.ContactPersonName</td>
-            <td>@item.BankName</td>
-            <td>
-                <a asp-action="AddCompany" asp-route-id="@item.CompanyCode" class="btn btn-warning btn-sm">Edit</a>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this CompanyMaster Data? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a id="confirmDeleteBtn" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
 
-                @* <a href="javascript:void(0);"
+@section Scripts {
+    <!-- DataTables + Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-                    onclick="confirmDelete(@item.CompanyCode)"
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
-                    class="btn btn-danger btn-sm">Delete</a> *@
-                <a asp-action="Delete" asp-route-id="@item.CompanyCode"
-                    onclick="return confirm('Are you sure you want to delete this company?');"
-                    class="btn btn-danger btn-sm">Delete</a>
+    <script>
+        $(document).ready(function () {
+            $('#companysTable').DataTable({
+                scrollX: true,       // horizontal scroll
+                autoWidth: false,
+                pageLength: 10,      // default rows per page
+                lengthMenu: [5, 10, 25, 50, 100], // dropdown for rows per page
+                searching: true,     // enable search box
+                ordering: true,      // enable column sorting
+                columnDefs: [
+                    { targets: -1, orderable: false } // Disable sorting on Action column
+                ],
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ companies",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Prev"
+                    }
+                }
+            });
+        });
 
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-
-<script>
-
-    function confirmDelete(id) {
-        if (confirm("Are you sure you want to delete this company?")) {
-            window.location.href = '/Company/Delete/' + id;
-        }
-    }
-</script>
+        // Delete confirmation logic
+        var deleteUrl = "";
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var companyId = button.getAttribute('data-id');
+            deleteUrl = '/Company/Delete/' + companyId;
+            document.getElementById('confirmDeleteBtn').setAttribute('href', deleteUrl);
+        });
+    </script>
+}
 

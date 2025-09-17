@@ -10,6 +10,8 @@ namespace TitanTechnologyView.Models
         [Required]
         public string CompanyCode { get; set; } = string.Empty;
         public int? VendorId { get; set; }
+        public string? VendorName { get; set; }
+
         [Required]
         public string Name { get; set; } = string.Empty;
         public string? AltName { get; set; }
@@ -45,6 +47,5 @@ namespace TitanTechnologyView.Models
         public string? Aadhar2Upload { get; set; }
         public string? PanUpload2 { get; set; }
         public string? Cheque2Upload { get; set; }
-
     }
 }

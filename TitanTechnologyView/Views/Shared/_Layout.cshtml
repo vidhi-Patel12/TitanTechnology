@@ -2,7 +2,7 @@
 <html lang="en-US">
 
    @{
-        var userRole = Context.Request.Cookies["UserRole"];
+                    var userRole = Context.Request.Cookies["UserRole"];
 }
 <head>
     <meta charset="UTF-8">
@@ -13,6 +13,8 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="56x56" href="~/assets/images/fav-icon/icon.png">
     <!-- bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="~/assets/css/bootstrap.min.css" type="text/css" media="all">
     <!-- carousel CSS -->
     <link rel="stylesheet" href="~/assets/css/owl.carousel.min.css" type="text/css" media="all">
@@ -40,6 +42,8 @@
     <link rel="stylesheet" href="~/assets/css/coustom-animation.css" type="text/css" media="all">
     <!-- modernizr js -->
     <script src="assets/js/vendor/modernizr-3.5.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @* @RenderSection("Styles", required: false)  <!-- 👈 add this --> *@
 </head>
 
 <body>
@@ -60,31 +64,37 @@
                 <div class="row align-items-center">
                     <div class="col-lg-3">
                         <div class="header-logo">
-                            <a href="index.html"><img src="assets/images/logo-1.png" alt="logo"></a>
+                            <a href="index.html"><img height="100px" src="~/assets/images/home-1/Titan.png" alt="logo"></a>
+
                         </div>
                     </div>
                     <div class="col-lg-9">
                         <div class="header-menu">
                             <ul>
                                 <li class="menu-item-has-children">
-                                    <a asp-action="Index" asp-controller="Admin">Home</a>
+                                    <a asp-action="Index" asp-controller="Home">Home</a>
                                 </li>
-                               
+
                                 <li class="menu-item-has-children">
                                     <a href="#">Masters<i class="fas fa-chevron-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a asp-action="Index" asp-controller="Company">Company</a></li>
-                                        <li><a href="mission.html">Vendor </a></li>
-                                        <li><a href="team.html">Employee</a></li>
-                                        <li><a href="team-details.html">Customer </a></li>
-                                        <li><a asp-action="Index" asp-controller="ProjectMaster">Project</a></li>
+                                        <li><a asp-action="Index" asp-controller="Customer">Customer </a></li>
+                                        <li><a asp-action="Index" asp-controller="Employee">Employee</a></li>
+                                        <li><a asp-action="Index" asp-controller="Vendor"> Vendor </a></li>
+                                        <li><a asp-action="Index" asp-controller="ProjectEmployee">Project Employee</a></li>
+                                        <li><a asp-action="Index" asp-controller="ProjectMaster">Project Master</a></li>
+                                        <li><a asp-action="Index" asp-controller="TimeSheet">Timesheet</a></li>
+                                        <li><a asp-action="Index" asp-controller="TimesheetEntry">Timesheet Entry</a></li>
+
                                     </ul>
                                 </li>
-                                
+
                             </ul>
-                           
+
                             <div class="header-button">
-                                <a asp-action="" asp-controller="">Welcome,Admin</a>
+                                <a asp-action="" asp-controller="">Welcome, Admin</a>
+                                <a asp-action="Logout" asp-controller="Auth">Logout</a>
                             </div>
                         </div>
                     </div>
@@ -99,29 +109,144 @@
                 <nav class="header-menu">
                     <ul class="nav_scroll">
                         <li class="menu-item-has-children">
-                            <a href="#">Home</a>                           
+                            <a asp-action="Index" asp-controller="Home">Home</a>
                         </li>
 
                         <li class="menu-item-has-children">
                             <a href="#">Masters<i class="fas fa-chevron-down"></i></a>
                             <ul class="sub-menu">
                                 <li><a asp-action="Index" asp-controller="Company">Company</a></li>
-                                <li><a href="mission.html">Vendor </a></li>
-                                <li><a href="team.html">Employee</a></li>
-                                <li><a href="team-details.html">Customer </a></li>
-                                <li><a asp-action="Index" asp-controller="ProjectMaster">Project</a></li>
+                                <li><a asp-action="Index" asp-controller="Customer">Customer </a></li>
+                                <li><a asp-action="Index" asp-controller="Employee">Employee</a></li>
+                                <li><a asp-action="Index" asp-controller="Vendor"> Vendor </a></li>
+                                <li><a asp-action="Index" asp-controller="ProjectEmployee">Project Employee</a></li>
+                                <li><a asp-action="Index" asp-controller="ProjectMaster">Project Master</a></li>
+                                <li><a asp-action="Index" asp-controller="TimeSheet">Timesheet</a></li>
+                                <li><a asp-action="Index" asp-controller="TimesheetEntry">Timesheet Entry</a></li>
+
                             </ul>
                         </li>
-                     
+
                     </ul>
                 </nav>
             </div>
         </div>
-       
+        <!-- End Main Menu Area -->
+    }
+    else if (userRole == "Company")
+    {
+        <!-- Start Toptech Header Area -->
+        <div class="header-area" id="sticky-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3">
+                        <div class="header-logo">
+                            <a href="index.html"><img height="100px" src="~/assets/images/home-1/Titan.png" alt="logo"></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="header-menu">
+                            <ul>
+                                <li>
+                                    <a asp-action="Index" asp-controller="Home">Home</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="Company">Company</a>
+                                </li>
+                            </ul>
+                            <div class="header-search-icon search-box-outer">
+                                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                            </div>
+                            <div class="header-button">
+                                <a asp-action="Logout" asp-controller="Auth">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- End Toptech Header Area Style One-->
+        <!-- Start Main Menu Area -->
+
+
+        <div class="mobile-menu-area sticky d-sm-block d-md-block d-lg-none ">
+            <div class="mobile-menu">
+                <nav class="header-menu">
+                    <ul class="nav_scroll">
+                        <li>
+                            <a asp-action="Index" asp-controller="Home">Home</a>
+                        </li>
+                        <li>
+                            <a asp-action="Index" asp-controller="Company">Company</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
 
         <!-- End Main Menu Area -->
-        
     }
+
+    else if (userRole == "Employee")
+    {
+        <!-- Start Toptech Header Area -->
+        <div class="header-area" id="sticky-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3">
+                        <div class="header-logo">
+                            <a href="index.html">
+                                <img src="~/assets/images/home-1/header-logo.png" alt="logo" style="margin-bottom: -50px;margin-top: -45px;height:200px; width: 230px;" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="header-menu">
+                            <ul>
+                                <li>
+                                    <a asp-action="Index" asp-controller="Home">Home</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="Employee">Employee</a>
+                                </li>
+                            </ul>
+                            <div class="header-search-icon search-box-outer">
+                                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                            </div>
+                            <div class="header-button">
+                                <a asp-action="Logout" asp-controller="Auth">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- End Toptech Header Area Style One-->
+        <!-- Start Main Menu Area -->
+
+
+        <div class="mobile-menu-area sticky d-sm-block d-md-block d-lg-none ">
+            <div class="mobile-menu">
+                <nav class="header-menu">
+                    <ul class="nav_scroll">
+                        <li>
+                            <a asp-action="Index" asp-controller="Home">Home</a>
+                        </li>
+                        <li>
+                            <a asp-action="Index" asp-controller="Company">Company</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- End Main Menu Area -->
+    }
+
     else
     {
         <!-- Start Toptech Header Area -->
@@ -131,29 +256,32 @@
                 <div class="row align-items-center">
                     <div class="col-lg-3">
                         <div class="header-logo">
-                            <a href="index.html"><img src="assets/images/logo-1.png" alt="logo"></a>
+                            <a href="index.html">
+                                <img src="~/assets/images/home-1/header-logo.png" alt="logo" style="margin-bottom: -50px;margin-top: -45px;height:200px; width: 230px; " />
+                            </a>
                         </div>
                     </div>
                     <div class="col-lg-9">
                         <div class="header-menu">
                             <ul>
                                 <li>
-                                    <a href="#">Home</a>
+                                    <a asp-action="Index" asp-controller="Home">Home</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Services" asp-controller="Home">Services</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Solutions" asp-controller="Home">Solutions</a>
+                                </li>
+                                <li>
+                                    <a asp-action="About" asp-controller="Home">About us</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Contact" asp-controller="Home">Contact us</a>
                                 </li>
 
                                 <li>
-                                    <a href="#">Services</a>
-                                </li>
-                                <li>
-                                    <a href="#">Solutions</a>
-                                </li>
-                                <li>
-                                    <a href="#">About us</a>
-                                </li>
-
-                                <li><a href="contact.html">Contact us</a></li>
-                                <li>
-                                    <a href="#">Careers</a>
+                                    <a asp-action="Careers" asp-controller="Home">Careers</a>
                                 </li>
                             </ul>
                             <div class="header-search-icon search-box-outer">
@@ -171,28 +299,28 @@
         <!-- End Toptech Header Area Style One-->
         <!-- Start Main Menu Area -->
 
-       
+
         <div class="mobile-menu-area sticky d-sm-block d-md-block d-lg-none ">
             <div class="mobile-menu">
                 <nav class="header-menu">
                     <ul class="nav_scroll">
                         <li>
-                            <a href="#">Home</a>
-                        </li>
-
-                        <li>
-                            <a href="#">Services</a>
+                            <a asp-action="Index" asp-controller="Home">Home</a>
                         </li>
                         <li>
-                            <a href="#">Solutions</a>
+                            <a asp-action="Services" asp-controller="Home">Services</a>
                         </li>
                         <li>
-                            <a href="#">About us</a>
+                            <a asp-action="Solutions" asp-controller="Home">Solutions</a>
                         </li>
-
-                        <li><a href="contact.html">Contact us</a></li>
                         <li>
-                            <a href="#">Careers</a>
+                            <a asp-action="About" asp-controller="Home">About us</a>
+                        </li>
+                        <li>
+                            <a asp-action="Contact" asp-controller="Home">Contact us</a>
+                        </li>
+                        <li>
+                            <a asp-action="Careers" asp-controller="Home">Solutions</a>
                         </li>
                     </ul>
                 </nav>
@@ -331,5 +459,6 @@
     <script src="~/assets/js/coustom-carousel.js"></script>
     <script src="~/assets/js/scroll-up.js"></script>
 
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

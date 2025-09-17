@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Text;
 using TitanTechnologyView.Models;
@@ -8,11 +9,12 @@ namespace TitanTechnologyView.Controllers
     public class CompanyController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly string _apiUrl = "https://localhost:44368/api/Company";
+        private readonly string _apiUrl;
 
-        public CompanyController(IHttpClientFactory httpClientFactory)
+        public CompanyController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
+            _apiUrl = $"{apiSettings.Value.BaseUrl}/Company";
         }
 
         // GET: /Company

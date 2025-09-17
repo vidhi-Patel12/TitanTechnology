@@ -1,114 +1,174 @@
 ﻿@model TitanTechnologyView.Models.CustomerFormDto
+
 @{
     ViewData["Title"] = Model.CustomerId == 0 ? "Add Customer" : "Edit Customer";
     var apiOrigin = (string)(ViewBag.ApiOrigin ?? "");
 }
 
-<h2>@ViewData["Title"]</h2>
-
-<form asp-action="SaveCustomer" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="CustomerId" />
-
-    <!-- keep existing URLs so they round-trip -->
-    <input type="hidden" asp-for="Agreement1" />
-    <input type="hidden" asp-for="Agreement2" />
-    <input type="hidden" asp-for="Agreement3" />
-    <input type="hidden" asp-for="Agreement4" />
-
-    <div class="form-group">
-        <label asp-for="CompanyCode"></label>
-        <input asp-for="CompanyCode" class="form-control" />
-        <span asp-validation-for="CompanyCode" class="text-danger"></span>
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Customers</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Customers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="CustomerName"></label>
-        <input asp-for="CustomerName" class="form-control" />
-        <span asp-validation-for="CustomerName" class="text-danger"></span>
+
+<div class="contact-area style-three inner">
+    <div class="container">
+        <div class="row add-white-bg align-items-center">
+            <div class="col-lg-12 col-md-12">
+                <div class="single-contact-box">
+                    <div class="contact-contetn">
+                        <h4>Customer</h4>
+                    </div>
+                    <form asp-controller="Customer" asp-action="SaveCustomer" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="CustomerId" />
+                        <input type="hidden" asp-for="Agreement1" />
+                        <input type="hidden" asp-for="Agreement2" />
+                        <input type="hidden" asp-for="Agreement3" />
+                        <input type="hidden" asp-for="Agreement4" />
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="CompanyCode"
+                                            class="form-select"
+                                            asp-items="@(ViewBag.Companys != null
+                                            ? new SelectList(ViewBag.Companys, "CompanyCode", "CompanyName", Model?.CompanyCode)
+                                            : new List<SelectListItem>())">
+                                        <option value="">-- Select Company Name --</option>
+                                    </select>
+                                    <span asp-validation-for="CompanyCode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                   @*  <input type="text" id="lastName" name="LastName" placeholder="Last Name" required>
+                                    <span id="lastNameError" class="text-danger"></span> *@
+                                    <input asp-for="CustomerName" type="text" placeholder="Customer Name" required/>
+                                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    @* <input  id="contact_number" name="ContactNumber" placeholder="Phone Number" required>
+                                    <span id="mobileError" class="text-danger"></span> *@
+                                    <input asp-for="Address" type="text" placeholder="Address" required/>
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    @* <input type="email" id="email" name="Email" placeholder="E-Mail" required>
+                                    <span id="emailError" class="text-danger"></span> *@
+                                    <input asp-for="Country" type="text" placeholder="Country" required/>
+                                    <span asp-validation-for="Country" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    @* <input type="password" id="password" name="Password" placeholder="Password" required>
+                                    <span id="passwordError" class="text-danger"></span> *@
+                                    <input asp-for="Gstn" type="text" placeholder="GSTN" required/>
+                                    <span asp-validation-for="Gstn" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    @*  <input type="text" id="lastName" name="LastName" placeholder="Last Name" required>
+                                    <span id="lastNameError" class="text-danger"></span> *@
+                                    <input asp-for="PanNumber" type="text" placeholder="PAN Number" required/>
+                                    <span asp-validation-for="PanNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    @* <input  id="contact_number" name="ContactNumber" placeholder="Phone Number" required>
+                                    <span id="mobileError" class="text-danger"></span> *@
+                                    <input asp-for="ContactPersonName" type="text"  placeholder="Contact Person Name" required/>
+                                    <span asp-validation-for="ContactPersonName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    @* <input type="email" id="email" name="Email" placeholder="E-Mail" required>
+                                    <span id="emailError" class="text-danger"></span> *@
+                                    <input asp-for="ContactPersonNumber" type="text" placeholder="Contact Person Number" required/>
+                                    <span asp-validation-for="ContactPersonNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    @* <input type="password" id="password" name="Password" placeholder="Password" required>
+                                    <span id="passwordError" class="text-danger"></span> *@
+                                    <input asp-for="PaymentTerms" type="text" placeholder="Payment Terms" required/>
+                                    <span asp-validation-for="PaymentTerms" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr class="my-1" />
+
+                            <div class="col-lg-2"><p class="text-end">Agreement File 1</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Agreement1))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.Agreement1}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="AgreementFile1" type="file" />
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">Agreement File 2</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Agreement2))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.Agreement2}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="AgreementFile2" type="file" />
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">Agreement File 3</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Agreement3))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.Agreement3}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="AgreementFile3" type="file" />
+                            </div>
+                            <div class="col-lg-2"><p class="text-end">Agreement File 4</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Agreement4))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.Agreement4}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="AgreementFile4" type="file" />
+                            </div>
+
+                            <div class="d-flex gap-3 mt-4">
+                                <button type="submit" class="btn btn-primary px-4">
+                                   Save @* @(Model.CustomerId == 0 ? "Add Customer" : "Update Customer") *@
+                                </button> 
+                                <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Address"></label>
-        <input asp-for="Address" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Country"></label>
-        <input asp-for="Country" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Gstn"></label>
-        <input asp-for="Gstn" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PanNumber"></label>
-        <input asp-for="PanNumber" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ContactPersonName"></label>
-        <input asp-for="ContactPersonName" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ContactPersonNumber"></label>
-        <input asp-for="ContactPersonNumber" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PaymentTerms"></label>
-        <input asp-for="PaymentTerms" class="form-control" />
-    </div>
-
-    <hr />
-    <div class="form-group">
-        <label>Agreement File 1</label><br />
-        @if (!string.IsNullOrWhiteSpace(Model.Agreement1))
-        {
-            <a href="@($"{apiOrigin}{Model.Agreement1}")" target="_blank">View existing file</a>
-        
-            <br />
-        }
-        <input asp-for="AgreementFile1" type="file" />
-    </div>
-
-    <div class="form-group">
-        <label>Agreement File 2</label><br />
-        @if (!string.IsNullOrWhiteSpace(Model.Agreement2))
-        {
-            <a href="@($"{apiOrigin}{Model.Agreement2}")" target="_blank">View existing file</a>
-        
-            <br />
-        }
-        <input asp-for="AgreementFile2" type="file" />
-    </div>
-
-    <div class="form-group">
-        <label>Agreement File 3</label><br />
-        @if (!string.IsNullOrWhiteSpace(Model.Agreement3))
-        {
-            <a href="@($"{apiOrigin}{Model.Agreement3}")" target="_blank">View existing file</a>
-        
-            <br />
-        }
-        <input asp-for="AgreementFile3" type="file" />
-    </div>
-
-    <div class="form-group">
-        <label>Agreement File 4</label><br />
-        @if (!string.IsNullOrWhiteSpace(Model.Agreement4))
-        {
-            <a href="@($"{apiOrigin}{Model.Agreement4}")" target="_blank">View existing file</a>
-        
-            <br />
-        }
-        <input asp-for="AgreementFile4" type="file" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        @(Model.CustomerId == 0 ? "Add Customer" : "Update Customer")
-    </button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
+</div>

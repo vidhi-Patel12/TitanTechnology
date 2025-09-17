@@ -23,3 +23,27 @@ html, body {
 .flip-box-button {
     margin-top: auto; /* pushes button down */
 }
+
+
+.flip-box-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.flip-box-content p {
+    flex-grow: 1; /* pushes the button down */
+}
+
+.flip-box-button {
+    margin-top: auto; /* forces button to the bottom */
+    margin-bottom: 20px;
+}
+
+
+.flip-box,
+.flip-box-inner,
+.flip-box-front,
+.flip-box-back {
+    height: 105%;
+}

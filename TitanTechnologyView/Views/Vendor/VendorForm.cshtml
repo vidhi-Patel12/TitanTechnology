@@ -1,128 +1,217 @@
 ﻿@model TitanTechnologyView.Models.VendorDto
 
 @{
-    ViewData["Title"] = Model.VendorId == 0 || Model.VendorId == null ? "Add Vendor" : "Edit Vendor";
+    ViewData["Title"] = Model.VendorId == 0  ? "Add Vendor" : "Edit Vendor";
+    var apiOrigin = (string)(ViewBag.ApiOrigin ?? "");
 }
 
-<h2>@ViewData["Title"]</h2>
-
-<form asp-action="SaveVendor" enctype="multipart/form-data" method="post">
-    <input type="hidden" asp-for="VendorId" />
-    <input type="hidden" asp-for="ExistingGstnUpload" />
-    <input type="hidden" asp-for="ExistingPanUpload" />
-    <input type="hidden" asp-for="ExistingCancelledCheque" />
-    <input type="hidden" asp-for="ExistingAgreement1" />
-    <input type="hidden" asp-for="ExistingAgreement2" />
-    <input type="hidden" asp-for="ExistingAgreement3" />
-    <input type="hidden" asp-for="ExistingAgreement4" />
-
-    <div class="form-group">
-        <label asp-for="CompanyCode"></label>
-        <input asp-for="CompanyCode" class="form-control" />
-        <span asp-validation-for="CompanyCode" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="VendorName"></label>
-        <input asp-for="VendorName" class="form-control" />
-        <span asp-validation-for="VendorName" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Address"></label>
-        <textarea asp-for="Address" class="form-control"></textarea>
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Gstn"></label>
-        <input asp-for="Gstn" class="form-control" />
-        <span asp-validation-for="Gstn" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PanNumber"></label>
-        <input asp-for="PanNumber" class="form-control" />
-        <span asp-validation-for="PanNumber" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ContactPersonName"></label>
-        <input asp-for="ContactPersonName" class="form-control" />
-        <span asp-validation-for="ContactPersonName" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ContactPersonNumber"></label>
-        <input asp-for="ContactPersonNumber" class="form-control" />
-        <span asp-validation-for="ContactPersonNumber" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PaymentTerms"></label>
-        <input asp-for="PaymentTerms" class="form-control" />
-        <span asp-validation-for="PaymentTerms" class="text-danger"></span>
-    </div>
-
-    <h4>Bank Details</h4>
-    <div class="form-group">
-        <label asp-for="AccountHolderName"></label>
-        <input asp-for="AccountHolderName" class="form-control" />
-        <span asp-validation-for="AccountHolderName" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="AccountNumber1"></label>
-        <input asp-for="AccountNumber1" class="form-control" />
-        <span asp-validation-for="AccountNumber1" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="IfscCode"></label>
-        <input asp-for="IfscCode" class="form-control" />
-        <span asp-validation-for="IfscCode" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="BankAccountName"></label>
-        <input asp-for="BankAccountName" class="form-control" />
-        <span asp-validation-for="BankAccountName" class="text-danger"></span>
-    </div>
-
-    <h4>File Uploads</h4>
-    @foreach (var fileField in new[] {
-        ("GstnUpload","ExistingGstnUpload"),
-        ("PanUpload","ExistingPanUpload"),
-        ("CancelledCheque","ExistingCancelledCheque"),
-        ("Agreement1","ExistingAgreement1"),
-        ("Agreement2","ExistingAgreement2"),
-        ("Agreement3","ExistingAgreement3"),
-        ("Agreement4","ExistingAgreement4") })
-    {
-        <div class="form-group">
-            <label>@fileField.Item1</label>
-            <input type="file" name="@fileField.Item1" class="form-control" />
-            @{
-                var existingFile = (string?)Model.GetType().GetProperty(fileField.Item2)?.GetValue(Model, null);
-                if (!string.IsNullOrEmpty(existingFile))
-                {
-                    <p>
-                        Existing:
-                        <a href="@($"{ViewBag.ApiOrigin}{existingFile}")" target="_blank">
-                            @System.IO.Path.GetFileName(existingFile)
-                        </a>
-                    </p>
-                }
-            }
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Vendors</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Vendors</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    }
+    </div>
+</div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+<div class="contact-area style-three inner">
+    <div class="container">
+        <div class="row add-white-bg align-items-center">
+            <div class="col-lg-12 col-md-12">
+                <div class="single-contact-box">
+                    <div class="contact-contetn">
+                        <h4>Vendor</h4>
+                    </div>
+                    <form asp-controller="Vendor" asp-action="SaveVendor" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="VendorId" />
+                        <input type="hidden" asp-for="ExistingGstnUpload" />
+                        <input type="hidden" asp-for="ExistingPanUpload" />
+                        <input type="hidden" asp-for="ExistingCancelledCheque" />
+                        <input type="hidden" asp-for="ExistingAgreement1" />
+                        <input type="hidden" asp-for="ExistingAgreement2" />
+                        <input type="hidden" asp-for="ExistingAgreement3" />
+                        <input type="hidden" asp-for="ExistingAgreement4" />
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="CompanyCode" class="form-control" required>
+                                        <option value="">-- Select CompanyName --</option>
+                                        @foreach (var company in (List<TitanTechnologyView.Models.CompanyMaster>)ViewBag.Companies)
+                                        {
+                                            <option value="@company.CompanyCode"
+                                                    selected="@(Model.CompanyCode == company.CompanyCode ? "selected" : null)">
+                                                @* @company.CompanyName (@company.CompanyCode) *@
+                                                @company.CompanyName 
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="CompanyCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="VendorName" type="text" placeholder="Vendor Name" required />
+                                    <span asp-validation-for="VendorName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="Address" type="text" placeholder="Address" required />
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="Gstn" type="text" placeholder="GSTN" required />
+                                    <span asp-validation-for="Gstn" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="PanNumber" type="text" placeholder="PAN Number" required />
+                                    <span asp-validation-for="PanNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="ContactPersonName" type="text" placeholder="Contact Person Name" required />
+                                    <span asp-validation-for="ContactPersonName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="ContactPersonNumber" type="text" placeholder="Contact Person Number" required />
+                                    <span asp-validation-for="ContactPersonNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="PaymentTerms" type="text" placeholder="Payment Terms" required />
+                                    <span asp-validation-for="PaymentTerms" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountHolderName" type="text" placeholder="AccountHolder Name" required />
+                                    <span asp-validation-for="AccountHolderName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountNumber1" type="text" placeholder="AccountNumber1" required />
+                                    <span asp-validation-for="AccountNumber1" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="IfscCode" type="text" placeholder="IFSC Code" required />
+                                    <span asp-validation-for="IfscCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="BankAccountName" type="text" placeholder="BankAcoount Name" required />
+                                    <span asp-validation-for="BankAccountName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr class="my-1" />
+
+                            <div class="col-lg-2"><p class="text-end">Gstn Upload</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.ExistingGstnUpload))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.ExistingGstnUpload}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="GstnUpload" type="file" />
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">PAN Upload</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.ExistingPanUpload))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.ExistingPanUpload}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="PanUpload" type="file" />
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">Cancelled Check</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.ExistingCancelledCheque))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.ExistingCancelledCheque}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="CancelledCheque" type="file" />
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">Agreement File 1</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.ExistingAgreement1))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.ExistingAgreement1}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="Agreement1" type="file" />
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">Agreement File 2</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.ExistingAgreement2))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.ExistingAgreement2}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="Agreement2" type="file" />
+                            </div>
+
+                            <div class="col-lg-2"><p class="text-end">Agreement File 3</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.ExistingAgreement3))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.ExistingAgreement3}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="Agreement3" type="file" />
+                            </div>
+                        
+                            <div class="col-lg-2"><p class="text-end">Agreement File 4</p></div>
+                            <div class="col-lg-4">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.ExistingAgreement4))
+                                {
+                                    <div><a href="@($"{apiOrigin}{Model.ExistingAgreement4}")" target="_blank">View existing file</a></div>
+                                }
+                                <input asp-for="Agreement4" type="file" />
+                            </div>
+
+                            <div class="d-flex gap-3 mt-4">
+                                <button type="submit" class="btn btn-primary px-4">              
+                                    Save
+                                    @* @(Model.VendorId == 0 ? "Add Vendor" : "Update Vendor") *@ 
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -19,7 +19,7 @@ namespace TitanTechnologyView.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()                
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync(_apiUrl);
@@ -32,23 +32,75 @@ namespace TitanTechnologyView.Controllers
 
             var json = await response.Content.ReadAsStringAsync();
             var employees = JsonConvert.DeserializeObject<List<EmployeeFormDto>>(json) ?? new();
+
+            var vendorResponse = await client.GetAsync($"{_apiOrigin}/api/Vendor");
+            var vendors = new List<VendorDto>();
+            if (vendorResponse.IsSuccessStatusCode)
+            {
+                var vendorJson = await vendorResponse.Content.ReadAsStringAsync();
+                vendors = JsonConvert.DeserializeObject<List<VendorDto>>(vendorJson) ?? new();
+            }
+
+            // 3. Map VendorName
+            foreach (var emp in employees)
+            {
+                var vendor = vendors.FirstOrDefault(v => v.VendorId == emp.VendorId);
+                emp.VendorName = vendor?.VendorName ?? "N/A";
+            }
             return View(employees);
         }
 
         [HttpGet]
         public async Task<IActionResult> AddEmployee(int id = 0)
         {
+            // 1. Fetch vendor list from API
             ViewBag.ApiOrigin = _apiOrigin;
+            var client = _httpClientFactory.CreateClient();
+
+            var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
+            var companys = new List<CompanyMasterDto>();
+
+            if (companyResponse.IsSuccessStatusCode)
+            {
+                var companyJson = await companyResponse.Content.ReadAsStringAsync();
+                companys = JsonConvert.DeserializeObject<List<CompanyMasterDto>>(companyJson) ?? new List<CompanyMasterDto>();
+            }
+            ViewBag.Companys = companys;
+
+
+            var vendorResponse = await client.GetAsync($"{_apiOrigin}/api/Vendor");
+            var vendors = new List<VendorDto>();
+            if (vendorResponse.IsSuccessStatusCode)
+            {
+                var vendorJson = await vendorResponse.Content.ReadAsStringAsync();
+                vendors = JsonConvert.DeserializeObject<List<VendorDto>>(vendorJson) ?? new List<VendorDto>();
+            }
+            ViewBag.Vendors = vendors;
 
             if (id == 0)
+            {
                 return View(new EmployeeFormDto());
+            }
 
-            var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiUrl}/{id}");
             if (!response.IsSuccessStatusCode) return NotFound();
 
             var json = await response.Content.ReadAsStringAsync();
             var model = JsonConvert.DeserializeObject<EmployeeFormDto>(json) ?? new EmployeeFormDto();
+
+            if (model.VendorId.HasValue)
+            {
+                var vendor = vendors.FirstOrDefault(v => v.VendorId == model.VendorId.Value);
+                if (vendor != null)
+                    model.VendorName = vendor.VendorName;
+            }
+
+            var company = companys.FirstOrDefault(e => e.CompanyCode == model.CompanyCode);
+
+            if (company != null)
+            {
+                ViewBag.SelectedCompanyName = company.CompanyName;
+            }
             return View(model);
         }
 
@@ -73,20 +125,28 @@ namespace TitanTechnologyView.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveEmployee(EmployeeFormDto model)
         {
+            var client = _httpClientFactory.CreateClient();
+      
             if (!ModelState.IsValid)
             {
-                ViewBag.ApiOrigin = _apiOrigin;
+                var vendorResponse = await client.GetAsync($"{_apiOrigin}/api/Vendor");
+                if (vendorResponse.IsSuccessStatusCode)
+                {
+                    var vendorJson = await vendorResponse.Content.ReadAsStringAsync();
+                    ViewBag.Vendors = JsonConvert.DeserializeObject<List<VendorDto>>(vendorJson);
+                }
                 return View("AddEmployee", model);
             }
 
-            var client = _httpClientFactory.CreateClient();
             using var content = new MultipartFormDataContent();
 
             // Base fields
             content.Add(new StringContent(model.EmployeeId.ToString()), "EmployeeId");
             content.Add(new StringContent(model.EmployeeType ?? ""), "EmployeeType");
             content.Add(new StringContent(model.CompanyCode ?? ""), "CompanyCode");
-            content.Add(new StringContent(model.VendorId?.ToString() ?? ""), "VendorId");
+            if (model.VendorId.HasValue)
+                content.Add(new StringContent(model.VendorId.Value.ToString()), "VendorId");
+
             content.Add(new StringContent(model.Name ?? ""), "Name");
             content.Add(new StringContent(model.AltName ?? ""), "AltName");
             content.Add(new StringContent(model.Age?.ToString() ?? ""), "Age");
@@ -123,7 +183,7 @@ namespace TitanTechnologyView.Controllers
                 {
                     var absoluteUrl = existingRelativeUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
                         ? existingRelativeUrl
-                        : $"{_apiOrigin}{existingRelativeUrl}";
+                        : new Uri(new Uri(_apiOrigin), existingRelativeUrl).ToString(); // Use Uri to combine properly
 
                     var fileBytes = await client.GetByteArrayAsync(absoluteUrl);
                     var fileName = Path.GetFileName(existingRelativeUrl);
@@ -131,6 +191,7 @@ namespace TitanTechnologyView.Controllers
                     ba.Headers.ContentType = new MediaTypeHeaderValue(GuessMime(fileName));
                     content.Add(ba, field, fileName);
                 }
+
                 // else nothing → API will clear it
             }
 

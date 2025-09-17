@@ -10,6 +10,7 @@ namespace TitanTechnologyView.Models
 
         [ForeignKey("CompanyMaster")]
         public string CompanyCode { get; set; }
+        public string CompanyName { get; set; } = string.Empty;
         public string CustomerName { get; set; }
         public string Address { get; set; }
         public string Country { get; set; }

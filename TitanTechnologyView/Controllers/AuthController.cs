@@ -102,7 +102,7 @@ namespace TitanTechnologyView.Controllers
                         });
                     }
 
-                    TempData["SuccessMessage"] = "Login successful!";
+                    TempData["SuccessMessage"] = "";
                     return RedirectToAction("Index", "Company");
                 }
 
@@ -127,6 +127,13 @@ namespace TitanTechnologyView.Controllers
                 ModelState.AddModelError("", "Unexpected error: " + ex.Message);
                 return RedirectToAction(nameof(Login));
             }
+        }
+
+        public IActionResult Logout()
+        {
+
+            Response.Cookies.Delete("UserRole");
+            return RedirectToAction("Index", "Home");
         }
     }
 

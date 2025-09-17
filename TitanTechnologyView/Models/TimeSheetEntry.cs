@@ -11,6 +11,9 @@ namespace TitanTechnologyView.Models
         [ForeignKey("Timesheet")]
         public int TimesheetId { get; set; }
 
+        //public string? ProjectCode { get; set; }   // <-- Add this
+        //public string? EmployeeName { get; set; }  // <-- Add this
+        public string? DisplayText { get; set; }
         public DateTime? EntryDate { get; set; }
         public string DayName { get; set; }
         public decimal? HoursWorked { get; set; }
@@ -18,7 +21,7 @@ namespace TitanTechnologyView.Models
         public string Location { get; set; }
         public string Attendance { get; set; }
         public string ExtraDay { get; set; }
-        public Timesheet Timesheet { get; set; }
+        public Timesheet? Timesheet { get; set; }
 
     }
 }

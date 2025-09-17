@@ -1,0 +1,129 @@
+﻿@model IEnumerable<TitanTechnologyView.Models.TimeSheetEntry>
+@{
+    ViewBag.Title = "Timesheet Entries";
+}
+
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Timesheet Entrys</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li>Timesheet Entrys</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">TimesheetEntrys</h2>
+        <a asp-action="AddEdit" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add TimesheetEntry
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table id="timesheetsTable" class="table table-striped table-hover align-middle" style="width:100%">
+            <thead class="table-dark">
+                <tr>
+                    <th>Entry Date</th>
+                    <th>Timesheet</th>
+                    <th>Day</th>
+                    <th>Hours</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Attendance</th>
+                    <th>Extra Day</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@string.Format("{0:dd-MM-yyyy}", item.EntryDate)</td>
+                        <td>@item.DisplayText</td>
+                        <td>@item.DayName</td>
+                        <td>@item.HoursWorked</td>
+                        <td>@item.ShortDescription</td>
+                        <td>@item.Location</td>
+                        <td>@item.Attendance</td>
+                        <td>@item.ExtraDay</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a asp-action="AddEdit" asp-route-id="@item.EntryId"
+                                   class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-outline-danger"
+                                   data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                   data-id="@item.EntryId" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this TimesheetEntry? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a id="confirmDeleteBtn" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- DataTables + Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#timesheetsTable').DataTable({
+                        scrollX: true,   // enables horizontal scroll
+                        autoWidth: false,
+                        pageLength: 10,
+                        columnDefs: [
+                            { targets: -1, orderable: false } // Disable sorting on Action column
+                        ]
+            });
+        });
+
+        // Delete confirmation logic
+        var deleteUrl = "";
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var projectEmployeeId = button.getAttribute('data-id');
+            deleteUrl = '/timesheetEntry/Delete/' + projectEmployeeId;
+            document.getElementById('confirmDeleteBtn').setAttribute('href', deleteUrl);
+        });
+    </script>
+}
+
+
