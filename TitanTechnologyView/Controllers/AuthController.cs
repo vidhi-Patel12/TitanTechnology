@@ -90,6 +90,8 @@ namespace TitanTechnologyView.Controllers
                     // Extract userRole directly from JSON
                     var root = doc.RootElement;
                     var userRole = root.GetProperty("user").GetProperty("userRole").GetString();
+                    var userRoleId = root.GetProperty("user").GetProperty("userRoleId").GetInt32();
+
 
                     if (!string.IsNullOrEmpty(userRole))
                     {
@@ -98,7 +100,18 @@ namespace TitanTechnologyView.Controllers
                             HttpOnly = true,
                             Secure = true,
                             SameSite = SameSiteMode.Strict,
-                            Expires = DateTimeOffset.UtcNow.AddHours(1)
+                            Expires = DateTimeOffset.UtcNow.AddDays(1)
+                        });
+                    }
+
+                    if (userRoleId > 0)
+                    {
+                        HttpContext.Response.Cookies.Append("UserRoleId", userRoleId.ToString(), new CookieOptions
+                        {
+                            HttpOnly = false,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTimeOffset.UtcNow.AddDays(1)
                         });
                     }
 
