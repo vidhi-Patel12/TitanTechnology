@@ -1,5 +1,5 @@
-﻿@model TitanTechnologyView.Models.ProjectMaster
-
+﻿@using TitanTechnologyView.Models
+@model TitanTechnologyView.Models.ProjectMaster
 @{
     ViewData["Title"] = Model?.ProjectCode == null ? "Add ProjectMaster" : "Edit ProjectMaster";
 }
@@ -30,7 +30,10 @@
                         <h4>@ViewData["Title"]</h4>
                     </div>
 
-                    <form asp-controller="ProjectMaster" asp-action="Save" method="post">
+                    <form id="projectMasterForm" asp-controller="ProjectMaster" asp-action="Save" method="post">
+                    
+                        <!-- Hidden input for redirect flag -->
+                        <input type="hidden" id="RedirectToEmployee" name="RedirectToEmployee" value="false" />
                         <div class="row">
 
                             <!-- ProjectCode -->
@@ -52,7 +55,7 @@
                             <!-- Description -->
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="Description" type="text" placeholder="Description" />
+                                    <input asp-for="Description" type="text" placeholder="Project Description" />
                                     <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
                             </div>
@@ -60,7 +63,7 @@
                             <!-- StartDate -->
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <label asp-for="StartDate" class="form-label" style="color:black">Start Date</label>
+                                    <label asp-for="StartDate" class="form-label" style="color:black">Project Start Date</label>
                                     <input asp-for="StartDate" type="date" id="StartDate" />
                                     <span asp-validation-for="StartDate" class="text-danger"></span>
                                 </div>
@@ -69,7 +72,7 @@
                             <!-- EndDate -->
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <label asp-for="EndDate" class="form-label" style="color:black">End Date</label>
+                                    <label asp-for="EndDate" class="form-label" style="color:black">Project End Date</label>
                                     <input asp-for="EndDate" type="date" id="EndDate" />
                                     <span asp-validation-for="EndDate" class="text-danger"></span>
                                     <span id="dateError" class="text-danger"></span>
@@ -83,109 +86,152 @@
                                             asp-items="@(ViewBag.Customers != null
                                         ? new SelectList(ViewBag.Customers, "CustomerId", "CustomerName", Model?.CustomerId)
                                         : new List<SelectListItem>())">
-                                        <option value="">-- Select Customer --</option>
+                                        <option value=""> Select Customer </option>
                                     </select>
                                     <span asp-validation-for="CustomerId" class="text-danger"></span>
                                 </div>
                             </div>
 
-                        <!-- CustomerRate -->
-                        <div class="col-lg-6">
-                            <div class="single-input-box">
-                                <input asp-for="CustomerRate" type="number" step="0.01" placeholder="Customer Rate" />
-                                <span asp-validation-for="CustomerRate" class="text-danger"></span>
+                            <!-- CustomerRate -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="CustomerRate" type="number" step="0.01" placeholder="Customer Rate" />
+                                    <span asp-validation-for="CustomerRate" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- RateUnit -->
-                        <div class="col-lg-6">
-                            <div class="single-input-box">
-                                <input asp-for="RateUnit" type="text" placeholder="Rate Unit" />
-                                <span asp-validation-for="RateUnit" class="text-danger"></span>
+                            <!-- RateUnit -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="RateUnit" type="text" placeholder="Rate Unit" />
+                                    <span asp-validation-for="RateUnit" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- HsCode -->
-                        <div class="col-lg-6">
-                            <div class="single-input-box">
-                                <input asp-for="HsCode" type="text" placeholder="HS Code" />
-                                <span asp-validation-for="HsCode" class="text-danger"></span>
+                            <!-- HsCode -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="HsCode" type="text" placeholder="HS Code" />
+                                    <span asp-validation-for="HsCode" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Notes -->
-                        <div class="col-lg-6">
-                            <div class="single-input-box">
-                                <input asp-for="Notes" type="text" placeholder="Notes" />
-                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            <!-- Notes -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="Notes" type="text" placeholder="Notes" />
+                                    <span asp-validation-for="Notes" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- ApprovalLevel -->
-                        <div class="col-lg-6">
-                            <div class="single-input-box">
-                                <select asp-for="ApprovalLevel" class="form-control" required>
-                                    <option value="">-- Select Approval Level --</option>
-                                    <option value="One">One</option>
-                                    <option value="Two">Two</option>
-                                </select>
-                                <span asp-validation-for="ApprovalLevel" class="text-danger"></span>
+                            <!-- ApprovalLevel -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <select asp-for="ApprovalLevel" class="form-select" required>
+                                        <option value=""> Select Technology </option>
+                                        @foreach (var type in (List<DropdownMaster>)ViewBag.TimesheetApprovalLevel)
+                                        {
+                                            <option value="@type.Value">@type.Value</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="ApprovalLevel" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
 
-
-                        <!-- Status -->
-                        <div class="col-lg-6">
-                            <div class="single-input-box">
-                                <input asp-for="Status" type="text" placeholder="Status" />
-                                <span asp-validation-for="Status" class="text-danger"></span>
+                            <!-- Status -->
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="Status" type="text" placeholder="Status" />
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Buttons -->
-                        <div class="d-flex gap-3 mt-4">
-                            <button type="submit" class="btn btn-primary px-4">Save</button>
-                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
-                        </div>
+                            <!-- Buttons -->
+                            <div class="d-flex gap-3 mt-4">
+                                <button type="button" class="btn btn-primary px-4" id="btnSave">Save</button>
+                                <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
+                            </div>
 
-                    </div>
-                </form>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Save Confirmation Modal -->
+<div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="saveModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Do you want to add employees for this project?
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSaveOnly" class="btn btn-success">Save</button>
+                <button type="button" id="btnSaveAndAdd" class="btn btn-primary">Save & Add employee</button>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 @section Scripts {
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // 🔹 Save confirmation popup handling
+        const btnSave = document.getElementById("btnSave");
+        const form = document.getElementById("projectMasterForm");
+        const btnSaveOnly = document.getElementById("btnSaveOnly");
+        const btnSaveAndAdd = document.getElementById("btnSaveAndAdd");
+        const redirectInput = document.getElementById("RedirectToEmployee");
+
+            
+        // Open popup when clicking Save
+        btnSave?.addEventListener("click", function (e) {
+            e.preventDefault();
+            const modal = new bootstrap.Modal(document.getElementById("saveModal"));
+            modal.show();
+        });
+
+        // Save only 
+        btnSaveOnly?.addEventListener("click", function () {
+            redirectInput.value = "false";
+            form.submit();
+        });
+
+        // Save and redirect to ProjectEmployee
+        btnSaveAndAdd?.addEventListener("click", function () {
+            redirectInput.value = "true";
+            form.submit();
+        });
+
+        // 🔹 Date validation
         const startDateInput = document.getElementById("StartDate");
         const endDateInput = document.getElementById("EndDate");
         const errorSpan = document.getElementById("dateError");
 
         function validateDates() {
+            if (!startDateInput?.value || !endDateInput?.value) { errorSpan.textContent = ""; return; }
             const startDate = new Date(startDateInput.value);
             const endDate = new Date(endDateInput.value);
-
-            if (startDateInput.value && endDateInput.value) {
-                if (endDate < startDate) {
-                    errorSpan.textContent = "End Date cannot be before Start Date.";
-                    endDateInput.value = "";
-                } else {
-                    errorSpan.textContent = "";
-                }
+            if (endDate < startDate) {
+                errorSpan.textContent = "End Date cannot be before Start Date.";
+                endDateInput.value = "";
+            } else {
+                errorSpan.textContent = "";
             }
         }
 
-        startDateInput.addEventListener("change", function () {
+        startDateInput?.addEventListener("change", function () {
             endDateInput.min = startDateInput.value;
             validateDates();
         });
-
-        endDateInput.addEventListener("change", validateDates);
+        endDateInput?.addEventListener("change", validateDates);
     });
 </script>
 }
-
-
-

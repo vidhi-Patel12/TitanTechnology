@@ -84,6 +84,14 @@
                         <td>@item.AccountName2</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
+                                <a href="javascript:void(0);"
+                                   class="btn btn-sm btn-outline-info"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#viewModal"
+                                   data-id="@item.EmployeeId"
+                                   title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
                                 <a asp-action="AddEmployee" asp-route-id="@item.EmployeeId"
                                    class="btn btn-sm btn-outline-primary" title="Edit">
                                     <i class="bi bi-pencil-square"></i>
@@ -121,6 +129,24 @@
     </div>
 </div>
 
+<!-- View Employee Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="viewModalLabel" style="color: white">Employee Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="viewEmployeeContent">
+                    <p class="text-muted">Loading details...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <!-- DataTables + Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
@@ -133,14 +159,36 @@
     <script>
         $(document).ready(function () {
             $('#employeesTable').DataTable({
-                        scrollX: true,   // enables horizontal scroll
-                        autoWidth: false,
-                        pageLength: 10,
-                        columnDefs: [
-                            { targets: -1, orderable: false } // Disable sorting on Action column
-                        ]
+                scrollX: true,   // enables horizontal scroll
+                autoWidth: false,
+                pageLength: 10,
+                columnDefs: [
+                    { targets: -1, orderable: false } // Disable sorting on Action column
+                ]
             });
         });
+
+         // View Employee Logic
+        var viewModal = document.getElementById('viewModal');
+        viewModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var employeeId = button.getAttribute('data-id');
+            var contentDiv = document.getElementById('viewEmployeeContent');
+
+            // Show loading
+            contentDiv.innerHTML = "<p class='text-muted'>Loading details...</p>";
+
+            // Fetch employee details
+            fetch('/Employee/Details/' + employeeId)
+                .then(response => response.text())
+                .then(html => {
+                    contentDiv.innerHTML = html;
+                })
+                .catch(() => {
+                    contentDiv.innerHTML = "<p class='text-danger'>Failed to load details.</p>";
+                });
+        });
+
 
         // Delete confirmation logic
         var deleteUrl = "";

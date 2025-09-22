@@ -40,7 +40,7 @@
                                 <div class="single-input-box">
                                     <label asp-for="ProjectCode" class="form-label">Project Code</label>
                                     <select asp-for="ProjectCode" class="form-select" required>
-                                        <option value="">-- Select ProjectCode --</option>
+                                        <option value="">Select ProjectCode </option>
                                         @if (ViewBag.Projects != null)
                                         {
                                             foreach (var project in (List<TitanTechnologyView.Models.ProjectMaster>)ViewBag.Projects)
@@ -62,7 +62,7 @@
                                             ? new SelectList(ViewBag.Employees, "EmployeeId", "DisplayName", Model?.EmployeeId)
                                             : new List<SelectListItem>())"
                                             class="form-select" required>
-                                        <option value="">-- Select Employee --</option>
+                                        <option value=""> Select Employee </option>
                                     </select>
                                     <span asp-validation-for="EmployeeId" class="text-danger"></span>
                                 </div>
@@ -70,8 +70,8 @@
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <select asp-for="TimesheetType" class="form-control" required>
-                                        <option value="">-- Select Timesheet Type --</option>
+                                    <select asp-for="TimesheetType" class="form-select" required>
+                                        <option value=""> Select Timesheet Type </option>
                                         <option value="Monthly">Monthly</option>
                                         <option value="Fixed">Fixed</option>
                                         <option value="Project">Project</option>
@@ -108,8 +108,8 @@
     
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <select asp-for="Status" class="form-control" required>
-                                        <option value="">-- Select Status --</option>
+                                    <select asp-for="Status" class="form-select" required>
+                                            <option value="">Select Status</option>
                                             <option value="Salary Paid">Salary Paid</option>
                                             <option value="Approved">Approved</option>
                                             <option value="Invoiced">Invoiced</option>

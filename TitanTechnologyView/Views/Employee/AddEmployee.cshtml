@@ -1,5 +1,5 @@
-﻿@model TitanTechnologyView.Models.EmployeeFormDto
-
+﻿@using TitanTechnologyView.Models
+@model TitanTechnologyView.Models.EmployeeFormDto
 @{
     ViewData["Title"] = Model.EmployeeId == 0 ? "Add Employee" : "Edit Employee";
     var apiOrigin = (string)(ViewBag.ApiOrigin ?? "");
@@ -41,23 +41,14 @@
                         <input type="hidden" asp-for="Cheque2Upload" />
 
                         <div class="row">
-                            @*  <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="EmployeeType" type="text" placeholder="Employee Type" required />
-                                    <span asp-validation-for="EmployeeType" class="text-danger"></span>
-
-                                </div>
-                            </div> *@
-                            
                             <div class="col-lg-6 mb-4">
                                 <div class="single-input-box">
-                                    <select asp-for="EmployeeType" class="form-control" required>
-                                        <option value="">-- Select Employee Type --</option>
-                                        <option value="Commission">Commission</option>
-                                        <option value="Client Payroll">Client Payroll</option>
-                                        <option value="Permanent">Permanent</option>
-                                        <option value="Freelancing">Freelancing</option>
-                                        <option value="C2H">C2H</option>
+                                    <select asp-for="EmployeeType" class="form-select" required>
+                                        <option value="">Select Employee Type</option>
+                                        @foreach (var type in (List<DropdownMaster>)ViewBag.EmployeeTypes)
+                                        {
+                                            <option value="@type.Value">@type.Value</option>
+                                        }
                                     </select>
                                     <span asp-validation-for="EmployeeType" class="text-danger"></span>
                                 </div>
@@ -70,26 +61,19 @@
                                             asp-items="@(ViewBag.Companys != null
                                             ? new SelectList(ViewBag.Companys, "CompanyCode", "CompanyName", Model?.CompanyCode)
                                             : new List<SelectListItem>())">
-                                        <option value="">-- Select Company Name --</option>
+                                        <option value="">Select Company Name</option>
                                     </select>
                                     <span asp-validation-for="CompanyCode" class="text-danger"></span>
                                 </div>
                             </div>
 
-                            @* <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="CompanyCode" type="text" placeholder="Company Code" required />
-                                    <span asp-validation-for="CompanyCode" class="text-danger"></span>
-                                </div>
-                            </div> *@
-
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <select asp-for="VendorId" 
-                                            asp-items="@(ViewBag.Vendors != null
-                                                                 ? new SelectList(ViewBag.Vendors, "VendorId", "VendorName", Model?.VendorId)
-                                                                 : new List<SelectListItem>())">
-                                        <option value="">-- Select Vendor --</option>
+                                    <select asp-for="VendorId" class="form-select"
+                                        asp-items="@(ViewBag.Vendors != null
+                                        ? new SelectList(ViewBag.Vendors, "VendorId", "VendorName", Model?.VendorId)
+                                        : new List<SelectListItem>())">
+                                    <option value=""> Select Vendor </option>
                                     </select>
                                     <span asp-validation-for="VendorId" class="text-danger"></span>
                                 </div>
@@ -130,20 +114,19 @@
                                 </div>
                             </div>
     
-                            <div class="col-lg-6">
-                            <div class="single-input-box">
-                                <select asp-for="TimingAvailability" class="form-control" required>
-                                    <option value="">-- Select Timing Availability --</option>
-                                    <option value="EU">EU</option>
-                                    <option value="INDIA">INDIA</option>
-                                    <option value="US">US</option>
-                                    <option value="AUS">AUS</option>
-                                </select>
-                                <span asp-validation-for="TimingAvailability" class="text-danger"></span>
-                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <div class="single-input-box">
+                                    <select asp-for="TimingAvailability" class="form-select" required>
+                                        <option value="">Select Timing Availability</option>
+                                        @foreach (var type in (List<DropdownMaster>)ViewBag.TimingAvailabilitys)
+                                        {
+                                            <option value="@type.Value">@type.Value</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="TimingAvailability" class="text-danger"></span>
+                                </div>
                             </div>
 
-                            
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="ContactNumber1" type="text" placeholder="ContactNumber1" required />
@@ -179,10 +162,7 @@
                                 </div>
                             </div>
 
-
-
                             <hr class="my-1" />
-
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="PanNumber" type="text" placeholder="Pan Number" required />
@@ -222,7 +202,6 @@
                                 </div>
                             </div>
 
-
                             <div class="col-lg-2"><p class="text-end">PAN Card Upload</p></div>
                             <div class="col-lg-4">
                                 @if (!string.IsNullOrWhiteSpace(Model.PanUpload))
@@ -231,9 +210,6 @@
                                 }
                                 <input asp-for="PanFile1" type="file" />
                             </div>
-
-                            
-
                             
                             <div class="col-lg-6">
                                 <div class="single-input-box">
@@ -275,19 +251,15 @@
                                     <span asp-validation-for="AccountNumber2" class="text-danger"></span>
                                 </div>
                             </div>
-
                         
                             <div class="col-lg-2"><p class="text-end">PAN Card2 Upload</p></div>
                             <div class="col-lg-4">
-
                                 @if (!string.IsNullOrWhiteSpace(Model.PanUpload2))
                                 {
                                     <div><a href="@($"{apiOrigin}{Model.PanUpload2}")" target="_blank">View existing file</a></div>
                                 }
                                 <input asp-for="PanFile2" type="file" />
                             </div>
-
-
                             
                             <div class="col-lg-6">
                                 <div class="single-input-box">
@@ -295,7 +267,6 @@
                                     <span asp-validation-for="IfscCode2" class="text-danger"></span>
                                 </div>
                             </div>
-
 
                             <div class="col-lg-2"><p class="text-end">Cheque2 Upload</p></div>
                             <div class="col-lg-4">

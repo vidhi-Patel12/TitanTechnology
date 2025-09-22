@@ -44,8 +44,8 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <select asp-for="CompanyCode" class="form-control" required>
-                                        <option value="">-- Select CompanyName --</option>
+                                    <select asp-for="CompanyCode" class="form-select" required>
+                                        <option value=""> Company Name </option>
                                         @foreach (var company in (List<TitanTechnologyView.Models.CompanyMaster>)ViewBag.Companies)
                                         {
                                             <option value="@company.CompanyCode"

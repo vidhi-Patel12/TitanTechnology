@@ -1,23 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Net.Http;
-using System.Reflection;
 using System.Text;
-using System.Text.Json;
+using TitanTechnologyView.Extensions;
 using TitanTechnologyView.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TitanTechnologyView.Controllers
 {
     public class ProjectMasterController : Controller
-    {
-        private readonly string _apiOrigin = "https://localhost:44368";
+    {       
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly string _apiUrl = "https://localhost:44368/api/ProjectMaster";
+        private readonly string _apiUrl;
+        private readonly string _apiOrigin;
 
-        public ProjectMasterController(IHttpClientFactory httpClientFactory)
+        public ProjectMasterController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
+            _apiUrl = $"{apiSettings.Value.BaseUrl}/ProjectMaster";
+            _apiOrigin = apiSettings.Value.Origin;
         }
 
         // List
@@ -56,10 +56,8 @@ namespace TitanTechnologyView.Controllers
                     };
                 }
             }
-
             return View(projects);
         }
-
 
         // Add / Edit form
         [HttpGet]
@@ -78,6 +76,9 @@ namespace TitanTechnologyView.Controllers
             }
             ViewBag.Customers = customers;
 
+            var approvalLevel = await client.GetDropdownAsync(_apiOrigin, "Timesheet Approval Level");
+            ViewBag.TimesheetApprovalLevel = approvalLevel;
+
             if (string.IsNullOrEmpty(projectCode))
             {
                 return View(new ProjectMaster()); // Add form
@@ -92,14 +93,12 @@ namespace TitanTechnologyView.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(ProjectMaster model)
+        public async Task<IActionResult> Save(ProjectMaster model, bool? RedirectToEmployee)
         {
-
             if (!ModelState.IsValid)
             {
                 return View("AddEdit", model);
             }
-
             model.ProjectCode = model.ProjectCode?.Trim();
 
             var client = _httpClientFactory.CreateClient();
@@ -107,15 +106,20 @@ namespace TitanTechnologyView.Controllers
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(_apiUrl, content);
-
             if (response.IsSuccessStatusCode)
+            {
+                if (RedirectToEmployee == true)
+                {
+                    // redirect to ProjectEmployee Add page with ProjectCode
+                    return RedirectToAction("AddEdit", "ProjectEmployee", new { projectCode = model.ProjectCode });
+                }
                 return RedirectToAction("Index");
-
+            }
+           
             var error = await response.Content.ReadAsStringAsync();
             ModelState.AddModelError(string.Empty, $"API Error: {error}");
             return View("AddEdit", model);
         }
-
 
         // Delete
         [HttpGet]
