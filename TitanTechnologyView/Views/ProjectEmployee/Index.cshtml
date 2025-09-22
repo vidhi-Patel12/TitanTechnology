@@ -70,8 +70,8 @@
                         <td>@item.RateUnit</td>
                         <td>@item.TimesheetType</td>
                         <td>@item.SapModule</td>
-                        <td>@item.EmployeeStartDate</td>
-                        <td>@item.EmployeeEndDate</td>
+                        <td>@item.EmployeeStartDate?.ToString("yyyy-MM-dd")</td>
+                        <td>@item.EmployeeEndDate?.ToString("yyyy-MM-dd")</td>
                         <td>@item.CycleStartDay</td>
                         <td>@item.CycleEndDay</td>
                         <td>@item.PaymentMode</td>

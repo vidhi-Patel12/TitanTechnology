@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using TitanTechnologyView.Extensions;
+using TitanTechnologyView.Helpers;
 using TitanTechnologyView.Models;
 
 namespace TitanTechnologyView.Controllers
@@ -8,44 +11,46 @@ namespace TitanTechnologyView.Controllers
     public class EmployeeController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _apiUrl;
+        private readonly string _apiOrigin;
+        private readonly string _insertUpdateUrl;
 
-        private readonly string _apiOrigin = "https://localhost:44368";
-        private readonly string _apiUrl = "https://localhost:44368/api/Employee"; // for GET/DELETE
-        private readonly string _insertUpdateUrl = "https://localhost:44368/api/Employee/InsertUpdate"; // for POST insert/update
-
-        public EmployeeController(IHttpClientFactory httpClientFactory)
+        public EmployeeController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
+            _apiUrl = $"{apiSettings.Value.BaseUrl}/Employee";
+            _apiOrigin = apiSettings.Value.Origin;
+            _insertUpdateUrl = $"{apiSettings.Value.BaseUrl}/Employee/InsertUpdate"; // for POST insert/update
+        }
+
+        private HttpClient CreateClient() => _httpClientFactory.CreateClient();
+
+        private async Task<List<T>> FetchListAsync<T>(string url)
+        {
+            var client = CreateClient();
+            var response = await client.GetAsync(url);
+            if (!response.IsSuccessStatusCode) return new List<T>();
+
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<T>>(json) ?? new List<T>();
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()                
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClient();
             var response = await client.GetAsync(_apiUrl);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                ViewBag.Error = "API call failed: " + response.StatusCode;
-                return View(new List<EmployeeFormDto>());
-            }
+            // Employees
+            var employees = await FetchListAsync<EmployeeFormDto>(_apiUrl);
 
-            var json = await response.Content.ReadAsStringAsync();
-            var employees = JsonConvert.DeserializeObject<List<EmployeeFormDto>>(json) ?? new();
-
-            var vendorResponse = await client.GetAsync($"{_apiOrigin}/api/Vendor");
-            var vendors = new List<VendorDto>();
-            if (vendorResponse.IsSuccessStatusCode)
-            {
-                var vendorJson = await vendorResponse.Content.ReadAsStringAsync();
-                vendors = JsonConvert.DeserializeObject<List<VendorDto>>(vendorJson) ?? new();
-            }
+            // Vendors
+            var vendors = await FetchListAsync<VendorDto>($"{_apiOrigin}/api/Vendor");
 
             // 3. Map VendorName
             foreach (var emp in employees)
             {
-                var vendor = vendors.FirstOrDefault(v => v.VendorId == emp.VendorId);
-                emp.VendorName = vendor?.VendorName ?? "N/A";
+                emp.VendorName = vendors.FirstOrDefault(v => v.VendorId == emp.VendorId)?.VendorName ?? "N/A";
             }
             return View(employees);
         }
@@ -57,26 +62,11 @@ namespace TitanTechnologyView.Controllers
             ViewBag.ApiOrigin = _apiOrigin;
             var client = _httpClientFactory.CreateClient();
 
-            var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
-            var companys = new List<CompanyMasterDto>();
-
-            if (companyResponse.IsSuccessStatusCode)
-            {
-                var companyJson = await companyResponse.Content.ReadAsStringAsync();
-                companys = JsonConvert.DeserializeObject<List<CompanyMasterDto>>(companyJson) ?? new List<CompanyMasterDto>();
-            }
-            ViewBag.Companys = companys;
-
-
-            var vendorResponse = await client.GetAsync($"{_apiOrigin}/api/Vendor");
-            var vendors = new List<VendorDto>();
-            if (vendorResponse.IsSuccessStatusCode)
-            {
-                var vendorJson = await vendorResponse.Content.ReadAsStringAsync();
-                vendors = JsonConvert.DeserializeObject<List<VendorDto>>(vendorJson) ?? new List<VendorDto>();
-            }
-            ViewBag.Vendors = vendors;
-
+            ViewBag.EmployeeTypes = await client.GetDropdownAsync(_apiOrigin, "Employee Type");
+            ViewBag.Companys = await FetchListAsync<CompanyMasterDto>($"{_apiOrigin}/api/Company");
+            ViewBag.Vendors = await FetchListAsync<VendorDto>($"{_apiOrigin}/api/Vendor");
+            ViewBag.TimingAvailabilitys = await client.GetDropdownAsync(_apiOrigin, "Timing Availability");
+                       
             if (id == 0)
             {
                 return View(new EmployeeFormDto());
@@ -88,65 +78,44 @@ namespace TitanTechnologyView.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var model = JsonConvert.DeserializeObject<EmployeeFormDto>(json) ?? new EmployeeFormDto();
 
+            // Map vendor name
             if (model.VendorId.HasValue)
             {
-                var vendor = vendors.FirstOrDefault(v => v.VendorId == model.VendorId.Value);
-                if (vendor != null)
-                    model.VendorName = vendor.VendorName;
+                var vendors = ViewBag.Vendors as List<VendorDto> ?? new List<VendorDto>();
+                model.VendorName = vendors.FirstOrDefault(v => v.VendorId == model.VendorId.Value)?.VendorName;
             }
 
-            var company = companys.FirstOrDefault(e => e.CompanyCode == model.CompanyCode);
-
+            // Selected company
+            var companies = ViewBag.Companys as List<CompanyMasterDto> ?? new List<CompanyMasterDto>();
+            var company = companies.FirstOrDefault(e => e.CompanyCode == model.CompanyCode);
             if (company != null)
             {
                 ViewBag.SelectedCompanyName = company.CompanyName;
             }
+
             return View(model);
         }
 
-        // Helper: guess mime type by extension
-        private static string GuessMime(string fileName)
-        {
-            var ext = Path.GetExtension(fileName)?.ToLowerInvariant();
-            return ext switch
-            {
-                ".pdf" => "application/pdf",
-                ".doc" => "application/msword",
-                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                ".xls" => "application/vnd.ms-excel",
-                ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                ".png" => "image/png",
-                ".jpg" or ".jpeg" => "image/jpeg",
-                ".txt" => "text/plain",
-                _ => "application/octet-stream"
-            };
-        }
-
-        [HttpPost]
+          [HttpPost]
         public async Task<IActionResult> SaveEmployee(EmployeeFormDto model)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClient();
       
             if (!ModelState.IsValid)
             {
-                var vendorResponse = await client.GetAsync($"{_apiOrigin}/api/Vendor");
-                if (vendorResponse.IsSuccessStatusCode)
-                {
-                    var vendorJson = await vendorResponse.Content.ReadAsStringAsync();
-                    ViewBag.Vendors = JsonConvert.DeserializeObject<List<VendorDto>>(vendorJson);
-                }
+                ViewBag.Vendors = await FetchListAsync<VendorDto>($"{_apiOrigin}/api/Vendor");
                 return View("AddEmployee", model);
             }
 
             using var content = new MultipartFormDataContent();
-
             // Base fields
             content.Add(new StringContent(model.EmployeeId.ToString()), "EmployeeId");
             content.Add(new StringContent(model.EmployeeType ?? ""), "EmployeeType");
             content.Add(new StringContent(model.CompanyCode ?? ""), "CompanyCode");
             if (model.VendorId.HasValue)
+            {
                 content.Add(new StringContent(model.VendorId.Value.ToString()), "VendorId");
-
+            }
             content.Add(new StringContent(model.Name ?? ""), "Name");
             content.Add(new StringContent(model.AltName ?? ""), "AltName");
             content.Add(new StringContent(model.Age?.ToString() ?? ""), "Age");
@@ -158,6 +127,8 @@ namespace TitanTechnologyView.Controllers
             content.Add(new StringContent(model.Remarks ?? ""), "Remarks");
             content.Add(new StringContent(model.ReferredBy ?? ""), "ReferredBy");
             content.Add(new StringContent(model.CreatedBy ?? ""), "CreatedBy");
+
+            // Bank & PAN details
             content.Add(new StringContent(model.PanNumber ?? ""), "PanNumber1");
             content.Add(new StringContent(model.AccountNumber1 ?? ""), "AccountNumber1");
             content.Add(new StringContent(model.IfscCode1 ?? ""), "IfscCode1");
@@ -167,47 +138,22 @@ namespace TitanTechnologyView.Controllers
             content.Add(new StringContent(model.IfscCode2 ?? ""), "IfscCode2");
             content.Add(new StringContent(model.AccountName2 ?? ""), "AccountName2");
 
-            // File attachments
-            // local helper for attaching new OR existing files
-            async Task AttachAsync(string field, IFormFile? newFile, string? existingRelativeUrl)
-            {
-                if (newFile != null)
-                {
-                    var sc = new StreamContent(newFile.OpenReadStream());
-                    sc.Headers.ContentType = new MediaTypeHeaderValue(newFile.ContentType);
-                    content.Add(sc, field, newFile.FileName);
-                }
-
-                // If no new file uploaded but old path exists → fetch and reattach
-                if (!string.IsNullOrWhiteSpace(existingRelativeUrl))
-                {
-                    var absoluteUrl = existingRelativeUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                        ? existingRelativeUrl
-                        : new Uri(new Uri(_apiOrigin), existingRelativeUrl).ToString(); // Use Uri to combine properly
-
-                    var fileBytes = await client.GetByteArrayAsync(absoluteUrl);
-                    var fileName = Path.GetFileName(existingRelativeUrl);
-                    var ba = new ByteArrayContent(fileBytes);
-                    ba.Headers.ContentType = new MediaTypeHeaderValue(GuessMime(fileName));
-                    content.Add(ba, field, fileName);
-                }
-
-                // else nothing → API will clear it
-            }
-
-            await AttachAsync("NdaFile", model.NdaFile, model.NdaUpload);
-            await AttachAsync("AadharFile1", model.AadharFile1, model.AadharUpload);
-            await AttachAsync("PanFile1", model.PanFile1, model.PanUpload);
-            await AttachAsync("ChequeFile1", model.ChequeFile1, model.Cheque1Upload);
-            await AttachAsync("AadharFile2", model.AadharFile2, model.Aadhar2Upload);
-            await AttachAsync("PanFile2", model.PanFile2, model.PanUpload2);
-            await AttachAsync("ChequeFile2", model.ChequeFile2, model.Cheque2Upload);
+            // Files (using extension method)
+            await content.AttachFileAsync(client, "NdaFile", model.NdaFile, model.NdaUpload, _apiOrigin);
+            await content.AttachFileAsync(client, "AadharFile1", model.AadharFile1, model.AadharUpload, _apiOrigin);
+            await content.AttachFileAsync(client, "PanFile1", model.PanFile1, model.PanUpload, _apiOrigin);
+            await content.AttachFileAsync(client, "ChequeFile1", model.ChequeFile1, model.Cheque1Upload, _apiOrigin);
+            await content.AttachFileAsync(client, "AadharFile2", model.AadharFile2, model.Aadhar2Upload, _apiOrigin);
+            await content.AttachFileAsync(client, "PanFile2", model.PanFile2, model.PanUpload2, _apiOrigin);
+            await content.AttachFileAsync(client, "ChequeFile2", model.ChequeFile2, model.Cheque2Upload, _apiOrigin);
 
             // POST for insert/update
             var response = await client.PostAsync(_insertUpdateUrl, content);
 
             if (response.IsSuccessStatusCode)
+            {
                 return RedirectToAction("Index");
+            }
 
             ViewBag.ApiOrigin = _apiOrigin;
             var error = await response.Content.ReadAsStringAsync();
@@ -216,10 +162,28 @@ namespace TitanTechnologyView.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var client = CreateClient();
+            var response = await client.GetAsync($"{_apiUrl}/{id}");
+            if (!response.IsSuccessStatusCode) return Content("Employee not found");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var employee = JsonConvert.DeserializeObject<EmployeeFormDto>(json);
+
+            // Map vendor name
+            var vendors = await FetchListAsync<VendorDto>($"{_apiOrigin}/api/Vendor");
+            employee.VendorName = vendors.FirstOrDefault(v => v.VendorId == employee.VendorId)?.VendorName ?? "N/A";
+
+            return PartialView("ViewEmployee", employee);
+        }
+
+
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.DeleteAsync($"{_apiUrl}/{id}");
+            var client = CreateClient();
+            await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");
         }
     }

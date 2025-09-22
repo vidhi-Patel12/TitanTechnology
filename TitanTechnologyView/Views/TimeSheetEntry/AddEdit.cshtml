@@ -34,23 +34,7 @@
                         <input type="hidden" asp-for="EntryId" />
 
                         <div class="row">
-                            <!-- Project -->
-                            @* <div class="col-lg-6 mb-3">
-                                <div class="single-input-box">
-                                    <select asp-for="TimesheetId" class="form-select" required>
-                                        <option value="">-- Select TimesheetId --</option>
-                                        @if (ViewBag.Timesheets != null)
-                                        {
-                                            foreach (var ts in (List<TitanTechnologyView.Models.Timesheet>)ViewBag.Timesheets)
-                                            {
-                                                <option value="@ts.TimesheetId">@ts.TimesheetId</option>
-                                            }
-                                        }
-                                    </select>
-                                    <span asp-validation-for="TimesheetId" class="text-danger"></span>
-                                </div>
-                            </div> *@
-                            
+                            <!-- Project -->                            
                             <div class="col-lg-6 mb-3">
                                 <div class="single-input-box">
                                     <select asp-for="TimesheetId"

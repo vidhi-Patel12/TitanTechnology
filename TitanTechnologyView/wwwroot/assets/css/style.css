@@ -198,7 +198,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
     width: 100%;
     -webkit-box-shadow: 0 2px 5px -2px rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 5px -2px rgba(0, 0, 0, 0.1);
-    background: #041424 !important;
+    background: #2a7284 !important;
     transition: 0.5s;
     z-index: 999 !important;
     -webkit-animation: 300ms running fadeInDown;
@@ -210,7 +210,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
    <!--Toptech Hero Area Css Style One-->
 =========================================================---*/
 .style-one.hero-area {
-    background: url(../images/home-1/hero-bg.jpg);
+    background: linear-gradient(to right,#2a7284 40%,rgba(85, 131, 179, 0) 100%), url(../images/home-1/hero-bg.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
