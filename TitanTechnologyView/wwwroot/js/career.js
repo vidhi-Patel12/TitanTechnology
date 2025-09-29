@@ -258,7 +258,7 @@ async function saveCareer(employementtype, location, jobTitle, jobDescription) {
 
     const response = await fetch(`${apiBase}/api/Career/Post`, {
         method: "POST",
-        body: formData // 👈 No headers, browser sets boundary automatically
+        body: formData //  No headers, browser sets boundary automatically
     });
 
     if (!response.ok) throw new Error("Save failed: " + response.status);
@@ -269,58 +269,73 @@ async function saveCareer(employementtype, location, jobTitle, jobDescription) {
 
 
 $(document).ready(function () {
+    const form = document.getElementById("careerForm");
 
-    // Save button handler
-    $("#btnSave").on("click", async function () {
-        const employementType = $("#careerInput").val().trim();
-        const location = $("#location").val().trim();
-        const jobTitle = $("#jobTitle").val().trim();
-        const jobDescription = $("#jobDescription").val().trim();
+    // 🔹 Reusable function to validate one field
+    function validateField(field) {
+        const errorSpan = $(field).siblings(".field-validation");
 
-        if (!employementType) {
-            alert("Please enter or select a employement type");
-            return;
+        if (!field.value.trim()) {
+            field.classList.add("is-invalid");
+            if (errorSpan.length) {
+                let msg = field.placeholder || "This field";
+                errorSpan.text(msg + " is required");
+            }
+            return false;
+        } else {
+            field.classList.remove("is-invalid");
+            if (errorSpan.length) errorSpan.text("");
+            return true;
         }
-        if (!location) {
-            alert("Please enter a location");
-            return;
-        }
-        if (!jobTitle) {
-            alert("Please enter a location");
-            return;
-        }
-        if (!jobDescription) {
-            alert("Please enter a location");
+    }
+
+    // 🔹 Validate all required fields on Save
+    $("#btnSave").on("click", async function (e) {
+        let isValid = true;
+
+        $(form).find("input[required], textarea[required]").each(function () {
+            if (!validateField(this)) isValid = false;
+        });
+
+        if (!isValid) {
+            e.preventDefault();
             return;
         }
 
         try {
-            await saveCareer(employementType, location, jobTitle, jobDescription);
-            alert("Saved successfully!");
+            await saveCareer(
+                $("#careerInput").val().trim(),
+                $("#location").val().trim(),
+                $("#jobTitle").val().trim(),
+                $("#jobDescription").val().trim()
+            );
 
+            //alert("Saved successfully!");
             window.location.reload();
-            if (typeof showSection === 'function') showSection('careerListSection');
-            // Optional: clear fields
-            $("#careerInput").val("");
-            $("#location").val("");
-            $("#jobTitle").val("");
-            $("#jobDescription").val("");
 
-            // Reload career after save
+            if (typeof showSection === "function") showSection("careerListSection");
+
+            form.reset();
+            $(form).find(".field-validation").text("");
+            $(form).find(".is-invalid").removeClass("is-invalid");
+
             await refreshCareer();
-
         } catch (err) {
             console.error("Error saving:", err);
             alert("Failed to save: " + err.message);
         }
     });
 
+    // 🔹 Live validation on blur (when leaving a field)
+    $(form).find("input[required], textarea[required]").on("blur", function () {
+        validateField(this);
+    });
+
     // Cancel button handler
     $("#btnCancel").on("click", function () {
-        $("#careerInput").val("");
-        $("#location").val("");
-        $("#jobTitle").val("");
-        $("#jobDescription").val("");
+        form.reset();
+        $(form).find(".field-validation").text("");
+        $(form).find(".is-invalid").removeClass("is-invalid");
     });
 });
 

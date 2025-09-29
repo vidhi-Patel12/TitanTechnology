@@ -3,12 +3,106 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7faff;
+        margin: 0;
+        /* padding: 20px; */
+    }
+
+    #career-list {
+        margin-top: 90px;
+    }
+
+    .career-item {
+        padding: 40px 0;
+        border-top: 3px solid #e5eaf1;
+        margin: 0 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .career-left {
+        flex: 1;
+        width: 40%;
+        margin-left: 70px;
+    }
+
+    .career-right {
+        flex: 1;
+        /* text-align: right; */
+        /* margin-right: 450px; */
+    }
+
+    .badge {
+        display: inline-block;
+        background: #1d73e8;
+        color: #fff;        
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 16px;
+        /* font-weight: bold; */
+        margin-right: 0px;
+        font-family: "Nunito", sans-serif;
+    }
+
+    .location {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .job-title {
+        font-size: 22px;
+        font-weight: bold;
+        margin: 15px 0;
+        color: #0d2235;
+    }
+
+    .job-desc {
+        font-size: 15px;
+        color: #666;
+        line-height: 1.6;
+        margin-top: -15px;
+        width: 100%;
+        text-align: left;
+        margin-left: -90px;
+    }
+
+    .apply-btn {
+        border: 1px solid #cfd3da;
+        background: transparent;
+        padding: 12px 28px;
+        border-radius: 30px;
+        font-size: 15px;
+        /* font-weight: bold; */
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-left: 0%;
+        width: 185px;
+        margin-top: 10px;
+        margin-right: 60px;
+    }
+
+        .apply-btn:hover {
+            background: #1d73e8;
+            color: #fff;
+        }
+
+    /* remove border for first item */
+    .career-item:first-child {
+        border-top: none;
+    }
+</style>
+
 <div class="hero-area-form style-one d-flex align-items-center">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 mt-5">
+            <div class="col-lg-6">
                 <div class="breadcumb-content">
-                    <h4>Careers</h4>
+                    @* <h4>Careers</h4> *@
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
@@ -20,6 +114,13 @@
     </div>
 </div>
 
+<div class="row">
+
+    <div class="col-md-10 mt-5 text-end">
+            <a class="btn btn-primary" asp-action="Login" asp-controller="Auth">Login</a>
+    </div>
+    <div class="col-md-2"></div>
+</div>
 <div class="careers-area inner-style">
     <div class="container">
         <div class="row align-items-center title">
@@ -27,7 +128,7 @@
                 <div class="careers-content">
                     <h4 class="mb-3">Careers at Titan Technology</h4>
                     <p>Join Our Team and Shape the Future of Technology At Titan Technology, we believe in empowering our people to grow and innovate. We are constantly looking for talented individuals who are passionate about technology, eager to learn, and ready to make a difference.Join Our Team and Shape the Future of Technology At Titan Technology, we believe in empowering our people to grow and innovate. We are constantly looking for talented individuals who are passionate about technology, eager to learn, and ready to make a difference.</p>
-                   
+
                 </div>
             </div>
             <div class="col-lg-6">
@@ -66,7 +167,8 @@
         </div>
     </div>
     <div class="container">
-        <div class="row add-marging">
+        <div class="row">
+            <div class="border-top border-3" style="border-color:#3366cc;margin-top: 100px; margin-bottom: 100px;"></div>
             <h1 class="text-center mb-5">Who We Look For:</h1>
             <div class="col-lg-3 col-md-6">
                 <div class="single-choose-us-box">
@@ -124,8 +226,14 @@
                     </div>
                 </div>
             </div>
+
+            <div class="border-bottom border-3" style="border-color:#3366cc;margin-top: 100px; margin-bottom: -80px;"></div>
+
         </div>
     </div>
+
+    <div id="career-list"></div>
+
 </div>
 
 
@@ -152,3 +260,48 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    const apiBase = "https://localhost:44368"; // change this to your API base
+
+    async function loadCareerMaster() {
+       const response = await fetch(`${apiBase}/api/Career`);
+       if (!response.ok) throw new Error("HTTP " + response.status);
+       return await response.json();
+     }
+
+     function renderCareers(careers) {
+       const list = document.getElementById("career-list");
+       list.innerHTML = "";
+
+       careers.forEach(career => {
+         const item = document.createElement("div");
+         item.className = "career-item";
+
+         item.innerHTML = `
+           <div class="career-left">
+             <span class="badge">${career.employementtype}</span>
+             <span class="location">${career.location}</span>
+             <div class="job-title">${career.jobTitle}</div>
+           </div>
+           <div class="career-right">
+             <div class="job-desc">${career.jobDescription}</div>
+             
+           </div>
+           <button class="apply-btn">Apply Now</button>
+         `;
+
+         list.appendChild(item);
+       });
+     }
+
+     (async function(){
+       try {
+         const careers = await loadCareerMaster();
+         renderCareers(careers);
+       } catch (err) {
+         console.error("Error loading careers:", err);
+       }
+     })();
+</script>

@@ -10,7 +10,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>Timesheet Entrys</h4>
+                    @* <h4>Timesheet Entrys</h4> *@
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
@@ -50,21 +50,21 @@
 
                             <div class="col-lg-6 mb-3">
                                 <div class="single-input-box">
-                                    <input asp-for="EntryDate" type="date" id="EntryDate" placeholder="EntryDate" required />
+                                    <input asp-for="EntryDate" type="date" id="EntryDate" placeholder="Entry Date" required />
                                     <span asp-validation-for="EntryDate" class="text-danger"></span>
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="DayName" type="text" placeholder="DayName" required />
+                                    <input asp-for="DayName" type="text" placeholder="Day Name" required />
                                     <span asp-validation-for="DayName" class="text-danger"></span>
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="HoursWorked" type="number" placeholder="HoursWorked" required />
+                                    <input asp-for="HoursWorked" type="number" placeholder="Hours Worked" required />
                                     <span asp-validation-for="HoursWorked" class="text-danger"></span>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="ShortDescription" type="text" placeholder="ShortDescription" required />
+                                    <input asp-for="ShortDescription" type="text" placeholder="Short Description" required />
                                     <span asp-validation-for="ShortDescription" class="text-danger"></span>
                                 </div>
                             </div>

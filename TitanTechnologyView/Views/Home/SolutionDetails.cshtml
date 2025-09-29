@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Solution Details";
+    var solutionId = Context.Request.RouteValues["id"]; // Get id from route
+}
+
+
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    @* <h4>Solution Details</h4> *@
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li><a asp-action="Solutions" asp-controller="Home">Solutions</a></li>
+                        <li>></li>
+                        <li id="breadcrumb-service"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div id="service-details" class="p-4 mb-5">
+        <h2 class="mb-3">Loading solution details...</h2>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const apiBase = "https://localhost:44368"; // your API base
+        const solutionId = "@solutionId"; // Razor injects the route id
+
+        async function loadSolution() {
+            const container = document.getElementById("service-details");
+            try {
+                const response = await fetch(`${apiBase}/api/Solution/${solutionId}`);
+                if (!response.ok) throw new Error("HTTP " + response.status);
+
+                const solution = await response.json();
+
+                const breadcrumbService = document.getElementById("breadcrumb-service");
+                breadcrumbService.innerText = solution.solutionName;
+
+
+                container.innerHTML = `
+                    <h2>${solution.solutionName}</h2>
+                    <p>${solution.description}</p>
+                    <img src="${apiBase}/${solution.image}" alt="" style="height: 60%;width: 90%;" class="img-fluid rounded" />
+
+                `;
+            } catch (err) {
+                console.error("Error loading solution:", err);
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        Unable to load solution details.
+                    </div>
+                `;
+            }
+        }
+
+        loadSolution();
+    </script>
+}

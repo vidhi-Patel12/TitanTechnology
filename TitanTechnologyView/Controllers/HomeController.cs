@@ -38,7 +38,17 @@ namespace internalPortalFroent.Controllers
             return View();
         }
 
+        public IActionResult ServiceDetails(int id)
+        {
+            return View();
+        }
+
         public IActionResult Solutions()
+        {
+            return View();
+        }
+
+        public IActionResult SolutionDetails(int id)
         {
             return View();
         }

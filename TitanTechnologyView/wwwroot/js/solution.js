@@ -146,8 +146,8 @@ fileInput.addEventListener("change", function () {
     const img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = function () {
-        if (img.width > 100 || img.height > 100) {
-            fileMessage.textContent = "Image must be 100×100 px or smaller and png.";
+        if (img.width > 1000 || img.height > 1000) {
+            fileMessage.textContent = "Image must be 1000×1000 px or smaller and png.";
             fileInput.value = "";
             filePlaceholder.style.display = "block";
             fileMessage.style.display = "block";
@@ -388,8 +388,8 @@ updateFileInput.addEventListener("change", function () {
     const img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = function () {
-        if (img.width > 100 || img.height > 100) {
-            updateFileMessage.textContent = "Image must be 100×100 px or smaller and PNG.";
+        if (img.width > 1000 || img.height > 1000) {
+            updateFileMessage.textContent = "Image must be 1000×1000 px or smaller and PNG.";
             updateFileMessage.style.display = "block";
             updateFilePlaceholder.style.display = "block";
             updateFileInput.value = "";

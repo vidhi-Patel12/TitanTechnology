@@ -100,6 +100,7 @@ namespace TitanTechnologyView.Controllers
                 return View("AddEdit", model);
             }
             model.ProjectCode = model.ProjectCode?.Trim();
+            model.Status = "Active";
 
             var client = _httpClientFactory.CreateClient();
             var json = JsonConvert.SerializeObject(model);

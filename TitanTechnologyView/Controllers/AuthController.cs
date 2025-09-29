@@ -91,6 +91,12 @@ namespace TitanTechnologyView.Controllers
                     var root = doc.RootElement;
                     var userRole = root.GetProperty("user").GetProperty("userRole").GetString();
                     var userRoleId = root.GetProperty("user").GetProperty("userRoleId").GetInt32();
+                    var emailId = root.GetProperty("user").GetProperty("email").GetString();
+                    var contactNumber = root.GetProperty("user").GetProperty("contact_number").GetString();
+                    var firstName = root.GetProperty("user").GetProperty("firstName").GetString();
+                    var lastName = root.GetProperty("user").GetProperty("lastName").GetString();
+
+                    var fullName = $"{firstName} {lastName}".Trim();
 
 
                     if (!string.IsNullOrEmpty(userRole))
@@ -115,8 +121,57 @@ namespace TitanTechnologyView.Controllers
                         });
                     }
 
+                    if (!string.IsNullOrEmpty(emailId))
+                    {
+                        HttpContext.Response.Cookies.Append("Email", emailId, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTimeOffset.UtcNow.AddDays(1)
+                        });
+                    }
+
+                    if (!string.IsNullOrEmpty(contactNumber))
+                    {
+                        HttpContext.Response.Cookies.Append("ContactNumber", contactNumber, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTimeOffset.UtcNow.AddDays(1)
+                        });
+                    }
+
+                    if (!string.IsNullOrEmpty(fullName))
+                    {
+                        HttpContext.Response.Cookies.Append("FullName", fullName, new CookieOptions
+                        {
+                            HttpOnly = true,   // Prevent JS access
+                            Secure = true,     // Send only over HTTPS
+                            SameSite = SameSiteMode.Strict, // Protect from CSRF
+                            Expires = DateTimeOffset.UtcNow.AddDays(1) // Expiry time
+                        });
+                    }
+
                     TempData["SuccessMessage"] = "";
-                    return RedirectToAction("Index", "Company");
+                    //return RedirectToAction("Index", "Company");
+                    switch (userRole.ToLower())
+                    {
+                        case "admin":
+                            return RedirectToAction("Index", "Company");
+                        case "employee":
+                            return RedirectToAction("Index", "Employee");
+                        case "customer":
+                            return RedirectToAction("CustomerDashboard", "Customer");
+                        case "company":
+                            return RedirectToAction("CompanyDashboard", "Company");
+                        case "vendor":
+                            return RedirectToAction("VendorDashboard", "Vendor");
+                        default:
+                            return RedirectToAction("Index", "Home"); // default
+                    }
+
                 }
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)

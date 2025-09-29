@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Service Details";
+    var serviceId = Context.Request.RouteValues["id"]; // Get id from route
+}
+
+
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    @* <h4>Service Details</h4> *@
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li>></li>
+                        <li><a asp-action="Services" asp-controller="Home">Services</a></li>
+                        <li>></li>
+                        <li id="breadcrumb-service"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div id="service-details" class="p-4 mb-5">
+        <h2 class="mb-3">Loading service details...</h2>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const apiBase = "https://localhost:44368"; // your API base
+        const serviceId = "@serviceId"; // Razor injects the route id
+
+        async function loadService() {
+            const container = document.getElementById("service-details");
+            try {
+                const response = await fetch(`${apiBase}/api/Service/${serviceId}`);
+                if (!response.ok) throw new Error("HTTP " + response.status);
+
+                const service = await response.json();
+
+                 const breadcrumbService = document.getElementById("breadcrumb-service");
+                 breadcrumbService.innerText = service.serviceName;
+
+
+                container.innerHTML = `
+                    <h2>${service.serviceName}</h2>
+                    <p>${service.description}</p>
+                    <img src="${apiBase}/${service.image}" alt="" style="height: 60%;width: 90%;" class="img-fluid rounded" />
+
+                `;
+            } catch (err) {
+                console.error("Error loading service:", err);
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        Unable to load service details.
+                    </div>
+                `;
+            }
+        }
+
+        loadService();
+    </script>
+}

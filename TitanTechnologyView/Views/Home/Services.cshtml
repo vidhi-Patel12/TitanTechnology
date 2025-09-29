@@ -8,9 +8,9 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>Services</h4>
+                    @* <h4>Services</h4> *@
                     <ul>
-                        <li><a asp-action="Services" asp-controller="Home">Home</a></li>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
                         <li>Services</li>
                     </ul>
@@ -32,7 +32,12 @@
             </div>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-4" id="service-list">
+            <!-- Services will be rendered here -->
+        </div>
+
+
+        @* <div class="row g-4">
             <!-- g-4 adds spacing between cards -->
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="single-service-box h-100 text-center p-4 shadow rounded">
@@ -112,7 +117,7 @@
                 </div>
               </div>
            </div>
-        </div>
+        </div> *@
     </div>
 </div>
 
@@ -142,12 +147,8 @@
         </div>
     </div>
 </div>
-<!--==================================================-->
-<!-- End Toptech Subscribe Area Style Three -->
-<!--==================================================-->
-<!--==================================================-->
-<!-- Start Toptech Process Area Style Three-->
-<!--==================================================-->
+
+<!-- Toptech Process Area Style Three-->
 <div class="process-area style-three inner">
     <div class="container">
         <div class="row add-bg">
@@ -199,7 +200,7 @@
 
 
 <!-- Service Details Modal -->
-<div class="modal fade" id="serviceModal1" tabindex="-1" aria-hidden="true">
+@* <div class="modal fade" id="serviceModal1" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -383,7 +384,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> *@
 
 <style>
     .single-service-box {
@@ -409,3 +410,84 @@
     }
 
 </style>
+<script>
+    const apiBase = 'https://localhost:44368'; // your API base
+
+    async function loadServices() {
+        const response = await fetch(`${apiBase}/api/Service`);
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return await response.json();
+    }
+
+    function renderServices(services) {
+        const list = document.getElementById("service-list");
+        list.innerHTML = "";
+
+        services.forEach((service, index) => {
+            const col = document.createElement("div");
+            col.className = "col-lg-4 col-md-6 col-sm-12";
+
+            // service card
+            col.innerHTML = `
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="${apiBase}/${service.image}"
+                                        alt=""
+                                            class="img-fluid" style="border-radius: 43px;width: 100%;height: 100%;" />
+                    </div>
+                    <div class="service-content">
+                        <h4>${service.serviceName}</h4>
+                        <p>${service.description}</p>
+                        <a href="#"
+                           class="btn btn-primary mt-2"
+                           data-bs-toggle="modal"
+                           data-bs-target="#serviceModal${index}">
+                           Learn More <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            list.appendChild(col);
+
+            // create modal for each service
+            const modal = document.createElement("div");
+            modal.className = "modal fade";
+            modal.id = `serviceModal${index}`;
+            modal.tabIndex = -1;
+            modal.innerHTML = `
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${service.serviceName}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body row">
+                            <div class="col-md-6">
+                                <p>${service.description}</p>
+                                <ul>
+                                    ${service.points ? service.points.map(p => `<li>• ${p}</li>`).join("") : ""}
+                                </ul>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <img src="${apiBase}/${service.image}" alt="" style="height: 60%;width: 90%;" class="img-fluid rounded" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        });
+    }
+
+    (async function(){
+        try {
+            const services = await loadServices();
+            renderServices(services);
+        } catch (err) {
+            console.error("Error loading services:", err);
+        }
+    })();
+</script>
+

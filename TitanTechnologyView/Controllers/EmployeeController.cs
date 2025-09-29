@@ -23,6 +23,7 @@ namespace TitanTechnologyView.Controllers
             _insertUpdateUrl = $"{apiSettings.Value.BaseUrl}/Employee/InsertUpdate"; // for POST insert/update
         }
 
+
         private HttpClient CreateClient() => _httpClientFactory.CreateClient();
 
         private async Task<List<T>> FetchListAsync<T>(string url)
@@ -106,7 +107,7 @@ namespace TitanTechnologyView.Controllers
                 ViewBag.Vendors = await FetchListAsync<VendorDto>($"{_apiOrigin}/api/Vendor");
                 return View("AddEmployee", model);
             }
-
+                      
             using var content = new MultipartFormDataContent();
             // Base fields
             content.Add(new StringContent(model.EmployeeId.ToString()), "EmployeeId");
@@ -126,7 +127,11 @@ namespace TitanTechnologyView.Controllers
             content.Add(new StringContent(model.ContactNumber2 ?? ""), "ContactNumber2");
             content.Add(new StringContent(model.Remarks ?? ""), "Remarks");
             content.Add(new StringContent(model.ReferredBy ?? ""), "ReferredBy");
-            content.Add(new StringContent(model.CreatedBy ?? ""), "CreatedBy");
+            //content.Add(new StringContent(model.CreatedBy ?? ""), "CreatedBy");
+
+            var email = HttpContext.Request.Cookies["Email"];
+
+            content.Add(new StringContent(email ?? ""), "CreatedBy");
 
             // Bank & PAN details
             content.Add(new StringContent(model.PanNumber ?? ""), "PanNumber1");

@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>Project Employees</h4>
+                    @* <h4>Project Employees</h4> *@
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
@@ -55,7 +55,7 @@
                                     <input type="hidden" asp-for="@Model[i].Id" />
 
                                     <div class="form-inline-scroll">
-                                        <div class="single-input-box">
+                                        @* <div class="single-input-box">
                                             <label>ProjectCode</label>
                                             <select asp-for="@Model[i].ProjectCode" class="form-select" required>
                                                 <option value="">Select Project Code </option>
@@ -68,16 +68,40 @@
                                                 }
                                             </select>
                                             <span asp-validation-for="@Model[i].ProjectCode" class="text-danger"></span>
+                                        </div> *@
+
+                                        <div class="single-input-box">
+                                            <label>Project</label>
+                                            <select asp-for="@Model[i].ProjectCode"
+                                                    asp-items="@(new SelectList(projects, "ProjectCode", "ProjectName", Model[i].ProjectCode))"
+                                                    class="form-select" required>
+                                                <option value="">Select Project</option>
+                                            </select>
+                                            <span asp-validation-for="@Model[i].ProjectCode" class="text-danger"></span>
                                         </div>
+
 
                                         <div class="single-input-box">
                                             <label>Employee</label>
+                                            
                                             <select asp-for="@Model[i].EmployeeId"
+                                                    asp-items="@(new SelectList(
+                                                        employees.Select(e => new { 
+                                                            EmployeeId = e.EmployeeId, 
+                                                            DisplayName = e.Name + " [EMP" + e.EmployeeId + "]" 
+                                                        }), 
+                                                        "EmployeeId", "DisplayName", Model[i].EmployeeId))"
+                                                    class="form-select" required>
+                                                <option value=""> Select Employee </option>
+                                            </select>
+
+                                            
+                                            @* <select asp-for="@Model[i].EmployeeId"
                                                     asp-items="@(new SelectList(employees, "EmployeeId", "Name", Model[i].EmployeeId))"
                                                     class="form-select" required>
                                                 <option value=""> Select Employee </option>
                                                 <span asp-validation-for="@Model[i].EmployeeId" class="text-danger"></span>
-                                            </select>
+                                            </select> *@
                                         </div>
 
                                         <div class="single-input-box">
