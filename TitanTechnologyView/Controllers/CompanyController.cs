@@ -21,7 +21,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.GetAsync(_apiUrl);
 
             if (!response.IsSuccessStatusCode)
@@ -47,7 +47,7 @@ namespace TitanTechnologyView.Controllers
                 return View(new CompanyMaster()); // add
             }
 
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.GetAsync($"{_apiUrl}/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -69,7 +69,7 @@ namespace TitanTechnologyView.Controllers
                 return View(model);
             }
 
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -89,7 +89,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");
         }

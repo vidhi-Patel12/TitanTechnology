@@ -1,25 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using TitanTechnologyView.Helpers;
 using TitanTechnologyView.Models;
 
 namespace TitanTechnologyView.Controllers
 {
     public class VendorController : Controller
-    {
+    {        
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly string _apiOrigin = "https://localhost:44368";            
-        private readonly string _apiUrl = "https://localhost:44368/api/Vendor";
+        private readonly string _apiOrigin;
+        private readonly string _apiUrl;
 
-        public VendorController(IHttpClientFactory httpClientFactory)
+        public VendorController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
-        }   
+            _apiOrigin = apiSettings.Value.Origin;
+            _apiUrl = $"{apiSettings.Value.BaseUrl}/Vendor";
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.GetAsync(_apiUrl);
 
             if (!response.IsSuccessStatusCode)
@@ -34,13 +38,35 @@ namespace TitanTechnologyView.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            var response = await client.GetAsync($"{_apiUrl}/{id}");
+            if (!response.IsSuccessStatusCode) return Content("Vendor not found");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var customer = JsonConvert.DeserializeObject<CustomerFormDto>(json);
+
+            // 2. Fetch vendor list
+            //var vendors = await FetchListAsync<VendorDto>($"{_apiOrigin}/api/Vendor");
+
+            //if (employee != null && employee.VendorId.HasValue)
+            //{
+            //    employee.VendorName = vendors.FirstOrDefault(x => x.VendorId == employee.VendorId.Value)?.VendorName ?? "N/A";
+            //}
+
+            return View("ViewCustomer", customer);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> VendorForm(int? id = 0)
         {
             ViewBag.ApiOrigin = _apiOrigin;
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
-            var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
             var companies = new List<CompanyMaster>();
+            var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
             if (companyResponse.IsSuccessStatusCode)
             {
                 var companyJson = await companyResponse.Content.ReadAsStringAsync();
@@ -48,9 +74,10 @@ namespace TitanTechnologyView.Controllers
             }
             ViewBag.Companies = companies;
 
-
             if (id == 0)
+            {
                 return View(new VendorDto());
+            }
 
             var response = await client.GetAsync($"{_apiUrl}/{id}");
             if (!response.IsSuccessStatusCode)
@@ -62,25 +89,7 @@ namespace TitanTechnologyView.Controllers
             var model = JsonConvert.DeserializeObject<VendorDto>(json)?? new VendorDto();
             return View(model);
         }
-
-        // Helper: guess mime type by file extension
-        private static string GuessMime(string fileName)
-        {
-            var ext = Path.GetExtension(fileName)?.ToLowerInvariant();
-            return ext switch
-            {
-                ".pdf" => "application/pdf",
-                ".doc" => "application/msword",
-                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                ".xls" => "application/vnd.ms-excel",
-                ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                ".png" => "image/png",
-                ".jpg" or ".jpeg" => "image/jpeg",
-                ".txt" => "text/plain",
-                _ => "application/octet-stream"
-            };
-        }
-
+       
         [HttpPost]
         public async Task<IActionResult> SaveVendor(VendorDto model)
         {
@@ -90,7 +99,7 @@ namespace TitanTechnologyView.Controllers
                 return View("VendorForm", model);
             }
 
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             using var form = new MultipartFormDataContent();
 
             // Add all basic string fields
@@ -108,45 +117,21 @@ namespace TitanTechnologyView.Controllers
             form.Add(new StringContent(model.IfscCode ?? ""), "IfscCode"); 
             form.Add(new StringContent(model.BankAccountName ?? ""), "BankAccountName");
 
-            // Attach files
-            async Task AttachFile(string field, IFormFile? newFile, string? existingRelativeUrl)
-            {
-                if (newFile != null)
-                {
-                    var sc = new StreamContent(newFile.OpenReadStream());
-                    sc.Headers.ContentType = new MediaTypeHeaderValue(newFile.ContentType);
-                    form.Add(sc, field, newFile.FileName);
-                    return;
-                }
-
-                // No new file: if we have an existing path like "/agreements/abc.pdf", fetch it from API and re-attach
-                if (!string.IsNullOrWhiteSpace(existingRelativeUrl))
-                {
-                    var absoluteUrl = existingRelativeUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                        ? existingRelativeUrl
-                        : $"{_apiOrigin}{existingRelativeUrl}";
-
-                    var fileBytes = await client.GetByteArrayAsync(absoluteUrl);
-                    var fileName = Path.GetFileName(existingRelativeUrl);
-                    var ba = new ByteArrayContent(fileBytes);
-                    ba.Headers.ContentType = new MediaTypeHeaderValue(GuessMime(fileName));
-                    form.Add(ba, field, fileName);
-                }
-                // else: nothing attached -> API will null it
-            }
-
-            await AttachFile("GstnUpload", model.GstnUpload, model.ExistingGstnUpload);
-            await AttachFile("PanUpload", model.PanUpload, model.ExistingPanUpload);
-            await AttachFile("CancelledCheque", model.CancelledCheque, model.ExistingCancelledCheque);
-            await AttachFile("Agreement1", model.Agreement1, model.ExistingAgreement1);
-            await AttachFile("Agreement2", model.Agreement2, model.ExistingAgreement2);
-            await AttachFile("Agreement3", model.Agreement3, model.ExistingAgreement3);
-            await AttachFile("Agreement4", model.Agreement4, model.ExistingAgreement4);
+            // Attach files via extension method
+            await form.AttachFileAsync(client, "GstnUpload", model.GstnUpload, model.ExistingGstnUpload, _apiOrigin);
+            await form.AttachFileAsync(client, "PanUpload", model.PanUpload, model.ExistingPanUpload, _apiOrigin);
+            await form.AttachFileAsync(client, "CancelledCheque", model.CancelledCheque, model.ExistingCancelledCheque, _apiOrigin);
+            await form.AttachFileAsync(client, "Agreement1", model.Agreement1, model.ExistingAgreement1, _apiOrigin);
+            await form.AttachFileAsync(client, "Agreement2", model.Agreement2, model.ExistingAgreement2, _apiOrigin);
+            await form.AttachFileAsync(client, "Agreement3", model.Agreement3, model.ExistingAgreement3, _apiOrigin);
+            await form.AttachFileAsync(client, "Agreement4", model.Agreement4, model.ExistingAgreement4, _apiOrigin);
 
             var response = await client.PostAsync(_apiUrl, form);
- 
+
             if (response.IsSuccessStatusCode)
+            {
                 return RedirectToAction("Index");
+            }
 
             // on error, redisplay form
             ViewBag.ApiOrigin = _apiOrigin;
@@ -158,7 +143,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");
         }

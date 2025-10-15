@@ -1,14 +1,25 @@
 ﻿<!DOCTYPE HTML>
 <html lang="en-US">
 
-   @{
-                        var userRole = Context.Request.Cookies["UserRole"];
+ @*   @{
+                        var userRole = Context.Request.Cookies["UserRole"];} 
+ *@
+
+@{
+    // var userRole = Context.Request.Cookies["UserRole"];
+    int.TryParse(Context.Request.Cookies["UserRoleId"], out var userRoleId);
+    var isEmployee = userRoleId == 2;  // assuming 2 = Employee
+    var isCustomer = userRoleId == 3;
+    var isAdmin = userRoleId == 5;     // assuming 1 = Admin
 }
+
 <style>
-    div.dataTables_wrapper div.dataTables_length label, div.dataTables_wrapper div.dataTables_filter label {
-        color: black;
-    }
+        div.dataTables_wrapper div.dataTables_length label, div.dataTables_wrapper div.dataTables_filter label 
+        {
+            color: black;
+        }
 </style>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -52,7 +63,6 @@
       <!-- DataTables Bootstrap 5 CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
-
     @* @RenderSection("Styles", required: false)  <!-- 👈 add this --> *@
 </head>
 <style>
@@ -69,7 +79,7 @@
 		<div class="loder-section right-section"></div>
 	</div> *@
 
-    @if (userRole == "Admin")
+    @if (isAdmin)
     {
         <!-- Start Toptech Header Area -->
 
@@ -158,7 +168,7 @@
         </div>
         <!-- End Main Menu Area -->
     }
-    else if (userRole == "Company")
+    else if (isAdmin)
     {
         <!-- Start Toptech Header Area -->
         <div class="header-area" id="sticky-header">
@@ -216,7 +226,7 @@
         <!-- End Main Menu Area -->
     }
 
-    else if (userRole == "Employee")
+    else if (isEmployee)
     {
         <!-- Start Toptech Header Area -->
         <div class="header-area" id="sticky-header">

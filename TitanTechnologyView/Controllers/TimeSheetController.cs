@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
@@ -8,21 +9,23 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace TitanTechnologyView.Controllers
 {
     public class TimesheetController : Controller
-    {
-        private readonly string _apiOrigin = "https://localhost:44368";
-        private readonly string apiBaseUrl = "https://localhost:44368/api/Timesheet";
+    {        
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string apiBaseUrl;
+        private readonly string _apiOrigin;
 
-        public TimesheetController(IHttpClientFactory httpClientFactory)
+        public TimesheetController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
+            apiBaseUrl = $"{apiSettings.Value.BaseUrl}/Timesheet";
+            _apiOrigin = apiSettings.Value.Origin;
         }
 
         // Show Add/Edit Form
         public async Task<IActionResult> AddEditAsync(int? id)
         {
             ViewBag.ApiOrigin = _apiOrigin;
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             var projects = new List<ProjectMaster>();
             var projectResponse = await client.GetAsync($"{_apiOrigin}/api/ProjectMaster");
@@ -65,7 +68,7 @@ namespace TitanTechnologyView.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveTimesheet(Timesheet model)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             var allTimesheetsResponse = await client.GetAsync(apiBaseUrl);
             if (allTimesheetsResponse.IsSuccessStatusCode)
@@ -128,7 +131,6 @@ namespace TitanTechnologyView.Controllers
                 }
             }
 
-
             // ✅ Post to API
             string jsonData = JsonConvert.SerializeObject(model);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
@@ -139,6 +141,7 @@ namespace TitanTechnologyView.Controllers
             {
                 return RedirectToAction("Index");
             }
+
             else
             {
                 ModelState.AddModelError("", "Error saving data.");
@@ -150,7 +153,7 @@ namespace TitanTechnologyView.Controllers
         // Show List Page
         public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             // 1. Get Timesheets
             var timesheets = new List<Timesheet>();
@@ -196,7 +199,7 @@ namespace TitanTechnologyView.Controllers
 
         private async Task LoadDropdownData()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             var projects = new List<ProjectMaster>();
             var projectResponse = await client.GetAsync($"{_apiOrigin}/api/ProjectMaster");
@@ -219,7 +222,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckDuplicate(string projectCode, int employeeId, string timesheetType, string monthYear, int? timesheetId)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             var allTimesheetsResponse = await client.GetAsync(apiBaseUrl);
             if (allTimesheetsResponse.IsSuccessStatusCode)
@@ -241,6 +244,5 @@ namespace TitanTechnologyView.Controllers
 
             return Json(new { isDuplicate = false });
         }
-
     }
 }

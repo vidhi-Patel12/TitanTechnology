@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using NuGet.Protocol.Plugins;
 using System.Text;
 using System.Text.Json;
@@ -9,6 +10,17 @@ namespace TitanTechnologyView.Controllers
 {
     public class AuthController : Controller
     {
+        private readonly string _apiBaseUrl;
+        private readonly string _apiOrigin;
+        private readonly IHttpClientFactory _clientFactory;
+
+
+        public AuthController(IOptions<ApiSettings> apiSettings, IHttpClientFactory clientFactory)
+        {
+            _apiBaseUrl = apiSettings.Value.BaseUrl;
+            _apiOrigin = apiSettings.Value.Origin;
+            _clientFactory = clientFactory;
+        }
 
         [HttpGet]
         public IActionResult Register()
@@ -28,7 +40,7 @@ namespace TitanTechnologyView.Controllers
 
             try
             {
-                var response = await client.PostAsJsonAsync("https://localhost:44368/api/Register", model);
+                var response = await client.PostAsJsonAsync($"{_apiBaseUrl}/Register", model);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -70,7 +82,9 @@ namespace TitanTechnologyView.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
-            using var client = new HttpClient();
+            //using var client = new HttpClient();
+
+            var client = _clientFactory.CreateClient("IgnoreSSL");
 
             var loginRequest = new LoginRequest
             {
@@ -80,7 +94,7 @@ namespace TitanTechnologyView.Controllers
 
             try
             {
-                var response = await client.PostAsJsonAsync("https://localhost:44368/api/Login/password", loginRequest);
+                var response = await client.PostAsJsonAsync($"{_apiBaseUrl}/Login/password", loginRequest);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -91,7 +105,32 @@ namespace TitanTechnologyView.Controllers
                     var root = doc.RootElement;
                     var userRole = root.GetProperty("user").GetProperty("userRole").GetString();
                     var userRoleId = root.GetProperty("user").GetProperty("userRoleId").GetInt32();
+                    var emailId = root.GetProperty("user").GetProperty("email").GetString();
+                    var contactNumber = root.GetProperty("user").GetProperty("contact_number").GetString();
+                    var firstName = root.GetProperty("user").GetProperty("firstName").GetString();
+                    var lastName = root.GetProperty("user").GetProperty("lastName").GetString();
 
+                    var fullName = $"{firstName} {lastName}".Trim();
+
+                    if (response.Headers.TryGetValues("Set-Cookie", out var setCookieHeaders))
+                    {
+                        // find the cookie for InternalPortalAuth
+                        var setCookie = setCookieHeaders.FirstOrDefault(h => h.StartsWith("InternalPortalAuth="));
+                        if (!string.IsNullOrEmpty(setCookie))
+                        {
+                            // value part: "InternalPortalAuth=COOKIEVALUE; Path=/; HttpOnly; ..."
+                            var cookieValue = setCookie.Split(';', 2)[0].Split('=', 2)[1];
+
+                            // Save the cookie for the browser (so it will be available in HttpContext.Request.Cookies on next request)
+                            Response.Cookies.Append("InternalPortalAuth", cookieValue, new CookieOptions
+                            {
+                                HttpOnly = true,
+                                Secure = true,
+                                SameSite = SameSiteMode.Strict,
+                                Expires = DateTimeOffset.UtcNow.AddDays(1)
+                            });
+                        }
+                    }
 
                     if (!string.IsNullOrEmpty(userRole))
                     {
@@ -115,8 +154,57 @@ namespace TitanTechnologyView.Controllers
                         });
                     }
 
+                    if (!string.IsNullOrEmpty(emailId))
+                    {
+                        HttpContext.Response.Cookies.Append("Email", emailId, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTimeOffset.UtcNow.AddDays(1)
+                        });
+                    }
+
+                    if (!string.IsNullOrEmpty(contactNumber))
+                    {
+                        HttpContext.Response.Cookies.Append("ContactNumber", contactNumber, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTimeOffset.UtcNow.AddDays(1)
+                        });
+                    }
+
+                    if (!string.IsNullOrEmpty(fullName))
+                    {
+                        HttpContext.Response.Cookies.Append("FullName", fullName, new CookieOptions
+                        {
+                            HttpOnly = true,   // Prevent JS access
+                            Secure = true,     // Send only over HTTPS
+                            SameSite = SameSiteMode.Strict, // Protect from CSRF
+                            Expires = DateTimeOffset.UtcNow.AddDays(1) // Expiry time
+                        });
+                    }
+
                     TempData["SuccessMessage"] = "";
-                    return RedirectToAction("Index", "Company");
+                    //return RedirectToAction("Index", "Company");
+                    switch (userRole.ToLower())
+                    {
+                        case "admin":
+                            return RedirectToAction("Index", "Company");
+                        case "employee":
+                            return RedirectToAction("Index", "Employee");
+                        case "customer":
+                            return RedirectToAction("Index", "Customer");
+                        case "company":
+                            return RedirectToAction("Index", "Company");
+                        case "vendor":
+                            return RedirectToAction("Index", "Vendor");
+                        default:
+                            return RedirectToAction("Index", "Home"); // default
+                    }
+
                 }
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
@@ -141,7 +229,6 @@ namespace TitanTechnologyView.Controllers
                 return RedirectToAction(nameof(Login));
             }
         }
-
         public IActionResult Logout()
         {
 

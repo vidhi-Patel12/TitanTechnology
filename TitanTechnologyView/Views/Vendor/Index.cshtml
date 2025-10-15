@@ -65,6 +65,10 @@
                         <td>@item.BankAccountName</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
+                                <a asp-action="Details" asp-route-id="@item.VendorId"
+                                   class="btn btn-sm btn-outline-info" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
                                 <a asp-action="VendorForm" asp-route-id="@item.VendorId"
                                    class="btn btn-sm btn-outline-primary" title="Edit">
                                     <i class="bi bi-pencil-square"></i>

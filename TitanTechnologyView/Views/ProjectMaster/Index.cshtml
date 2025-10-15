@@ -32,16 +32,14 @@
         <table id="projectMastersTable" class="table table-striped table-hover align-middle" style="width:100%">
             <thead class="table-dark">
                 <tr>
-                    <th>ProjectCode</th>
-                    <th>Description</th>
-                    <th>CustomerName</th>
-                    <th>StartDate</th>
-                    <th>EndDate</th>
-                    <th>CustomerRate</th>
-                    <th>RateUnit</th>
-                    <th>HsCode</th>
-                    <th>Notes</th>
-                    <th>ApprovalLevel</th>
+                    <th>Project Code</th>
+                    <th>Customer Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Customer Rate</th>
+                    <th>Rate Unit</th>
+                    <th>HS Code</th>
+                    <th>Approval Level</th>
                     <th>Status</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -51,18 +49,31 @@
                 {
                     <tr>
                         <td>@item.ProjectCode</td>
-                        <td>@item.Description</td>
+                        @* <td>@item.Description</td> *@
                         <td>@item.CustomerMaster?.CustomerName</td>
                         <td>@item.StartDate?.ToString("yyyy-MM-dd")</td>
                         <td>@item.EndDate?.ToString("yyyy-MM-dd")</td>
                         <td>@item.CustomerRate</td>
                         <td>@item.RateUnit</td>
                         <td>@item.HsCode</td>
-                        <td>@item.Notes</td>
+                        @* <td>@item.Notes</td> *@
                         <td>@item.ApprovalLevel</td>
                         <td>@item.Status</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
+
+                                <!-- View Button -->
+                                <a asp-action="AddEdit" asp-controller="ProjectEmployee"
+                                   asp-route-projectCode="@item.ProjectCode"
+                                   class="btn btn-sm btn-success d-flex align-items-center gap-1"
+                                   title="Add Employee">
+                                    <i class="bi bi-person-plus"></i> 
+                                </a>
+                                <a asp-action="Details" asp-controller="ProjectMaster" asp-route-projectCode="@item.ProjectCode"
+                                   class="btn btn-sm btn-outline-info" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
                                 <a asp-action="AddEdit" asp-route-projectCode="@item.ProjectCode"
                                    class="btn btn-sm btn-outline-primary" title="Edit">
                                     <i class="bi bi-pencil-square"></i>

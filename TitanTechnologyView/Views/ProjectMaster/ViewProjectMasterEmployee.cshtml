@@ -1,0 +1,319 @@
+﻿@using TitanTechnologyView.Extensions
+@model TitanTechnologyView.Models.ProjectEmployeeMasterDto
+@{
+    ViewBag.Title = "ProjectMasterEmployee";
+}
+
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Employees</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Employee</a></li>
+                        <li>></li>
+                        <li>View Project Master and Employees</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-primary py-3 d-flex justify-content-between align-items-center">
+            <h3 class="mb-0 fw-bold text-white d-flex align-items-center">
+                <i class="bi bi-person-badge-fill me-2 fs-4 text-white"></i>
+                Project Master Details
+            </h3>
+            <a asp-action="Index" class="btn btn-outline-light btn-sm fw-bold">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row">
+                <!-- Left Column: General Information -->
+                <div class="text-primary fw-bold mb-3 mt-4 border-bottom pb-2">
+                    <h4 class="text-primary fw-bold mb-0">
+                        <i class="bi bi-info-circle me-2"></i>General Information
+                    </h4>
+                </div>
+
+                <div class="col-md-6 border-end pe-4">
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Project Code</div>
+                        <div class="col-md-8">@Model.projectMasters?.ProjectCode</div>
+                    </div>
+     
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Description</div>
+                        <div class="col-md-8">@Model.projectMasters?.Description</div>
+                    </div>
+    
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Start Date</div>
+                        <div class="col-md-8">@Model.projectMasters?.StartDate</div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">End Date</div>
+                        <div class="col-md-8">@Model.projectMasters?.EndDate</div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Customer Name</div>
+                        <div class="col-md-8">@Model.projectMasters?.CustomerMaster?.CustomerName</div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Customer Rate</div>
+                        <div class="col-md-8">@Model.projectMasters?.CustomerRate</div>
+                    </div>
+                </div>
+                    
+                <div class="col-md-6 ps-4">                    
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Rate Unit</div>
+                        <div class="col-md-8">@Model.projectMasters?.RateUnit</div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">HS Code</div>
+                        <div class="col-md-8">@Model.projectMasters?.HsCode</div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Notes</div>
+                        <div class="col-md-8">@Model.projectMasters?.Notes</div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Approval Level</div>
+                        <div class="col-md-8">@Model.projectMasters?.ApprovalLevel</div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Status</div>
+                        <div class="col-md-8">@Model.projectMasters?.Status</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔹 Project Employees Info -->
+            <h4 class="text-primary fw-bold mb-3 mt-4 border-bottom pb-2">
+                <i class="bi bi-people-fill me-2 fs-4 text-primary"></i>
+                Employees Assigned
+            </h4>
+            
+            @if (Model.projectEmployees != null && Model.projectEmployees.Any())
+            {
+            <div class="accordion" id="employeeAccordion">
+                @foreach (var emp in Model.projectEmployees)
+                {
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="heading_@emp.Id">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapse_@emp.Id"
+                                aria-expanded="false"
+                                aria-controls="collapse_@emp.Id">
+                            @emp.Name (@emp.EmployeeType)
+                        </button>
+                    </h2>
+                    <div id="collapse_@emp.Id" class="accordion-collapse collapse" 
+                        aria-labelledby="heading_@emp.Id" data-bs-parent="#employeeAccordion">
+                        <div class="accordion-body">
+
+                        <!-- Wrap columns inside a row -->
+                        <div class="row">
+                        <div class="col-md-6 border-end pe-4">
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Employee Name</div>
+                                <div class="col-md-8">@emp.Name</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Employee Type</div>
+                                <div class="col-md-8">@emp.EmployeeType</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Technology</div>
+                                <div class="col-md-8">@emp.Technology</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Allocation Type</div>
+                                <div class="col-md-8">@emp.AllocationType</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Commission Type</div>
+                                <div class="col-md-8">@emp.CommissionType</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Consultant Rate</div>
+                                <div class="col-md-8">@emp.ConsultantRate</div>
+                            </div>
+                    
+                            <div class="row mb-2">
+                                 <div class="col-md-4 text-muted fw-semibold">Rate Unit</div>
+                                 <div class="col-md-8">@emp.RateUnit</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Timesheet Type</div>
+                                <div class="col-md-8">@emp.TimesheetType</div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">SAP Module</div>
+                                <div class="col-md-8">@emp.SapModule</div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Employee Start Date</div>
+                                <div class="col-md-8">@emp.EmployeeStartDate?.ToString("yyyy-MM-dd")</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ps-4">
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Employee End Date</div>
+                                <div class="col-md-8">@emp.EmployeeEndDate?.ToString("yyyy-MM-dd")</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Cycle Start Day</div>
+                                <div class="col-md-8">@emp.CycleStartDay</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Cycle End Day</div>
+                                <div class="col-md-8">@emp.CycleEndDay</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Mode of Payments</div>
+                                <div class="col-md-8">@emp.PaymentMode</div>
+                            </div>
+
+                            <div class="row mb-2">
+                                 <div class="col-md-4 text-muted fw-semibold">Customer Rate</div>
+                                 <div class="col-md-8">@emp.CustomerRate</div>
+                            </div>
+
+                            <div class="row mb-2">
+                                 <div class="col-md-4 text-muted fw-semibold">Salary Payment Days</div>
+                                 <div class="col-md-8">@emp.SalaryPaymentDays</div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">TDS Percent</div>
+                                <div class="col-md-8">@emp.TdsPercent</div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">TDS Percent</div>
+                                <div class="col-md-8">@emp.TdsPercent</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Account Preference</div>
+                                 <div class="col-md-8">@emp.AccountPreference</div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col-md-4 text-muted fw-semibold">Text Fields</div>
+                                <div class="col-md-8">@emp.TextFields</div>
+                            </div>
+                         </div>
+                         </div> <!-- /.row -->
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">No employees assigned to this project yet.</div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Darker text for employee details */
+    .accordion-button,
+    .accordion-body {
+        color: #212529; /* Dark text */
+        font-weight: 500;
+    }
+
+    /* Lighter background for accordion boxes */
+    .accordion-item {
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+        background-color: #f8f9fa; /* light gray */
+    }
+
+    .accordion-button {
+        background-color: #e9ecef; /* header background */
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: #cfe2ff; /* open header color */
+        color: #0d6efd; /* primary text color */
+    }
+
+    /* Improve spacing inside accordion */
+    .accordion-body {
+        background-color: #ffffff; /* white content background */
+        padding: 1rem;
+        border-top: 1px solid #dee2e6;
+    }
+</style>
+
+
+@* 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all toggle buttons
+        const toggleButtons = document.querySelectorAll(".toggle-btn");
+
+        toggleButtons.forEach(button => {
+            const targetId = button.getAttribute("aria-controls");
+            const collapseEl = document.getElementById(targetId);
+
+            // Attach click event
+            button.addEventListener("click", function () {
+                // Bootstrap collapse instance
+                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
+
+                // Toggle the panel
+                bsCollapse.toggle();
+
+                // Update button text & class based on panel state
+                collapseEl.addEventListener("shown.bs.collapse", () => {
+                    button.textContent = "Hide Details";
+                    button.classList.remove("btn-success");
+                    button.classList.add("btn-danger");
+                });
+
+                collapseEl.addEventListener("hidden.bs.collapse", () => {
+                    button.textContent = "View Details";
+                    button.classList.remove("btn-danger");
+                    button.classList.add("btn-success");
+                });
+            });
+        });
+    });
+</script>
+ *@
