@@ -23,7 +23,7 @@ namespace TitanTechnologyView.Controllers
         // List
         public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             // 1️⃣ Fetch projects
             var projectResponse = await client.GetAsync(_apiUrl);
@@ -64,7 +64,7 @@ namespace TitanTechnologyView.Controllers
         public async Task<IActionResult> AddEdit(string? projectCode)
         {
             ViewBag.ApiOrigin = _apiOrigin;
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             var customerResponse = await client.GetAsync($"{_apiOrigin}/api/Customer");
             var customers = new List<CustomerFormDto>();
@@ -99,9 +99,18 @@ namespace TitanTechnologyView.Controllers
             {
                 return View("AddEdit", model);
             }
+
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            var checkResponse = await client.GetAsync($"{_apiUrl}/{model.ProjectCode}");
+            if (checkResponse.IsSuccessStatusCode && string.IsNullOrEmpty(model.ProjectCode) == false)
+            {
+                ModelState.AddModelError("ProjectCode", "Project Code already exists!");
+                return View("AddEdit", model);
+            }
+
             model.ProjectCode = model.ProjectCode?.Trim();
 
-            var client = _httpClientFactory.CreateClient();
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -121,11 +130,100 @@ namespace TitanTechnologyView.Controllers
             return View("AddEdit", model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Details(string projectCode)
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            // 2️⃣ Fallback: Fetch Project only
+            var projectResponse = await client.GetAsync($"{_apiUrl}/{projectCode}");
+            if (!projectResponse.IsSuccessStatusCode)
+            {
+                return NotFound("Project not found");
+            }
+
+            var projectJson = await projectResponse.Content.ReadAsStringAsync();
+            var projectMaster = JsonConvert.DeserializeObject<ProjectMaster>(projectJson);
+
+            // 3️⃣ Fetch Employees separately for this project
+            var employeeResponse = await client.GetAsync($"{_apiOrigin}/api/ProjectEmployee/by-project/{projectCode}");
+            var projectEmployees = new List<ProjectEmployee>();
+
+            if (employeeResponse.IsSuccessStatusCode)
+            {
+                var empJson = await employeeResponse.Content.ReadAsStringAsync();
+                projectEmployees = JsonConvert.DeserializeObject<List<ProjectEmployee>>(empJson) ?? new List<ProjectEmployee>();
+            }
+
+            // 3️⃣ Fetch all Employees to get names
+            var allEmployeeResponse = await client.GetAsync($"{_apiOrigin}/api/Employee");
+            var allEmployees = new List<EmployeeFormDto>();
+            if (allEmployeeResponse.IsSuccessStatusCode)
+            {
+                var empJson = await allEmployeeResponse.Content.ReadAsStringAsync();
+                allEmployees = JsonConvert.DeserializeObject<List<EmployeeFormDto>>(empJson) ?? new List<EmployeeFormDto>();
+            }
+
+            foreach (var pe in projectEmployees)
+            {
+                var emp = allEmployees.FirstOrDefault(e => e.EmployeeId == pe.EmployeeId);
+                if (emp != null)
+                {
+                    pe.Name = emp.Name;
+                }
+            }
+
+            // 🔹 Fetch Customer for this project
+            if (projectMaster != null && projectMaster.CustomerId > 0)
+            {
+                var customerResponse = await client.GetAsync($"{_apiOrigin}/api/Customer/{projectMaster.CustomerId}");
+                if (customerResponse.IsSuccessStatusCode)
+                {
+                    var customerJson = await customerResponse.Content.ReadAsStringAsync();
+                    var customer = JsonConvert.DeserializeObject<CustomerFormDto>(customerJson);
+
+                    if (customer != null)
+                    {
+                        projectMaster.CustomerMaster = new CustomerMaster
+                        {
+                            CustomerId = customer.CustomerId,
+                            CustomerName = customer.CustomerName
+                        };
+                    }
+                }
+            }
+
+            // 4️⃣ Build DTO manually
+            var res= new ProjectEmployeeMasterDto
+            {
+                projectMasters = projectMaster,
+                projectEmployees = projectEmployees
+            };
+
+            return View("ViewProjectMasterEmployee", res);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckProjectCode(string projectCode)
+        {
+            if (string.IsNullOrEmpty(projectCode))
+                return Json(new { exists = false });
+
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+            var response = await client.GetAsync($"{_apiUrl}/{projectCode}");
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { exists = true });
+            }
+            return Json(new { exists = false });
+        }
+
+
         // Delete
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");
         }

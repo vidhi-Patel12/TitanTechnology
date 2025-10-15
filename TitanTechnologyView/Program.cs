@@ -18,6 +18,15 @@ builder.Services.AddHttpClient("IgnoreSSL")
                 (message, cert, chain, errors) => true
         });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -32,6 +41,9 @@ if (!app.Environment.IsDevelopment())
 app.UseMiddleware<TitanTechnologyView.Middlewares.ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -40,6 +52,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 app.Run();

@@ -24,7 +24,7 @@ namespace TitanTechnologyView.Controllers
         // GET: List
         public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.GetAsync(_apiBaseUrl);
 
             if (!response.IsSuccessStatusCode)
@@ -61,7 +61,7 @@ namespace TitanTechnologyView.Controllers
         public async Task<IActionResult> AddEdit(int? id, string? projectCode)
             {
             ViewBag.ApiOrigin = _apiOrigin;
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             // Fetch projects
             var projectResponse = await client.GetAsync($"{_apiOrigin}/api/ProjectMaster");
@@ -155,7 +155,7 @@ namespace TitanTechnologyView.Controllers
 
             // Ensure booleans post properly
             
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             foreach (var employee in model) 
             {
@@ -186,14 +186,15 @@ namespace TitanTechnologyView.Controllers
 
             }    // Save successful → set flag
             TempData["Success"] = "Saved successfully!";
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "ProjectMaster");
         }
+
 
         // DELETE
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.DeleteAsync($"{_apiBaseUrl}/{id}");
 
             if (!response.IsSuccessStatusCode)

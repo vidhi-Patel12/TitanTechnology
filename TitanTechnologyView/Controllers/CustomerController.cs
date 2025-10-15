@@ -20,21 +20,20 @@ namespace TitanTechnologyView.Controllers
             _apiOrigin = apiSettings.Value.Origin;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        private async Task<List<CustomerMaster>> GetCustomersWithCompaniesAsync()
         {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync(_apiUrl);
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
+            // 1. Get customers
+            var response = await client.GetAsync(_apiUrl);
             if (!response.IsSuccessStatusCode)
             {
-                ViewBag.Error = "API call failed: " + response.StatusCode;
-                return View(new List<CustomerMaster>());
+                return new List<CustomerMaster>();
             }
-
             var json = await response.Content.ReadAsStringAsync();
             var customers = JsonConvert.DeserializeObject<List<CustomerMaster>>(json) ?? new();
 
+            // 2. Get companies
             var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
             var companies = new List<CompanyMasterDto>();
             if (companyResponse.IsSuccessStatusCode)
@@ -43,20 +42,98 @@ namespace TitanTechnologyView.Controllers
                 companies = JsonConvert.DeserializeObject<List<CompanyMasterDto>>(companyJson) ?? new();
             }
 
-            // 3. Map CompanyName into each customer
+            // 3. Map company name into customers
             foreach (var customer in customers)
             {
                 customer.CompanyName = companies.FirstOrDefault(c => c.CompanyCode == customer.CompanyCode)?.CompanyName;
             }
 
+            return customers;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var customers = await GetCustomersWithCompaniesAsync();
             return View(customers);
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> Details(int id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return BadRequest("Customer ID is required");
+        //    }
+
+        //    var customers = await GetCustomersWithCompaniesAsync();
+        //    var customer =  customers.FirstOrDefault(c => c.CustomerId == id);
+
+        //    if (customer == null)
+        //        return NotFound();
+
+        //    return View(customer);
+        //}
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            var response = await client.GetAsync($"{_apiUrl}/{id}");
+            if (!response.IsSuccessStatusCode) return Content("Employee not found");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var customer = JsonConvert.DeserializeObject<CustomerFormDto>(json);
+
+            // 2. Fetch vendor list
+            //var vendors = await FetchListAsync<VendorDto>($"{_apiOrigin}/api/Vendor");
+
+            //if (employee != null && employee.VendorId.HasValue)
+            //{
+            //    employee.VendorName = vendors.FirstOrDefault(x => x.VendorId == employee.VendorId.Value)?.VendorName ?? "N/A";
+            //}
+
+            return View("ViewCustomer", customer);
+        }
+
+        //[HttpGet]
+        //public async Task<IActionResult> Index()
+        //{
+        //    var client = _httpClientFactory.CreateClient("IgnoreSSL");
+        //    var response = await client.GetAsync(_apiUrl);
+
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        ViewBag.Error = "API call failed: " + response.StatusCode;
+        //        return View(new List<CustomerMaster>());
+        //    }
+
+        //    var json = await response.Content.ReadAsStringAsync();
+        //    var customers = JsonConvert.DeserializeObject<List<CustomerMaster>>(json) ?? new();
+
+        //    var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
+        //    var companies = new List<CompanyMasterDto>();
+        //    if (companyResponse.IsSuccessStatusCode)
+        //    {
+        //        var companyJson = await companyResponse.Content.ReadAsStringAsync();
+        //        companies = JsonConvert.DeserializeObject<List<CompanyMasterDto>>(companyJson) ?? new();
+        //    }
+
+        //    // 3. Map CompanyName into each customer
+        //    foreach (var customer in customers)
+        //    {
+        //        customer.CompanyName = companies.FirstOrDefault(c => c.CompanyCode == customer.CompanyCode)?.CompanyName;
+        //    }
+
+        //    return View(customers);
+        //}
 
         [HttpGet]
         public async Task<IActionResult> AddCustomer(int id = 0)
         {
             ViewBag.ApiOrigin = _apiOrigin; // so the view can build absolute links
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
             var companies = new List<CompanyMasterDto>();
@@ -96,7 +173,7 @@ namespace TitanTechnologyView.Controllers
                 return View("AddCustomer", model);
             }
 
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             using var content = new MultipartFormDataContent();
 
             // Base fields
@@ -117,7 +194,6 @@ namespace TitanTechnologyView.Controllers
             await content.AttachFileAsync(client, "AgreementFile3", model.AgreementFile3, model.Agreement3, _apiOrigin);
             await content.AttachFileAsync(client, "AgreementFile4", model.AgreementFile4, model.Agreement4, _apiOrigin);
 
-
             // Your API uses POST for both insert/update
             var response = await client.PostAsync(_apiUrl, content);
 
@@ -136,7 +212,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");
         }
