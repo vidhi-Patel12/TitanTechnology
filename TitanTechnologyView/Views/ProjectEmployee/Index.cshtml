@@ -31,28 +31,27 @@
         <table id="projectEmployeesTable" class="table table-striped table-hover align-middle" style="width:100%">
             <thead class="table-dark">
                 <tr>
-                    <th>ProjectCode</th>
-                    <th>EmployeeName</th>
-                    <th>EmployeeType</th>
+                    <th>Project Code</th>
+                    <th>Employee Name</th>
+                    <th>Employee Type</th>
                     <th>Technology</th>
-                    <th>AllocationType</th>
-                    <th>CommissionType</th>
-                    <th>ConsultantRate</th>
-                    <th>RateUnit</th>
-                    <th>TimeSheetType</th>
-                    <th>SapModule</th>
-                    <th>EmployeeStartDate</th>
-                    <th>EmployeeEndDate</th>
-                    <th>CycleStartDay</th>
-                    <th>CycleEndDay</th>
-                    <th>PaymentMode</th>
-                    <th>TimesheetRequired</th>
-                    <th>CustomerRate</th>
+                    <th>Allocation Type</th>
+                    <th>Commission Type</th>
+                    <th>Consultant Rate</th>
+                    <th>Rate Unit</th>
+                    <th>TimeSheet Type</th>
+                    <th>Sap Module</th>
+                    <th>Employee Start Date</th>
+                    <th>Employee End Date</th>
+                    <th>Cycle Start Day</th>
+                    <th>Cycle End Day</th>
+                    <th>Payment Mode</th>
+                    <th>Timesheet Required</th>
+                    <th>Customer Rate</th>
                     <th>Inactive</th>
-                    <th>SalaryPaymentDays</th>
-                    <th>TdsPercent</th>
-                    <th>AccountPreference</th>
-                    <th>TextFields</th>
+                    <th>Salary Payment Days</th>
+                    <th>Tds Percent</th>
+                    <th>Account Preference</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
@@ -81,7 +80,6 @@
                         <td>@item.SalaryPaymentDays</td>
                         <td>@item.TdsPercent</td>
                         <td>@item.AccountPreference</td>
-                        <td>@item.TextFields</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
                                 <a asp-action="AddEdit" asp-route-id="@item.Id"

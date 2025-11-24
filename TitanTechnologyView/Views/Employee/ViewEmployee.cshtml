@@ -1,138 +1,302 @@
-﻿@model TitanTechnologyView.Models.EmployeeFormDto
+﻿@using TitanTechnologyView.Extensions
+@model TitanTechnologyView.Models.EmployeeFormDto
+@{
+    ViewBag.Title = "Employees";
+}
 
-<div class="p-3">
-    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2">General Information</h5>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Employee Type</div>
-        <div class="col-md-8">@Model.EmployeeType</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Company</div>
-        <div class="col-md-8">@Model.CompanyCode</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Vendor</div>
-        <div class="col-md-8">@Model.VendorName</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Name</div>
-        <div class="col-md-8">@Model.Name</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Alt Name</div>
-        <div class="col-md-8">@Model.AltName</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Age</div>
-        <div class="col-md-8">@Model.Age</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Skill Set</div>
-        <div class="col-md-8">@Model.SkillSet</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Experience</div>
-        <div class="col-md-8">@Model.Experience</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Timing Availability</div>
-        <div class="col-md-8">@Model.TimingAvailability</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Contact Number1</div>
-        <div class="col-md-8">
-            @Model.ContactNumber1  
+<div class="hero-area-form style-one d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcumb-content">
+                    <h4>Employees</h4>
+                    <ul>
+                        <li><a asp-action="Index" asp-controller="Home">Employee</a></li>
+                        <li>></li>
+                        <li>View Employees</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
+</div>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-primary py-3 d-flex justify-content-between align-items-center">
+            <h3 class="mb-0 fw-bold text-white d-flex align-items-center">
+                <i class="bi bi-person-badge-fill me-2 fs-4 text-white"></i>
+                Employee Details
+            </h3>
+            <a asp-action="Index" class="btn btn-outline-light btn-sm fw-bold">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
 
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Contact Number2</div>
-        <div class="col-md-8">
-            @Model.ContactNumber2
+        
+        <div class="card-body p-4">
+            <div class="row">
+                <!-- Left Column: General Information -->
+                <div class="col-md-6 border-end pe-4">
+                    <h4 class="text-primary fw-bold border-bottom pb-2 mb-4">
+                        <i class="bi bi-info-circle me-2"></i> General Information
+                    </h4>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Employee Type</div>
+                        <div class="col-md-8">@Model.EmployeeType</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Company Code</div>
+                        <div class="col-md-8">@Model.CompanyCode</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Vendor Name</div>
+                        <div class="col-md-8">@Model.VendorName</div>
+                    </div>
+
+                   @*  <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Customer Name</div>
+                        <div class="col-md-8">@Model.projectMasters?.CustomerMaster?.CustomerName</div>
+                    </div> *@
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Name</div>
+                        <div class="col-md-8">@Model.Name</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Alt Name</div>
+                        <div class="col-md-8">@Model.AltName</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Age</div>
+                        <div class="col-md-8">@Model.Age</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Skill Set</div>
+                        <div class="col-md-8">@Model.SkillSet</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Experience</div>
+                        <div class="col-md-8">@Model.Experience</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Timing Availability</div>
+                        <div class="col-md-8">@Model.TimingAvailability</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Contact Number1</div>
+                        <div class="col-md-8">
+                            @if (!string.IsNullOrEmpty(Model.ContactNumber1))
+                            {
+                                <span> @Model.ContactNumber1</span>
+                            }
+                            else
+                            {
+                                <span>Not Found</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Contact Number2</div>
+                        <div class="col-md-8">
+                            @if (!string.IsNullOrEmpty(Model.ContactNumber2))
+                            {
+                                <span>@Model.ContactNumber2</span>
+                            }
+                            else
+                            {
+                                <span>Not Found</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Remarks</div>
+                        <div class="col-md-8">@Model.Remarks</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Referred By</div>
+                        <div class="col-md-8">@Model.ReferredBy</div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Bank & PAN -->
+                <div class="col-md-6 ps-4">
+                    <h4 class="text-primary fw-bold border-bottom pb-2 mb-4">
+                        <i class="bi bi-bank me-2"></i> Bank & PAN Details
+                    </h4>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">PAN Number 1</div>
+                        <div class="col-md-8">@Model.PanNumber</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Account Number 1</div>
+                        <div class="col-md-8">@Model.AccountNumber1</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">IFSC Code 1</div>
+                        <div class="col-md-8">@Model.IfscCode1</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Account Name 1</div>
+                        <div class="col-md-8">@Model.AccountName1</div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">PAN Number 2</div>
+                        <div class="col-md-8">@Model.PanNumber2</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Account Number 2</div>
+                        <div class="col-md-8">@Model.AccountNumber2</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">IFSC Code 2</div>
+                        <div class="col-md-8">@Model.IfscCode2</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Account Name 2</div>
+                        <div class="col-md-8">@Model.AccountName2</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uploaded Files below both columns -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4 class="text-primary fw-bold border-bottom pb-2 mb-4">
+                        <i class="bi bi-file-earmark-arrow-down me-2"></i> Uploaded Files
+                    </h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">NDA File</div>
+                        <div class="col-md-8">
+                            @if (!string.IsNullOrEmpty(Model.NdaUpload))
+                            {
+                                <a href="@Url.Content(Model.NdaUpload)"
+                                   class="text-decoration-none text-success fw-semibold"
+                                   target="_blank">
+                                    @FileHelpers.GetCleanFileName(Model.NdaUpload)
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not Uploaded</span>
+                            }
+                        </div>
+                    </div>
+
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">AdharCard Upload</div>
+                        <div class="col-md-8">
+                            @if (!string.IsNullOrEmpty(Model.AadharUpload))
+                            {
+                                <a href="@Url.Content(Model.AadharUpload)"
+                                   class="text-decoration-none text-success fw-semibold"
+                                   target="_blank">
+                                    @FileHelpers.GetCleanFileName(Model.AadharUpload)
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not Uploaded</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">PAN Card Upload</div>
+                        <div class="col-md-8">
+                            @if (!string.IsNullOrEmpty(Model.PanUpload))
+                            {
+                                <a href="@Url.Content(Model.PanUpload)"
+                                   class="text-decoration-none text-success fw-semibold"
+                                   target="_blank">
+                                    @FileHelpers.GetCleanFileName(Model.PanUpload)
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not Uploaded</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Cheque Upload</div>
+                        <div class="col-md-8">
+                            @if (!string.IsNullOrEmpty(Model.Cheque1Upload))
+                            {
+                                <a href="@Url.Content(Model.Cheque1Upload)"
+                                   class="text-decoration-none text-success fw-semibold"
+                                   target="_blank">
+                                    @FileHelpers.GetCleanFileName(Model.Cheque1Upload)
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not Uploaded</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">AdharCard2 Upload</div>
+                        <div class="col-md-8">
+                            @if (!string.IsNullOrEmpty(Model.Aadhar2Upload))
+                            {
+                                <a href="@Url.Content(Model.Aadhar2Upload)"
+                                   class="text-decoration-none text-success fw-semibold"
+                                   target="_blank">
+                                    @FileHelpers.GetCleanFileName(Model.Aadhar2Upload)
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not Uploaded</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">PAN Card2 Upload</div>
+                        <div class="col-md-8">
+                            @if (!string.IsNullOrEmpty(Model.PanUpload2))
+                            {
+                                <a href="@Url.Content(Model.PanUpload2)"
+                                   class="text-decoration-none text-success fw-semibold"
+                                   target="_blank">
+                                    @FileHelpers.GetCleanFileName(Model.PanUpload2)
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not Uploaded</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted fw-semibold">Cheque2 Upload</div>
+                        <div class="col-md-8">
+                            @if (!string.IsNullOrEmpty(Model.Cheque2Upload))
+                            {
+                                <a href="@Url.Content(Model.Cheque2Upload)"
+                                   class="text-decoration-none text-success fw-semibold"
+                                   target="_blank">
+                                    @FileHelpers.GetCleanFileName(Model.Cheque2Upload)
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not Uploaded</span>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
-
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Remarks</div>
-        <div class="col-md-8">@Model.Remarks</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Referred By</div>
-        <div class="col-md-8">@Model.ReferredBy</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Created By</div>
-        <div class="col-md-8">@Model.CreatedBy</div>
-    </div>
-
-    <!-- Section Divider -->
-    <h5 class="mt-4 mb-3 text-primary fw-bold border-bottom pb-2">Bank & PAN Details</h5>
-   
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">PAN Number 1</div>
-        <div class="col-md-8">@Model.PanNumber</div>
-    </div>
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Account Number 1</div>
-        <div class="col-md-8">@Model.AccountNumber1</div>
-    </div>
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">IFSC Code 1</div>
-        <div class="col-md-8">@Model.IfscCode1</div>
-    </div>
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Account Name 1</div>
-        <div class="col-md-8">@Model.AccountName1</div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">PAN Number 2</div>
-        <div class="col-md-8">@Model.PanNumber2</div>
-    </div>
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Account Number 2</div>
-        <div class="col-md-8">@Model.AccountNumber2</div>
-    </div>
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">IFSC Code 2</div>
-        <div class="col-md-8">@Model.IfscCode2</div>
-    </div>
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">Account Name 2</div>
-        <div class="col-md-8">@Model.AccountName2</div>
-    </div>
-
-    <!-- Section Divider -->
-    <h5 class="mt-4 mb-3 text-primary fw-bold border-bottom pb-2">File Uploading Details</h5>
-    <div class="row mb-2">
-        <div class="col-md-4 fw-semibold text-muted">PAN File</div>
-        <div class="col-md-8">
-            @if (!string.IsNullOrEmpty(Model.PanUpload))
-            {
-                <a href="@(System.IO.Path.GetFileName(Model.PanUpload))"
-                   class="text-decoration-none text-success fw-semibold"
-                   target="_blank">
-                    📎  @(System.IO.Path.GetFileName(Model.PanUpload))
-                </a>
-            }
-            else
-            {
-                <span class="text-muted">Not Uploaded</span>
-            }
-        </div>
-    </div>
-
 </div>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
@@ -12,10 +13,14 @@ namespace TitanTechnologyView.Controllers
         private readonly string _apiOrigin = "https://api.titentechnology.com";
         private readonly string apiBaseUrl = "https://api.titentechnology.com/api/TimesheetEntry";
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string apiBaseUrl;
+        private readonly string _apiOrigin;
 
-        public TimesheetEntryController(IHttpClientFactory httpClientFactory)
+        public TimesheetEntryController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
+            apiBaseUrl = $"{apiSettings.Value.BaseUrl}/TimesheetEntry";
+            _apiOrigin = apiSettings.Value.Origin;
         }
 
         // Show Add/Edit Form
@@ -28,7 +33,7 @@ namespace TitanTechnologyView.Controllers
             // If editing
             if (id is > 0)
             {
-                var client = _httpClientFactory.CreateClient();
+                var client = _httpClientFactory.CreateClient("IgnoreSSL");
                 var response = await client.GetAsync($"{apiBaseUrl}/{id}");
                 if (response.IsSuccessStatusCode)
                 {
@@ -54,7 +59,7 @@ namespace TitanTechnologyView.Controllers
                 return View("AddEdit", model);
             }
 
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             // 🔍 Load all entries to check duplicates
             var allResponse = await client.GetAsync(apiBaseUrl);
@@ -111,7 +116,7 @@ namespace TitanTechnologyView.Controllers
         // Show List Page
         public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var list = new List<TimeSheetEntry>();
 
             var response = await client.GetAsync(apiBaseUrl);
@@ -155,14 +160,14 @@ namespace TitanTechnologyView.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.DeleteAsync($"{apiBaseUrl}/{id}");
             return RedirectToAction("Index");
         }
 
         private async Task LoadTimesheets()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var timesheets = new List<Timesheet>();
             var employees = new List<EmployeeMaster>();
 
@@ -197,7 +202,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckDuplicate(int timesheetId, DateTime entryDate)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.GetAsync(apiBaseUrl);
 
             if (!response.IsSuccessStatusCode)

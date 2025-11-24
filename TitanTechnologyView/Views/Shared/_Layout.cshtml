@@ -7,7 +7,18 @@
                     var isEmployee = userRoleId == 2;  // assuming 2 = Employee
                     var isAdmin = userRoleId == 5;     // assuming 1 = Admin
 
+ @*   @{
+                        var userRole = Context.Request.Cookies["UserRole"];} 
+ *@
+
+@{
+    // var userRole = Context.Request.Cookies["UserRole"];
+    int.TryParse(Context.Request.Cookies["UserRoleId"], out var userRoleId);
+    var isEmployee = userRoleId == 2;  // assuming 2 = Employee
+    var isCustomer = userRoleId == 3;
+    var isAdmin = userRoleId == 5;     // assuming 1 = Admin
 }
+
 <style>
     div.dataTables_wrapper div.dataTables_length label, div.dataTables_wrapper div.dataTables_filter label {
         color: black;
@@ -52,7 +63,12 @@
         content: " -";
     }
 
+        div.dataTables_wrapper div.dataTables_length label, div.dataTables_wrapper div.dataTables_filter label 
+        {
+            color: black;
+        }
 </style>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -103,6 +119,7 @@
     <link href="https://cdn.jsdelivr.net/npm/@@ttskch/select2-bootstrap4-theme@1.6.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
 
     @* @RenderSection("Styles", required: false)  <!--  add this --> *@
+    @* @RenderSection("Styles", required: false)  <!-- 👈 add this --> *@
 </head>
 <style>
     div.dataTables_wrapper div.dataTables_length label, div.dataTables_wrapper div.dataTables_filter label {

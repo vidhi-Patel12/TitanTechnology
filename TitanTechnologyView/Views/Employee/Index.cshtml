@@ -38,6 +38,28 @@
                     <th>Skill Set</th>
                     <th>Experience</th>
                     <th>Contact Number</th>
+                    <th>Employee Type</th>
+                    <th>Company Code</th>
+                    <th>Vendor</th>
+                    <th>Name</th>
+                    <th>Alt Name</th>
+                    <th>Age</th>
+                    <th>Skill Set</th>
+                    <th>Experience</th>
+                    <th>Timing Availability</th>
+                    <th>Contact Number1</th>
+                    <th>Contact Number2</th>
+                    <th>Remarks</th>
+                    <th>ReferredBy</th>
+                    <th>CreatedBy</th>
+                    <th>Pan Number</th>
+                    <th>Account Number1</th>
+                    <th>IfscCode1</th>
+                    <th>Account Name1</th>
+                    <th>Pan Number2</th>
+                    <th>Account Number2</th>
+                    <th>IfscCode2</th>
+                    <th>Account Name2</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
@@ -55,18 +77,16 @@
                         
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
-                                <a href="javascript:void(0);"
-                                   class="btn btn-sm btn-outline-info"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#viewModal"
-                                   data-id="@item.EmployeeId"
-                                   title="View">
+                                <a asp-action="Details" asp-route-id="@item.EmployeeId"
+                                   class="btn btn-sm btn-outline-info" title="View">
                                     <i class="bi bi-eye"></i>
                                 </a>
+
                                 <a asp-action="AddEmployee" asp-route-id="@item.EmployeeId"
                                    class="btn btn-sm btn-outline-primary" title="Edit">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
+
                                 <a href="javascript:void(0);" class="btn btn-sm btn-outline-danger"
                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
                                    data-id="@item.EmployeeId" title="Delete">
@@ -101,7 +121,7 @@
 </div>
 
 <!-- View Employee Modal -->
-<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+@* <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
@@ -116,7 +136,7 @@
         </div>
     </div>
 </div>
-
+ *@
 
 @section Scripts {
     <!-- DataTables + Bootstrap 5 -->
@@ -140,25 +160,25 @@
         });
 
          // View Employee Logic
-        var viewModal = document.getElementById('viewModal');
-        viewModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var employeeId = button.getAttribute('data-id');
-            var contentDiv = document.getElementById('viewEmployeeContent');
+        // var viewModal = document.getElementById('viewModal');
+        // viewModal.addEventListener('show.bs.modal', function (event) {
+        //     var button = event.relatedTarget;
+        //     var employeeId = button.getAttribute('data-id');
+        //     var contentDiv = document.getElementById('viewEmployeeContent');
 
-            // Show loading
-            contentDiv.innerHTML = "<p class='text-muted'>Loading details...</p>";
+        //     // Show loading
+        //     contentDiv.innerHTML = "<p class='text-muted'>Loading details...</p>";
 
-            // Fetch employee details
-            fetch('/Employee/Details/' + employeeId)
-                .then(response => response.text())
-                .then(html => {
-                    contentDiv.innerHTML = html;
-                })
-                .catch(() => {
-                    contentDiv.innerHTML = "<p class='text-danger'>Failed to load details.</p>";
-                });
-        });
+        //     // Fetch employee details
+        //     fetch('/Employee/Details/' + employeeId)
+        //         .then(response => response.text())
+        //         .then(html => {
+        //             contentDiv.innerHTML = html;
+        //         })
+        //         .catch(() => {
+        //             contentDiv.innerHTML = "<p class='text-danger'>Failed to load details.</p>";
+        //         });
+        // });
 
 
         // Delete confirmation logic

@@ -41,7 +41,7 @@
                                 <div class="single-input-box">
                                     @if (Model?.ProjectCode == null) // Add mode
                                     {
-                                        <input asp-for="ProjectCode" type="text" placeholder="Project Code" required />
+                                        <input asp-for="ProjectCode" type="text" placeholder="Project Code" id="ProjectCodeInput" required />
                                     }
                                     else // Edit mode
                                     {
@@ -54,6 +54,9 @@
                                     <input asp-for="ProjectName" type="text" placeholder="Project Name" required />
                                     <span asp-validation-for="ProjectName" class="text-danger field-validation"></span>
                                 </div>
+                                     <span asp-validation-for="ProjectCode" class="text-danger"></span>
+                                     <span id="projectCodeError" class="text-danger"></span>
+                                 </div>
                             </div>
 
                             <!-- Description -->
@@ -89,6 +92,7 @@
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <select asp-for="CustomerId" required
+                                    <select asp-for="CustomerId" class="form-select"
                                             asp-items="@(ViewBag.Customers != null
                                                                                     ? new SelectList(ViewBag.Customers, "CustomerId", "CustomerName", Model?.CustomerId)
                                                                                     : new List<SelectListItem>())">
@@ -207,6 +211,74 @@
             if (!valid) {
                 e.preventDefault();
                 // alert("Please fill all required fields correctly.");
+        const btnSave = document.getElementById("btnSave");
+        const form = document.getElementById("projectMasterForm");
+        const projectCodeInput = document.getElementById("ProjectCodeInput");
+        const projectCodeError = document.getElementById("projectCodeError");
+        const redirectInput = document.getElementById("RedirectToEmployee");
+
+        // Save confirmation popup with duplicate check
+        btnSave?.addEventListener("click", async function (e) {
+            e.preventDefault();
+            
+           const code = projectCodeInput?.value.trim();
+            if (!code) 
+            {
+                return;
+            }
+
+            try {
+                // Call API to check duplicate ProjectCode
+                const res = await fetch(`/ProjectMaster/CheckProjectCode?projectCode=${code}`);
+                const data = await res.json();
+
+                if (data.exists) {
+                    // Show message and stop save
+                    projectCodeError.textContent = "Project Code already exists!";
+                    projectCodeInput.focus();
+                    return; // stop further action
+                }   
+                else 
+                {
+                    projectCodeError.textContent = "";
+                    const modal = new bootstrap.Modal(document.getElementById("saveModal"));
+                    modal.show();
+                }
+            } 
+            catch (err) 
+            {
+                console.error(err);
+            }
+        });
+        // 🔹 Save only button
+            
+        const btnSaveOnly = document.getElementById("btnSaveOnly");
+        btnSaveOnly?.addEventListener("click", function () {
+            redirectInput.value = "false";
+            form.submit();
+        });
+
+        // 🔹 Save & Add employee button
+        const btnSaveAndAdd = document.getElementById("btnSaveAndAdd");
+        btnSaveAndAdd?.addEventListener("click", function () {
+            redirectInput.value = "true";
+            form.submit();
+        });
+       
+        // 🔹 Date validation
+        const startDateInput = document.getElementById("StartDate");
+        const endDateInput = document.getElementById("EndDate");
+        const errorSpan = document.getElementById("dateError");
+
+        function validateDates() {
+            if (!startDateInput?.value || !endDateInput?.value) { errorSpan.textContent = ""; return; }
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            if (endDate < startDate) {
+                errorSpan.textContent = "End Date cannot be before Start Date.";
+                endDateInput.value = "";
+            } else {
+                errorSpan.textContent = "";
             }
         });
 
@@ -309,3 +381,5 @@
     </script>
 
 }
+}
+    

@@ -25,6 +25,7 @@ namespace TitanTechnologyView.Controllers
 
 
         private HttpClient CreateClient() => _httpClientFactory.CreateClient();
+        private HttpClient CreateClient() => _httpClientFactory.CreateClient("IgnoreSSL");
 
         private HttpClient CreateClients()
         {
@@ -51,7 +52,10 @@ namespace TitanTechnologyView.Controllers
         {
             var client = CreateClients();
             var response = await client.GetAsync(url);
-            if (!response.IsSuccessStatusCode) return new List<T>();
+            if (!response.IsSuccessStatusCode) 
+            { 
+                return new List<T>(); 
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<T>>(json) ?? new List<T>();
@@ -83,6 +87,7 @@ namespace TitanTechnologyView.Controllers
             // 1. Fetch vendor list from API
             ViewBag.ApiOrigin = _apiOrigin;
             var client = CreateClients();
+            var client = CreateClient();
 
             ViewBag.EmployeeTypes = await client.GetDropdownAsync(_apiOrigin, "Employee Type");
             ViewBag.Companys = await FetchListAsync<CompanyMasterDto>($"{_apiOrigin}/api/Company");
@@ -191,17 +196,23 @@ namespace TitanTechnologyView.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var client = CreateClients();
+            var client = CreateClient();
+
             var response = await client.GetAsync($"{_apiUrl}/{id}");
             if (!response.IsSuccessStatusCode) return Content("Employee not found");
 
             var json = await response.Content.ReadAsStringAsync();
             var employee = JsonConvert.DeserializeObject<EmployeeFormDto>(json);
 
-            // Map vendor name
+            // 2. Fetch vendor list
             var vendors = await FetchListAsync<VendorDto>($"{_apiOrigin}/api/Vendor");
-            employee.VendorName = vendors.FirstOrDefault(v => v.VendorId == employee.VendorId)?.VendorName ?? "N/A";
+            
+            if (employee != null && employee.VendorId.HasValue) 
+            {
+                employee.VendorName = vendors.FirstOrDefault(x => x.VendorId == employee.VendorId.Value)?.VendorName ?? "N/A";    
+            }
 
-            return PartialView("ViewEmployee", employee);
+            return View("ViewEmployee", employee);
         }
 
 

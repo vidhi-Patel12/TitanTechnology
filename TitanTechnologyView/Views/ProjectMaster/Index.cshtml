@@ -43,6 +43,9 @@
                     @* <th>Notes</th>
                     <th>Approval Level</th>
                     <th>Status</th> *@
+                    <th>HS Code</th>
+                    <th>Approval Level</th>
+                    <th>Status</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
@@ -57,6 +60,7 @@
                                                     : item.Description)
                         </td>
 
+                        @* <td>@item.Description</td> *@
                         <td>@item.CustomerMaster?.CustomerName</td>
                         <td>@item.StartDate?.ToString("yyyy-MM-dd")</td>
                         <td>@item.EndDate?.ToString("yyyy-MM-dd")</td>
@@ -64,10 +68,25 @@
                         <td>@item.RateUnit</td>
                         @* <td>@item.HsCode</td>
                         <td>@item.Notes</td>
+                        <td>@item.HsCode</td>
+                        @* <td>@item.Notes</td> *@
                         <td>@item.ApprovalLevel</td>
                         <td>@item.Status</td> *@
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
+
+                                <!-- View Button -->
+                                <a asp-action="AddEdit" asp-controller="ProjectEmployee"
+                                   asp-route-projectCode="@item.ProjectCode"
+                                   class="btn btn-sm btn-success d-flex align-items-center gap-1"
+                                   title="Add Employee">
+                                    <i class="bi bi-person-plus"></i> 
+                                </a>
+                                <a asp-action="Details" asp-controller="ProjectMaster" asp-route-projectCode="@item.ProjectCode"
+                                   class="btn btn-sm btn-outline-info" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
                                 <a asp-action="AddEdit" asp-route-projectCode="@item.ProjectCode"
                                    class="btn btn-sm btn-outline-primary" title="Edit">
                                     <i class="bi bi-pencil-square"></i>

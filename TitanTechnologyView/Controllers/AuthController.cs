@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using NuGet.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using NuGet.Protocol.Plugins;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -44,6 +46,17 @@ namespace TitanTechnologyView.Controllers
             return client;
         }
 
+        private readonly string _apiBaseUrl;
+        private readonly string _apiOrigin;
+        private readonly IHttpClientFactory _clientFactory;
+
+
+        public AuthController(IOptions<ApiSettings> apiSettings, IHttpClientFactory clientFactory)
+        {
+            _apiBaseUrl = apiSettings.Value.BaseUrl;
+            _apiOrigin = apiSettings.Value.Origin;
+            _clientFactory = clientFactory;
+        }
 
         [HttpGet]
         public IActionResult Register()
@@ -64,6 +77,7 @@ namespace TitanTechnologyView.Controllers
             try
             {
                 var response = await client.PostAsJsonAsync($"{_apiBase}/Register", model);
+                var response = await client.PostAsJsonAsync($"{_apiBaseUrl}/Register", model);
 
                 string content = await response.Content.ReadAsStringAsync();
 
@@ -98,6 +112,8 @@ namespace TitanTechnologyView.Controllers
 
             //using var client = new HttpClient();
 
+            var client = _clientFactory.CreateClient("IgnoreSSL");
+
             var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
            
@@ -111,6 +127,7 @@ namespace TitanTechnologyView.Controllers
             {
 
                 var response = await client.PostAsJsonAsync($"{_apiBase}/Login/password", loginRequest);
+                var response = await client.PostAsJsonAsync($"{_apiBaseUrl}/Login/password", loginRequest);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -173,6 +190,27 @@ namespace TitanTechnologyView.Controllers
                             SameSite = SameSiteMode.None,
                             Expires = DateTimeOffset.UtcNow.AddDays(1)
                         });
+
+                    var fullName = $"{firstName} {lastName}".Trim();
+
+                    if (response.Headers.TryGetValues("Set-Cookie", out var setCookieHeaders))
+                    {
+                        // find the cookie for InternalPortalAuth
+                        var setCookie = setCookieHeaders.FirstOrDefault(h => h.StartsWith("InternalPortalAuth="));
+                        if (!string.IsNullOrEmpty(setCookie))
+                        {
+                            // value part: "InternalPortalAuth=COOKIEVALUE; Path=/; HttpOnly; ..."
+                            var cookieValue = setCookie.Split(';', 2)[0].Split('=', 2)[1];
+
+                            // Save the cookie for the browser (so it will be available in HttpContext.Request.Cookies on next request)
+                            Response.Cookies.Append("InternalPortalAuth", cookieValue, new CookieOptions
+                            {
+                                HttpOnly = true,
+                                Secure = true,
+                                SameSite = SameSiteMode.Strict,
+                                Expires = DateTimeOffset.UtcNow.AddDays(1)
+                            });
+                        }
                     }
 
                     if (!string.IsNullOrEmpty(userRole))
@@ -208,6 +246,17 @@ namespace TitanTechnologyView.Controllers
                         });
                     }
 
+                    if (!string.IsNullOrEmpty(emailId))
+                    {
+                        HttpContext.Response.Cookies.Append("Email", emailId, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTimeOffset.UtcNow.AddDays(1)
+                        });
+                    }
+
                     if (!string.IsNullOrEmpty(contactNumber))
                     {
                         HttpContext.Response.Cookies.Append("ContactNumber", contactNumber, new CookieOptions
@@ -215,6 +264,7 @@ namespace TitanTechnologyView.Controllers
                             HttpOnly = true,
                             Secure = true,
                             SameSite = SameSiteMode.None,
+                            SameSite = SameSiteMode.Strict,
                             Expires = DateTimeOffset.UtcNow.AddDays(1)
                         });
                     }
@@ -226,6 +276,7 @@ namespace TitanTechnologyView.Controllers
                             HttpOnly = true,   // Prevent JS access
                             Secure = true,     // Send only over HTTPS
                             SameSite = SameSiteMode.None, // Protect from CSRF
+                            SameSite = SameSiteMode.Strict, // Protect from CSRF
                             Expires = DateTimeOffset.UtcNow.AddDays(1) // Expiry time
                         });
                     }
@@ -244,6 +295,11 @@ namespace TitanTechnologyView.Controllers
                             return RedirectToAction("CompanyDashboard", "Company");
                         case "vendor":
                             return RedirectToAction("VendorDashboard", "Vendor");
+                            return RedirectToAction("Index", "Customer");
+                        case "company":
+                            return RedirectToAction("Index", "Company");
+                        case "vendor":
+                            return RedirectToAction("Index", "Vendor");
                         default:
                             return RedirectToAction("Index", "Home"); // default
                     }
@@ -315,6 +371,7 @@ namespace TitanTechnologyView.Controllers
 
         [HttpPost]
         public IActionResult VerifyOtpSuccess([FromBody] JsonElement root)
+        public IActionResult Logout()
         {
             // If no user object → OTP failed
             if (!root.TryGetProperty("user", out JsonElement user))

@@ -18,6 +18,7 @@ namespace internalPortalFroent.Controllers
         private readonly string _apiBase;
 
         public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IOptions<ApiSettings> apiSettings)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;

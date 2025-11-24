@@ -57,7 +57,7 @@
                                     <div class="form-inline-scroll">
                                         @* <div class="single-input-box">
                                             <label>ProjectCode</label>
-                                            <select asp-for="@Model[i].ProjectCode" class="form-select" required>
+                                           @*  <select asp-for="@Model[i].ProjectCode" class="form-select" required>
                                                 <option value="">Select Project Code </option>
                                                 @foreach (var project in projects)
                                                 {
@@ -66,7 +66,8 @@
                                                         @project.ProjectCode
                                                     </option>
                                                 }
-                                            </select>
+                                            </select> *@
+                                            <input asp-for="@Model[i].ProjectCode" type="text" class="form-control" placeholder="Project Code" required readonly />                                      
                                             <span asp-validation-for="@Model[i].ProjectCode" class="text-danger"></span>
                                         </div> *@
 
