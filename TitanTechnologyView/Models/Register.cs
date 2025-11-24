@@ -27,7 +27,7 @@ namespace TitanTechnologyView.Models
         // NOTE: API expects snake_case "contact_number" — map explicitly
         [MaxLength(20)]
         [JsonPropertyName("contact_number")]
-        public string? ContactNumber { get; set; }
+        public string? contact_number { get; set; }
 
         [Required]
         [JsonPropertyName("userRoleId")]

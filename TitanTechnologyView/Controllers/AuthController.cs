@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using NuGet.Configuration;
 using NuGet.Protocol.Plugins;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,6 +14,36 @@ namespace TitanTechnologyView.Controllers
 {
     public class AuthController : Controller
     {
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _apiBase;
+
+        public AuthController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> apiSettings)
+        {
+            _httpClientFactory = httpClientFactory;
+            _apiBase = $"{apiSettings.Value.BaseUrl}";
+        }
+
+        private HttpClient CreateClients()
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            // Fetch JWT token from cookie
+            var token = HttpContext.Request.Cookies["AuthToken"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                //  Add Bearer token to Authorization header
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                Console.WriteLine("Warning: AuthToken cookie not found!");
+            }
+
+            return client;
+        }
+
 
         [HttpGet]
         public IActionResult Register()
@@ -19,38 +54,29 @@ namespace TitanTechnologyView.Controllers
         // POST: submit form to the API
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(Register model)
+        public async Task<IActionResult> Register([FromBody] Register model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return Json(new { success = false, message = "Validation failed." });
 
-            using var client = new HttpClient();
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
 
             try
             {
-                var response = await client.PostAsJsonAsync("https://localhost:44368/api/Register", model);
+                var response = await client.PostAsJsonAsync($"{_apiBase}/Register", model);
+
+                string content = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
                 {
-                    TempData["SuccessMessage"] = "Registration successful!";
-                    return RedirectToAction(nameof(Login));
+                    return Json(new { success = true, message = "Registration successful!" });
                 }
 
-                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    var payload = await response.Content.ReadAsStringAsync();
-                    ModelState.AddModelError("", "Validation failed: " + payload);
-                    return View(model);
-                }
-
-                var error = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError("", $"API error ({(int)response.StatusCode}): {error}");
-                return View(model);
+                return Json(new { success = false, message = "Registration Unsuccessful! Please try another credentials." + content });
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Error contacting API: " + ex.Message);
-                return View(model);
+                return Json(new { success = false, message = "Server error: " + ex.Message });
             }
         }
 
@@ -70,8 +96,11 @@ namespace TitanTechnologyView.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
-            using var client = new HttpClient();
+            //using var client = new HttpClient();
 
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+           
             var loginRequest = new LoginRequest
             {
                 ContactNumber = contact_number,
@@ -80,7 +109,8 @@ namespace TitanTechnologyView.Controllers
 
             try
             {
-                var response = await client.PostAsJsonAsync("https://localhost:44368/api/Login/password", loginRequest);
+
+                var response = await client.PostAsJsonAsync($"{_apiBase}/Login/password", loginRequest);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -89,6 +119,12 @@ namespace TitanTechnologyView.Controllers
 
                     // Extract userRole directly from JSON
                     var root = doc.RootElement;
+
+                    var token = root.TryGetProperty("token", out var tokenProp)
+                ? tokenProp.GetString()
+                : null;
+
+                    var loginId = root.GetProperty("user").GetProperty("id").GetInt32();
                     var userRole = root.GetProperty("user").GetProperty("userRole").GetString();
                     var userRoleId = root.GetProperty("user").GetProperty("userRoleId").GetInt32();
                     var emailId = root.GetProperty("user").GetProperty("email").GetString();
@@ -98,6 +134,46 @@ namespace TitanTechnologyView.Controllers
 
                     var fullName = $"{firstName} {lastName}".Trim();
 
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        Response.Cookies.Append("AuthToken", token, new CookieOptions
+                        {
+                            HttpOnly = true, // not accessible by JS
+                            Secure = true,   // only HTTPS
+                            SameSite = SameSiteMode.None,
+                            Expires = DateTimeOffset.UtcNow.AddHours(12)
+                        });
+                    }
+
+                    //if (response.Headers.TryGetValues("Set-Cookie", out var setCookieHeaders))
+                    //{
+                    //    // find the cookie for InternalPortalAuth
+                    //    var setCookie = setCookieHeaders.FirstOrDefault(h => h.StartsWith("InternalPortalAuth="));
+                    //    if (!string.IsNullOrEmpty(setCookie))
+                    //    {
+                    //        var cookieValue = setCookie.Split(';', 2)[0].Split('=', 2)[1];
+
+                    //        Response.Cookies.Append("InternalPortalAuth", cookieValue, new CookieOptions
+                    //        {
+
+                    //            HttpOnly = true,
+                    //            Secure = true,
+                    //            SameSite = SameSiteMode.None,
+                    //            Expires = DateTimeOffset.UtcNow.AddDays(1)
+                    //        });
+                    //    }
+                    //}
+
+                    if (loginId > 0)
+                    {
+                        HttpContext.Response.Cookies.Append("LoginId", loginId.ToString(), new CookieOptions
+                        {
+                            HttpOnly = false,
+                            Secure = true,
+                            SameSite = SameSiteMode.None,
+                            Expires = DateTimeOffset.UtcNow.AddDays(1)
+                        });
+                    }
 
                     if (!string.IsNullOrEmpty(userRole))
                     {
@@ -105,7 +181,7 @@ namespace TitanTechnologyView.Controllers
                         {
                             HttpOnly = true,
                             Secure = true,
-                            SameSite = SameSiteMode.Strict,
+                            SameSite = SameSiteMode.None,
                             Expires = DateTimeOffset.UtcNow.AddDays(1)
                         });
                     }
@@ -116,7 +192,7 @@ namespace TitanTechnologyView.Controllers
                         {
                             HttpOnly = false,
                             Secure = true,
-                            SameSite = SameSiteMode.Strict,
+                            SameSite = SameSiteMode.None,
                             Expires = DateTimeOffset.UtcNow.AddDays(1)
                         });
                     }
@@ -127,7 +203,7 @@ namespace TitanTechnologyView.Controllers
                         {
                             HttpOnly = true,
                             Secure = true,
-                            SameSite = SameSiteMode.Strict,
+                            SameSite = SameSiteMode.None,
                             Expires = DateTimeOffset.UtcNow.AddDays(1)
                         });
                     }
@@ -138,7 +214,7 @@ namespace TitanTechnologyView.Controllers
                         {
                             HttpOnly = true,
                             Secure = true,
-                            SameSite = SameSiteMode.Strict,
+                            SameSite = SameSiteMode.None,
                             Expires = DateTimeOffset.UtcNow.AddDays(1)
                         });
                     }
@@ -149,7 +225,7 @@ namespace TitanTechnologyView.Controllers
                         {
                             HttpOnly = true,   // Prevent JS access
                             Secure = true,     // Send only over HTTPS
-                            SameSite = SameSiteMode.Strict, // Protect from CSRF
+                            SameSite = SameSiteMode.None, // Protect from CSRF
                             Expires = DateTimeOffset.UtcNow.AddDays(1) // Expiry time
                         });
                     }
@@ -197,13 +273,126 @@ namespace TitanTechnologyView.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> LoginwithOTP([FromBody] OtpRequest model)
+        {
+            if (model == null || string.IsNullOrWhiteSpace(model.contact_number))
+                return BadRequest(new { message = "Mobile number is required." });
+
+            var client = CreateClients();
+
+            // If the downstream API expects { contact_number: "..." } you can send model directly.
+            var response = await client.PostAsJsonAsync($"{_apiBase}/Login/request-otp", model);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var err = await response.Content.ReadAsStringAsync();
+                // return status from downstream as-is
+                return StatusCode((int)response.StatusCode, err);
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            // return the raw JSON the API gave you
+            return Content(json, "application/json");
+        }
+        [HttpPost]
+        public async Task<IActionResult> VerifyOTP([FromBody] OtpVerifyRequest model)
+        {
+            var client = CreateClients();
+
+            var response = await client.PostAsJsonAsync(
+                $"{_apiBase}/Login/verify-otp",
+                model
+            );
+
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                return Content(jsonResponse, "application/json"); // return error JSON
+
+            return Content(jsonResponse, "application/json"); // return success JSON
+        }
+
+        [HttpPost]
+        public IActionResult VerifyOtpSuccess([FromBody] JsonElement root)
+        {
+            // If no user object → OTP failed
+            if (!root.TryGetProperty("user", out JsonElement user))
+            {
+                TempData["ErrorMessage"] = root.TryGetProperty("message", out var msg)
+                    ? msg.GetString()
+                    : "OTP verification failed.";
+
+                return RedirectToAction("Login");
+            }
+
+            string token = root.TryGetProperty("token", out var tokenProp) ? tokenProp.GetString() : null;
+
+            int loginId = user.TryGetProperty("id", out var idProp) ? idProp.GetInt32() : 0;
+            string userRole = user.TryGetProperty("userRole", out var roleProp) ? roleProp.GetString() : "";
+            int userRoleId = user.TryGetProperty("userRoleId", out var roleIdProp) ? roleIdProp.GetInt32() : 0;
+
+            string emailId = user.TryGetProperty("email", out var emailProp) ? emailProp.GetString() : "";
+            string contactNumber = user.TryGetProperty("contact_number", out var contactProp) ? contactProp.GetString() : "";
+
+            string firstName = user.TryGetProperty("firstName", out var fnProp) ? fnProp.GetString() : "";
+            string lastName = user.TryGetProperty("lastName", out var lnProp) ? lnProp.GetString() : "";
+
+            string fullName = $"{firstName} {lastName}".Trim();
+
+            // Set Cookies
+            if (!string.IsNullOrEmpty(token))
+                Response.Cookies.Append("AuthToken", token);
+
+            Response.Cookies.Append("LoginId", loginId.ToString());
+            Response.Cookies.Append("UserRoleId", userRoleId.ToString());
+            Response.Cookies.Append("ContactNumber", contactNumber);
+            Response.Cookies.Append("Email", emailId);
+            Response.Cookies.Append("FullName", fullName);
+
+            // Redirect based on role
+            return RedirectAfterLogin(userRole);
+        }
+
+        private IActionResult RedirectAfterLogin(string role)
+        {
+            switch (role.ToLower())
+            {
+                case "admin": return RedirectToAction("Index", "Company");
+                case "employee": return RedirectToAction("Index", "Employee");
+                case "customer": return RedirectToAction("CustomerDashboard", "Customer");
+                case "company": return RedirectToAction("CompanyDashboard", "Company");
+                case "vendor": return RedirectToAction("VendorDashboard", "Vendor");
+                default: return RedirectToAction("Index", "Home");
+            }
+        }
+
+
+
         public IActionResult Logout()
         {
-
+            Response.Cookies.Delete("AuthToken");
+            Response.Cookies.Delete("LoginId");
             Response.Cookies.Delete("UserRole");
+            Response.Cookies.Delete("ContactNumber");
+            Response.Cookies.Delete("Email");
+            Response.Cookies.Delete("FullName");
+            Response.Cookies.Delete("UserRoleId");
             return RedirectToAction("Index", "Home");
         }
     }
+
+    public class OtpRequest
+    {
+        public string contact_number { get; set; }
+    }
+
+    public class OtpVerifyRequest
+    {
+        public string contact_number { get; set; }
+        public string OTP { get; set; }
+    }
+
 
     public class LoginRequest
     {

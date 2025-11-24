@@ -395,10 +395,16 @@
 </style>
 
 <script>
-    const apiBase = 'https://localhost:44368'; // your API base
+    const apiBase = '/Home'; // your API base
 
     async function loadSolutions() {
-        const response = await fetch(`${apiBase}/api/Solution`);
+        const response = await fetch(`${apiBase}/GetSolutions`, {
+                method: "GET",
+                credentials: "include", //  Important: send cookies (InternalPortalAuth)
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
         if (!response.ok) throw new Error("HTTP " + response.status);
         return await response.json();
     }

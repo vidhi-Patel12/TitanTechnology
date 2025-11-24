@@ -20,10 +20,31 @@ namespace TitanTechnologyView.Controllers
             _apiOrigin = apiSettings.Value.Origin;
         }
 
+        private HttpClient CreateClients()
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            // Fetch JWT token from cookie
+            var token = HttpContext.Request.Cookies["AuthToken"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                //  Add Bearer token to Authorization header
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                Console.WriteLine("Warning: AuthToken cookie not found!");
+            }
+
+            return client;
+        }
+
         // List
         public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
 
             // 1️⃣ Fetch projects
             var projectResponse = await client.GetAsync(_apiUrl);
@@ -64,7 +85,7 @@ namespace TitanTechnologyView.Controllers
         public async Task<IActionResult> AddEdit(string? projectCode)
         {
             ViewBag.ApiOrigin = _apiOrigin;
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
 
             var customerResponse = await client.GetAsync($"{_apiOrigin}/api/Customer");
             var customers = new List<CustomerFormDto>();
@@ -102,7 +123,7 @@ namespace TitanTechnologyView.Controllers
             model.ProjectCode = model.ProjectCode?.Trim();
             model.Status = "Active";
 
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -126,7 +147,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
             var response = await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");
         }

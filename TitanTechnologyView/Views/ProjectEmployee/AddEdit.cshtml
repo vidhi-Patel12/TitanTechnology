@@ -71,7 +71,7 @@
                                         </div> *@
 
                                         <div class="single-input-box">
-                                            <label>Project</label>
+                                            <label class="text-black">Project</label>
                                             <select asp-for="@Model[i].ProjectCode"
                                                     asp-items="@(new SelectList(projects, "ProjectCode", "ProjectName", Model[i].ProjectCode))"
                                                     class="form-select" required>
@@ -82,7 +82,7 @@
 
 
                                         <div class="single-input-box">
-                                            <label>Employee</label>
+                                            <label class="text-black">Employee</label>
                                             
                                             <select asp-for="@Model[i].EmployeeId"
                                                     asp-items="@(new SelectList(
@@ -105,7 +105,7 @@
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Employee Type</label>
+                                            <label class="text-black">Employee Type</label>
                                             <select asp-for="@Model[i].EmployeeType" class="form-select" required>
                                                 <option value="">Select Employee Type</option>
                                                 @foreach (var type in (List<DropdownMaster>)ViewBag.EmployeeTypes)
@@ -117,7 +117,7 @@
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Technology</label>
+                                            <label class="text-black">Technology</label>
                                             <select asp-for="@Model[i].Technology" class="form-select" required>
                                                 <option value=""> Select Technology </option>
                                                 @foreach (var type in (List<DropdownMaster>)ViewBag.Technologys)
@@ -129,7 +129,7 @@
                                         </div>
    
                                         <div class="single-input-box">
-                                            <label>Select Allocation Type</label>
+                                            <label class="text-black">Select Allocation Type</label>
                                             <select asp-for="@Model[i].AllocationType" class="form-select" required>
                                                 <option value=""> Select Allocation Type </option>
                                                 @foreach (var type in (List<DropdownMaster>)ViewBag.AllocationTypes)
@@ -142,25 +142,25 @@
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Commission Type</label>
+                                            <label class="text-black">Commission Type</label>
                                             <input asp-for="@Model[i].CommissionType" type="text" class="form-control" placeholder="Commission Type" required />
                                             <span asp-validation-for="@Model[i].CommissionType" class="text-danger"></span>
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Consultant Rate</label>
+                                            <label class="text-black">Consultant Rate</label>
                                             <input asp-for="@Model[i].ConsultantRate" type="number" class="form-control" step="0.01" placeholder="Consultant Rate" required />
                                             <span asp-validation-for="@Model[i].ConsultantRate" class="text-danger"></span>
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Rate Unit</label>
+                                            <label class="text-black">Rate Unit</label>
                                             <input asp-for="@Model[i].RateUnit" type="text" class="form-control" placeholder="Rate Unit" required />
                                             <span asp-validation-for="@Model[i].RateUnit" class="text-danger"></span>
                                         </div>
 
-                                        <div class="single-input-box">
-                                            <label>Timesheet Type</label>
+                                        @* <div class="single-input-box">
+                                            <label class="text-black">Timesheet Type</label>
                                             <select asp-for="@Model[i].TimesheetType" class="form-select" required>
                                                 <option value=""> Select Timesheet Type </option>
                                                 @foreach (var type in (List<DropdownMaster>)ViewBag.TimesheetTypes)
@@ -169,10 +169,29 @@
                                                 }
                                             </select>
                                             <span asp-validation-for="@Model[i].TimesheetType" class="text-danger"></span>
-                                        </div>
+                                        </div> *@
+
+                                      <div class="single-input-box">
+                                        <label class="text-black">Timesheet Type</label>
+                                        <select asp-for="@Model[i].TimesheetTypes"
+                                                class="form-select select2"
+                                                multiple="multiple"
+                                                required>
+                                            @foreach (var type in (List<DropdownMaster>)ViewBag.TimesheetTypes)
+                                            {
+                                                <option value="@type.Value"
+                                                        selected="@(Model[i].TimesheetTypes != null && Model[i].TimesheetTypes.Contains(type.Value) ? "selected" : null)">
+                                                    @type.Value
+                                                </option>
+                                            }
+                                        </select>
+                                        <span asp-validation-for="@Model[i].TimesheetTypes" class="text-danger"></span>
+                                    </div>
+
+
 
                                         <div class="single-input-box">
-                                            <label>SAP Module</label>
+                                            <label class="text-black">SAP Module</label>
                                             <select asp-for="@Model[i].SapModule" class="form-select" required>
                                                 <option value=""> Select SAP Module </option>
                                                 @foreach (var type in (List<DropdownMaster>)ViewBag.SAPModules)
@@ -183,33 +202,33 @@
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label  style="color:black">Start Date</label>
+                                            <label class="text-black">Start Date</label>
                                             <input asp-for="@Model[i].EmployeeStartDate" type="date" class="form-control" id="EmployeeStartDate" placeholder="Employee Start Date" required />
                                             @* <span asp-validation-for="@Model[i].EmployeeStartDate" class="text-danger"></span> *@
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label style="color:black">End Date</label>
-                                            <input asp-for="@Model[i].EmployeeEndDate" type="date" class="form-control" id="EmployeeEndDate" placeholder="Employee End Date" required />
+                                            <label class="text-black">End Date</label>
+                                            <input asp-for="@Model[i].EmployeeEndDate" type="date" class="form-control" id="EmployeeEndDate" placeholder="Employee End Date" />
                                              @* <span asp-validation-for="@Model[i].EmployeeEndDate" class="text-danger"></span> *@
                                             <span id="dateError" class="text-danger"></span>
 
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Cycle Start Day</label>
+                                            <label class="text-black">Cycle Start Day</label>
                                             <input asp-for="@Model[i].CycleStartDay" type="number" class="form-control" placeholder="Cycle Start Day" required />
                                             <span asp-validation-for="@Model[i].CycleStartDay" class="text-danger"></span>
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Cycle End Day</label>
-                                            <input asp-for="@Model[i].CycleEndDay" type="number" class="form-control" placeholder="Cycle End Day" required />
+                                            <label class="text-black">Cycle End Day</label>
+                                            <input asp-for="@Model[i].CycleEndDay" type="number" class="form-control" placeholder="Cycle End Day" />
                                             <span asp-validation-for="@Model[i].CycleEndDay" class="text-danger"></span>
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Payment Mode</label>
+                                            <label class="text-black">Payment Mode</label>
                                             <select asp-for="@Model[i].PaymentMode" class="form-select" required>
                                                 <option value="">Mode of Payments</option>
                                                 @foreach (var type in (List<DropdownMaster>)ViewBag.ModeofPayments)
@@ -221,25 +240,25 @@
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Customer Rate</label>
+                                            <label class="text-black">Customer Rate</label>
                                             <input asp-for="@Model[i].CustomerRate" type="number" class="form-control" placeholder="Customer Rate" step="0.01" required />
                                             <span asp-validation-for="@Model[i].CustomerRate" class="text-danger"></span>
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Salary Payment Days</label>
+                                            <label class="text-black">Salary Payment Days</label>
                                             <input asp-for="@Model[i].SalaryPaymentDays" type="number" class="form-control" placeholder="Salary Payment Days" required />
                                             <span asp-validation-for="@Model[i].SalaryPaymentDays" class="text-danger"></span>
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>TDS Percent</label>
+                                            <label class="text-black">TDS Percent</label>
                                             <input asp-for="@Model[i].TdsPercent" type="number" step="0.01" class="form-control" placeholder="Tds Percent" required />
                                             <span asp-validation-for="@Model[i].TdsPercent" class="text-danger"></span>
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Account Preference</label>
+                                            <label class="text-black">Account Preference</label>
                                             <select asp-for="@Model[i].AccountPreference"
                                                     class="form-select account-preference-dropdown"
                                                     data-employee-dropdown="[${i}].EmployeeId" required>
@@ -249,7 +268,7 @@
                                         </div>
 
                                         <div class="single-input-box">
-                                            <label>Text Fields</label>
+                                            <label class="text-black">Text Fields</label>
                                             <input asp-for="@Model[i].TextFields" class="form-control" placeholder="Text Fields" required" />
                                             <span asp-validation-for="@Model[i].TextFields" class="text-danger"></span>
                                         </div>
@@ -547,6 +566,17 @@
             }
         });
     </script>
+
+    <script>
+    $(document).ready(function () {
+        $('.select2').select2({
+            placeholder: "Select Timesheet Type",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
+
 }
 
 <style>

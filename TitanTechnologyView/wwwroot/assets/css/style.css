@@ -224,7 +224,8 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
 .style-one.hero-area-form {
     /*    background: url(../images/home-1/breadcumb-bg.png);*/
     /*    background: linear-gradient(to bottom right, #2C8BBD 0%, transparent 80%), url(../images/home-1/breadcumb-bg.png);*/
-    background: linear-gradient(to bottom right, #83d4fc 0%, transparent 80%), url(../images/home-1/breadcumb-bg.png);
+    /*    #83d4fc*/
+    background: linear-gradient(to bottom right, #5e9ebd 0%, transparent 80%), url(../images/home-1/breadcumb-bg.png);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;

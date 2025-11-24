@@ -33,10 +33,11 @@
                 <tr>
                     <th>Employee Name</th>
                     <th>Project Code</th>
+                    <th>Work Month</th>
                     <th>Timesheet Type</th>
-                    <th>Month Year</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th>Monthly Work Unit</th>
+                    <th>Holiday</th>
+                    <th>Leave</th>
                     <th>Status</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -47,11 +48,16 @@
                     <tr>
                         <td>@item.Name</td>
                         <td>@item.ProjectCode</td>
+                        <td>@item.WorkMonth</td>
                         <td>@item.TimesheetType</td>
-                        <td>@item.MonthYear</td>
-                        <td>@string.Format("{0:dd-MM-yyyy}", item.StartDate)</td>
+                        <td>@item.monthlyworkunit</td>
+                        <td>@item.holiday</td>
+                        <td>@item.leave</td>
+                        <td>@item.status</td>
+                        @* <td>@item.MonthYear</td> *@
+                        @* <td>@string.Format("{0:dd-MM-yyyy}", item.StartDate)</td>
                         <td>@string.Format("{0:dd-MM-yyyy}", item.EndDate)</td>
-                        <td>@item.Status</td>
+                        <td>@item.Status</td> *@
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
                                 <a asp-action="AddEdit" asp-route-id="@item.TimesheetId"

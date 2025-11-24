@@ -8,18 +8,39 @@ namespace TitanTechnologyView.Controllers
     public class VendorController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly string _apiOrigin = "https://localhost:44368";            
-        private readonly string _apiUrl = "https://localhost:44368/api/Vendor";
+        private readonly string _apiOrigin = "https://api.titentechnology.com";            
+        private readonly string _apiUrl = "https://api.titentechnology.com/api/Vendor";
 
         public VendorController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-        }   
+        }
+
+        private HttpClient CreateClients()
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            // Fetch JWT token from cookie
+            var token = HttpContext.Request.Cookies["AuthToken"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                //  Add Bearer token to Authorization header
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                Console.WriteLine("Warning: AuthToken cookie not found!");
+            }
+
+            return client;
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
             var response = await client.GetAsync(_apiUrl);
 
             if (!response.IsSuccessStatusCode)
@@ -37,7 +58,7 @@ namespace TitanTechnologyView.Controllers
         public async Task<IActionResult> VendorForm(int? id = 0)
         {
             ViewBag.ApiOrigin = _apiOrigin;
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
 
             var companyResponse = await client.GetAsync($"{_apiOrigin}/api/Company");
             var companies = new List<CompanyMaster>();
@@ -90,7 +111,7 @@ namespace TitanTechnologyView.Controllers
                 return View("VendorForm", model);
             }
 
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
             using var form = new MultipartFormDataContent();
 
             // Add all basic string fields
@@ -158,7 +179,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
             var response = await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");
         }

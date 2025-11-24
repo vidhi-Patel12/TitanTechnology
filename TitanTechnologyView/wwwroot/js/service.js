@@ -17,13 +17,20 @@ function getCookie(name) {
 
 const userRoleId = getCookie("UserRoleId");
 
-const apiBase = 'https://localhost:44368';
+const apiBase = 'https://api.titentechnology.com';
 
 document.addEventListener("DOMContentLoaded", async () => {
     const tableBody = document.getElementById("serviceTableBody");
 
     try {
-        const response = await fetch(`${apiBase}/api/Service`);
+        const response = await fetch(`/Admin/GetServices`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+        //const response = await fetch(`${apiBase}/api/Service`);
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -173,53 +180,48 @@ fileInput.addEventListener("change", function () {
 document.getElementById("serviceForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const userRoleId = getCookie("UserRoleId"); // userId from cookie
-    console.log("Creating service by user with role:", userRoleId);
-
-    const now = formatDateTimeISO(new Date());
+    const userRoleId = getCookie("UserRoleId"); // or set manually for testing
+    const now = new Date().toISOString();
 
     const formData = new FormData();
     formData.append("ServiceId", 0);
     formData.append("ServiceName", document.getElementById("serviceName").value);
     formData.append("Description", document.getElementById("description").value);
+    formData.append("IsActive", "true");
+    formData.append("CreatedBy", userRoleId || "1");
+    formData.append("CreatedDate", now);
 
-    // Send only filename for Image (API will save actual file separately)
     const fileInput = document.getElementById("imageFile");
-    if (fileInput.files[0]) {
-        formData.append("Image", fileInput.files[0].name);
-        formData.append("imageFile", fileInput.files[0]); // binary
+    if (fileInput.files.length > 0) {
+        formData.append("Image", fileInput.files[0].name); // string field
+        formData.append("imageFile", fileInput.files[0]);  // binary file field
     } else {
         formData.append("Image", "");
     }
 
-    formData.append("IsActive", true);
-    formData.append("CreatedBy", userRoleId);
-    formData.append("CreatedDate", now);
-    //formData.append("UpdatedBy", null);
-    //formData.append("UpdatedDate", null);
-
     try {
-        const response = await fetch(`${apiBase}/api/Service/Post`, {
+        // Post through your MVC proxy (handles CORS and headers)
+        const response = await fetch(`/Admin/SaveService`, {
             method: "POST",
+            credentials: "include", 
             body: formData
         });
 
+        const text = await response.text(); // read as text once
+
         if (response.ok) {
-            const data = await response.json();
-            document.getElementById("result").innerHTML =
-                `<div class=""> </div>`;
+            const data = JSON.parse(text);
+            console.log(" Success:", data);
+            document.getElementById("result").innerHTML = `<div class="alert alert-success">Service saved successfully</div>`;
             this.reset();
             location.reload();
-            showSection("serviceListSection");
-
         } else {
-            const errorText = await response.text();
-            document.getElementById("result").innerHTML =
-                `<div class="alert alert-danger"> Error: ${errorText}</div>`;
+            console.error(" API Error:", text);
+            document.getElementById("result").innerHTML = `<div class="alert alert-danger">${text}</div>`;
         }
     } catch (err) {
-        document.getElementById("result").innerHTML =
-            `<div class="alert alert-danger"> API Error: ${err.message}</div>`;
+        console.error(" JS Error:", err);
+        document.getElementById("result").innerHTML = `<div class="alert alert-danger">API Error: ${err.message}</div>`;
     }
 });
 
@@ -249,7 +251,11 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", async func
     }
 
     try {
-        const response = await fetch(`${apiBase}/api/Service/${serviceIdToDelete}?updatedBy=${updatedBy}`, {
+        //const response = await fetch(`${apiBase}/api/Service/${serviceIdToDelete}?updatedBy=${updatedBy}`, {
+        //    method: "DELETE"
+        //});
+
+        const response = await fetch(`/Admin/DeleteService/${serviceIdToDelete}?updatedBy=${updatedBy}`, {
             method: "DELETE"
         });
 
@@ -270,15 +276,20 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", async func
 });
 
 
-
-
-
 async function deleteService(id) {
     if (!confirm("Are you sure you want to delete this service?")) return;
 
     try {
-        const response = await fetch(`${apiBase}/api/Service/${id}`, {
-            method: "DELETE"
+        //const response = await fetch(`${apiBase}/api/Service/${id}`, {
+        //    method: "DELETE"
+        //});
+
+        const response = await fetch(`/Admin/DeleteService/${id}?updatedBy=${updatedBy}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,  // attach token like SaveDropdown
+                "Content-Type": "application/json"
+            }
         });
 
         if (response.ok) {
@@ -309,7 +320,16 @@ function formatDateTimeISO(date) {
 // Load existing service by ID
 async function loadService(serviceId) {
     try {
-        const response = await fetch(`${apiBase}/api/Service/${serviceId}`);
+
+        const response = await fetch(`/Admin/GetServices/${serviceId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        //const response = await fetch(`${apiBase}/api/Service/${serviceId}`);
         if (response.ok) {
             const service = await response.json();
 
@@ -418,62 +438,60 @@ updateFileInput.addEventListener("change", function () {
     };
 });
 
-
 // Submit update form
 document.getElementById("updateForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const userRoleId = getCookie("UserRoleId");
-    const now = formatDateTimeISO(new Date());
+    const now = new Date().toISOString();
 
     const formData = new FormData();
     formData.append("ServiceId", document.getElementById("serviceId").value);
     formData.append("ServiceName", document.getElementById("updateServiceName").value);
     formData.append("Description", document.getElementById("updateDescription").value);
+    formData.append("IsActive", "true");
+    formData.append("UpdatedBy", userRoleId || "1");
+    formData.append("UpdatedDate", now);
 
     const newFile = document.getElementById("updateImageFile").files[0];
     if (newFile) {
-        // If user picked a new image
-        formData.append("Image", "uploads/" + newFile.name);
+        formData.append("Image", newFile.name);
         formData.append("imageFile", newFile);
     } else {
-        // No new image → keep old path
+        // keep old image if unchanged
         const oldImagePath = document.getElementById("updateImage").value;
-        formData.append("Image", oldImagePath);
+        formData.append("Image", oldImagePath || "");
 
-        //  Trick: send dummy empty file so API validation passes
-        const dummy = new Blob([], {
-            type: "application/octet-stream"
-        });
+        //  send a dummy empty file so API model validation passes
+        const dummy = new Blob([], { type: "application/octet-stream" });
         formData.append("imageFile", dummy, "empty.txt");
     }
 
-    formData.append("IsActive", true);
-    formData.append("UpdatedBy", userRoleId);
-    formData.append("UpdatedDate", now);
-
     try {
-        const response = await fetch(`${apiBase}/api/Service/Update`, {
+        // Post to MVC proxy — handles token forwarding
+        const response = await fetch(`/Admin/UpdateService`, {
             method: "PUT",
+            credentials: "include",
             body: formData
         });
 
+        const text = await response.text();
+
         if (response.ok) {
-            const data = await response.json();
+            console.log("Service updated:", text);
             document.getElementById("updateResult").innerHTML =
-                `<div></div>`;
+                `<div class="alert alert-success">Service updated successfully!</div>`;
             this.reset();
             location.reload();
-            await loadServices();
-            showSection("serviceListSection");
         } else {
-            const errorText = await response.text();
+            console.error("Update failed:", text);
             document.getElementById("updateResult").innerHTML =
-                `<div class="alert alert-danger"> Error: ${errorText}</div>`;
+                `<div class="alert alert-danger">${text}</div>`;
         }
     } catch (err) {
+        console.error("Error:", err);
         document.getElementById("updateResult").innerHTML =
-            `<div class="alert alert-danger"> API Error: ${err.message}</div>`;
+            `<div class="alert alert-danger">API Error: ${err.message}</div>`;
     }
 });
 
@@ -482,7 +500,16 @@ async function loadServices() {
     const tableBody = document.getElementById("serviceTableBody");
 
     try {
-        const response = await fetch(`${apiBase}/api/Service`);
+
+        const response = await fetch(`/Admin/GetServices`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        //const response = await fetch(`${apiBase}/api/Service`);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         const services = await response.json();
@@ -543,7 +570,13 @@ document.addEventListener("DOMContentLoaded", loadServices);
 
 async function getbyidService(serviceId) {
     try {
-        const response = await fetch(`${apiBase}/api/Service/${serviceId}`);
+        const response = await fetch(`/Admin/GetServices/${serviceId}`, {
+            method: "GET",
+            credentials: "include", // sends cookies (AuthToken)
+            headers: {
+                "Accept": "application/json"
+            }
+        });
         if (!response.ok) throw new Error("Failed to fetch service");
 
         const service = await response.json();

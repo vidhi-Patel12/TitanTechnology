@@ -31,13 +31,13 @@
 
 @section Scripts {
     <script>
-        const apiBase = "https://localhost:44368"; // your API base
+        const apiBase = "https://api.titentechnology.com"; // your API base
         const serviceId = "@serviceId"; // Razor injects the route id
 
         async function loadService() {
             const container = document.getElementById("service-details");
             try {
-                const response = await fetch(`${apiBase}/api/Service/${serviceId}`);
+                const response = await fetch(`/Service/Get/${serviceId}`);
                 if (!response.ok) throw new Error("HTTP " + response.status);
 
                 const service = await response.json();
@@ -45,11 +45,15 @@
                  const breadcrumbService = document.getElementById("breadcrumb-service");
                  breadcrumbService.innerText = service.serviceName;
 
+                 const imageUrl = service.image.startsWith("http")
+    ? `/Service/Image?path=${encodeURIComponent(service.image.replace(apiBase + "/", ""))}`
+    : `/Service/Image?path=${encodeURIComponent(service.image)}`;
+
 
                 container.innerHTML = `
                     <h2>${service.serviceName}</h2>
                     <p>${service.description}</p>
-                    <img src="${apiBase}/${service.image}" alt="" style="height: 60%;width: 90%;" class="img-fluid rounded" />
+                    <img src="${imageUrl}" alt="" style="height: 60%;width: 90%;" class="img-fluid rounded" />
 
                 `;
             } catch (err) {

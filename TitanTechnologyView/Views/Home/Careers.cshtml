@@ -262,11 +262,82 @@
 </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="applyForm" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="applyModalLabel">Apply Now</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="CareerId" name="CareerId" />
+
+                    <div class="mb-3">
+                        <label for="ApplicantName" class="text-black form-label">Full name</label>
+                        <input type="text" class="form-control" id="ApplicantName" name="ApplicantName" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Email" class="text-black form-label">Email</label>
+                        <input type="email" class="form-control" id="Email" name="Email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Phone" class="text-black form-label">Phone</label>
+                        <input type="text" class="form-control" id="Phone" name="Phone">
+                    </div>
+
+                    <div class="mb-3">
+                        @* <label for="ResumeUrl" class="text-black form-label">Resume URL (optional)</label>
+                        <input type="text" class="form-control" id="ResumeUrl" name="ResumeUrl"> *@
+                        <label for="ResumeFile" class="text-black form-label">Upload Resume (PDF only)</label>
+                        <input type="file" class="form-control" id="ResumeFile" name="ResumeFile" accept="application/pdf">
+                    </div>
+                                      
+
+                    <div class="mb-3">
+                        <label for="CoverLetter" class="text-black form-label">Cover letter</label>
+                        <textarea class="form-control" id="CoverLetter" name="CoverLetter" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal (simple popup) -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h5 id="successMessage">Application submitted successfully!</h5>
+                <button class="btn btn-success mt-3" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    const apiBase = "https://localhost:44368"; // change this to your API base
+    const apiBase = "https://api.titentechnology.com"; // change this to your API base
 
     async function loadCareerMaster() {
-       const response = await fetch(`${apiBase}/api/Career`);
+
+        const response = await fetch(`/Admin/GetCareers`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+       //const response = await fetch(`${apiBase}/api/Career`);
        if (!response.ok) throw new Error("HTTP " + response.status);
        return await response.json();
      }
@@ -289,11 +360,26 @@
              <div class="job-desc">${career.jobDescription}</div>
              
            </div>
-           <button class="apply-btn">Apply Now</button>
+             <button class="btn btn-primary apply-now-btn" data-careerid="${career.careerId}">
+                Apply Now
+            </button>
+
          `;
 
          list.appendChild(item);
        });
+
+        // ⭐ Attach events AFTER elements are added
+        document.querySelectorAll('.apply-now-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.getElementById('applyForm').reset();     // reset first
+                const careerId = e.target.dataset.careerid;
+                console.log("Selected Career ID:", careerId); // Debug
+
+                document.getElementById('CareerId').value = careerId; //  set after reset
+                applyModal.show();
+            });
+        });
      }
 
      (async function(){
@@ -304,4 +390,45 @@
          console.error("Error loading careers:", err);
        }
      })();
+
+        // Setup bootstrap modal instances (Bootstrap 5)
+    const applyModal = new bootstrap.Modal(document.getElementById('applyModal'));
+    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+
+    
+
+    // Submit form via AJAX
+       document.getElementById('applyForm').addEventListener('submit', async function (ev) {
+        ev.preventDefault();
+
+        const formData = new FormData();
+        formData.append("CareerId", document.getElementById('CareerId').value);
+        formData.append("ApplicantName", document.getElementById('ApplicantName').value);
+        formData.append("Email", document.getElementById('Email').value);
+        formData.append("Phone", document.getElementById('Phone').value);
+        formData.append("CoverLetter", document.getElementById('CoverLetter').value);
+
+        const fileInput = document.getElementById('ResumeFile');
+        if (fileInput.files.length > 0) {
+            formData.append("ResumeFile", fileInput.files[0]);
+        }
+
+        try {
+            const resp = await fetch('/Home/SubmitApplication', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await resp.json();
+
+            applyModal.hide();
+            document.getElementById('successMessage').innerText = data.message;
+            successModal.show();
+
+        } catch (err) {
+            console.error(err);
+            alert('Error submitting application');
+        }
+    });
+
 </script>

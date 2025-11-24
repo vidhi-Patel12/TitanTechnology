@@ -22,41 +22,22 @@ console.log("UserRoleId from cookie:", getCookie("UserRoleId"));
 const token = getCookie("AuthToken");
 console.log("Token:", token);
 
-const apiBase = '';
+const apiBase = 'https://api.titentechnology.com';
 
 async function loadDropdownMaster() {
-  
-    try {
-        const response = await fetch(`/Admin/GetDropdowns`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                "Accept": "application/json"
-            }
-        });
-           
+    //const response = await fetch(`${apiBase}/api/UserRole`);
 
-        //console.log("Status:", response.status);
-        //console.log("Headers:", [...response.headers.entries()]);
-
-        if (!response.ok) {
-            throw new Error("HTTP " + response.status);
+    const response = await fetch(`/Admin/GetUserRoles`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            "Accept": "application/json"
         }
+    });
 
-        const text = await response.text(); // see raw text first
-        //console.log("Raw response text:", text);
-
-        // try parsing to JSON
-        const data = JSON.parse(text);
-       // console.log("Parsed JSON data:", data);
-        return data;
-
-    } catch (err) {
-        console.error("Fetch failed:", err);
-        throw err;
-    }
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return await response.json();
 }
-
 
 $(document).ready(async function () {
     // ----- TABLE -----
@@ -68,11 +49,10 @@ $(document).ready(async function () {
         projects.forEach(p => {
             tableBody.append(`
                 <tr>
-                  <td>${p.name}</td>
-                  <td>${p.value}</td>
+                  <td>${p.roleName}</td>
                   <td class="text-center">
                        <button class="btn-icon border-0 me-2" style="color:#1b3f6f;"
-                               onclick="editDropdown('${p.id}', '${p.name}', '${p.value}')">
+                               onclick="editDropdown('${p.id}', '${p.roleName}')">
                            <i class="fas fa-edit fa-lg"></i>
                        </button>
                        <button type="button" class="btn-icon border-0 me-2 text-danger"
@@ -112,11 +92,11 @@ $(document).ready(async function () {
         const seen = new Set();
         items = items
             .filter(p => {
-                if (seen.has(p.name)) return false;
-                seen.add(p.name);
+                if (seen.has(p.roleName)) return false;
+                seen.add(p.roleName);
                 return true;
             })
-            .sort((a, b) => a.name.localeCompare(b.name));
+            .sort((a, b) => a.roleName.localeCompare(b.roleName));
 
         dropdownMenu.empty();
 
@@ -125,7 +105,7 @@ $(document).ready(async function () {
         } else {
             items.forEach(p => {
                 dropdownMenu.append(`
-                    <li><a class="dropdown-item" href="#" data-value="${p.name}">${p.name}</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="${p.roleName}">${p.roleName}</a></li>
                 `);
             });
         }
@@ -149,11 +129,11 @@ $(document).ready(async function () {
         const seen = new Set();
         items = items
             .filter(p => {
-                if (seen.has(p.name)) return false;
-                seen.add(p.name);
+                if (seen.has(p.roleName)) return false;
+                seen.add(p.roleName);
                 return true;
             })
-            .sort((a, b) => a.name.localeCompare(b.name));
+            .sort((a, b) => a.roleName.localeCompare(b.roleName));
 
         updatedropdownMenu.empty();
 
@@ -162,7 +142,7 @@ $(document).ready(async function () {
         } else {
             items.forEach(p => {
                 updatedropdownMenu.append(`
-                    <li><a class="dropdown-item" href="#" data-value="${p.name}">${p.name}</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="${p.roleName}">${p.roleName}</a></li>
                 `);
             });
         }
@@ -188,11 +168,11 @@ async function refreshDropdown() {
         const seen = new Set();
         items = items
             .filter(p => {
-                if (seen.has(p.name)) return false;
-                seen.add(p.name);
+                if (seen.has(p.roleName)) return false;
+                seen.add(p.roleName);
                 return true;
             })
-            .sort((a, b) => a.name.localeCompare(b.name));
+            .sort((a, b) => a.roleName.localeCompare(b.roleName));
 
         dropdownMenu.empty();
 
@@ -201,7 +181,7 @@ async function refreshDropdown() {
         } else {
             items.forEach(p => {
                 dropdownMenu.append(`
-                    <li><a class="dropdown-item" href="#" data-value="${p.name}">${p.name}</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="${p.roleName}">${p.roleName}</a></li>
                 `);
             });
         }
@@ -227,11 +207,11 @@ async function refreshUpdateDropdown() {
         const seen = new Set();
         items = items
             .filter(p => {
-                if (seen.has(p.name)) return false;
-                seen.add(p.name);
+                if (seen.has(p.roleName)) return false;
+                seen.add(p.roleName);
                 return true;
             })
-            .sort((a, b) => a.name.localeCompare(b.name));
+            .sort((a, b) => a.roleName.localeCompare(b.roleName));
 
         dropdownMenu.empty();
 
@@ -240,7 +220,7 @@ async function refreshUpdateDropdown() {
         } else {
             items.forEach(p => {
                 dropdownMenu.append(`
-                    <li><a class="dropdown-item" href="#" data-value="${p.name}">${p.name}</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="${p.roleName}">${p.roleName}</a></li>
                 `);
             });
         }
@@ -257,7 +237,9 @@ async function refreshUpdateDropdown() {
     }
 }
 
-async function saveDropdown(name, value) {
+
+
+async function saveDropdown(roleName) {
     const now = new Date().toISOString();
 
     // get userroleid from cookie
@@ -265,66 +247,47 @@ async function saveDropdown(name, value) {
 
     const model = {
         id: 0,                       // new item
-        name: name,                  // display name
-        value: value,        // fallback to name if value not provided
-        isActive: true,
-        createdBy: userRoleId ? parseInt(userRoleId) : 0,
-        createdDateTime: now,
-        updatedBy: null,             // explicitly null
-        updatedDateTime: null        // explicitly null
+        roleName: roleName,                  // display roleName
     };
 
     console.log(model);
 
-    const response = await fetch(`/Admin/SaveDropdown`, {
+    const response = await fetch(`/Admin/SaveUserRole`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         },
+        credentials: "include", // sends cookies like AuthToken
         body: JSON.stringify(model)
     });
 
-
-
     if (!response.ok) throw new Error("Save failed: " + response.status);
-
-    const text = await response.text();
-    if (!text) return { success: true, message: "Empty response (assumed success)" };
-
-    try {
-        return JSON.parse(text);
-    } catch {
-        return { success: true, message: text };
-    }
+    return await response.json();
 }
+
+
 
 $(document).ready(function () {
 
     // Save button handler
     $("#btnSave").on("click", async function () {
-        const name = $("#dropdownInput").val().trim();
-        const value = $("#value").val().trim();
+        const roleName = $("#dropdownInput").val().trim();
 
-        if (!name) {
-            alert("Please enter or select a name");
+        if (!roleName) {
+            alert("Please enter or select a roleName");
             return;
         }
-        if (!value) {
-            alert("Please enter a value");
-            return;
-        }
-
+       
         try {
-            await saveDropdown(name, value);
-            alert("Saved successfully!");
+            await saveDropdown(roleName);
+            //alert("Saved successfully!");
 
             window.location.reload();
             if (typeof showSection === 'function') showSection('dropdownListSection');
             // Optional: clear fields
             $("#dropdownInput").val("");
-            $("#value").val("");
-
+            
             // Reload dropdown after save
             await refreshDropdown();
 
@@ -337,77 +300,62 @@ $(document).ready(function () {
     // Cancel button handler
     $("#btnCancel").on("click", function () {
         $("#dropdownInput").val("");
-        $("#value").val("");
     });
 });
 
 $("#btnCancel").on("click", function () {
     $("#dropdownInput").val("");
-    $("#value").val("");
     showSection('dropdownListSection'); // go back to list
 });
 
+
 // When clicking edit button in table
-function editDropdown(id, name, value) {
+function editDropdown(id, roleName, value) {
     $("#updateId").val(id);
-    $("#updateDropdownInput").val(name);
-    $("#updateValue").val(value);
+    $("#updateDropdownInput").val(roleName);
 
     showSection('updateDropdownSection');
     refreshUpdateDropdown();
 }
 
 // Save updated record
-async function updateDropdown(id, name, value) {
+async function updateDropdown(id, roleName) {
     const now = new Date().toISOString();
     const userRoleId = getCookie("UserRoleId");
 
     const model = {
         id: id,
-        name: name,
-        value: value,
-        isActive: true,
-        updatedBy: userRoleId ? parseInt(userRoleId) : 0,
-        updatedDateTime: now
+        roleName: roleName,
     };
 
-    const response = await fetch(`/Admin/SaveDropdown`, {
-        method: "POST", // your backend merges insert/update
+    const response = await fetch(`/Admin/SaveUserRole`, {
+        method: "POST", // same endpoint handles insert/update
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         },
+        credentials: "include",
         body: JSON.stringify(model)
     });
 
-        
     if (!response.ok) throw new Error("Update failed: " + response.status);
-
-    const text = await response.text();
-    if (!text) return { success: true, message: "Empty response (assumed success)" };
-
-    try {
-        return JSON.parse(text);
-    } catch {
-        return { success: true, message: text };
-    }
+    return await response.json();
 }
 
 $(document).ready(function () {
     // Update button handler
     $("#btnUpdate").on("click", async function () {
         const id = $("#updateId").val();
-        const name = $("#updateDropdownInput").val().trim();
-        const value = $("#updateValue").val().trim();
+        const roleName = $("#updateDropdownInput").val().trim();
 
-        if (!name || !value) {
+        if (!roleName) {
             alert("Please fill all fields");
             return;
         }
 
         try {
-            await updateDropdown(id, name, value);
-            alert("Updated successfully!");
+            await updateDropdown(id, roleName);
+            //alert("Updated successfully!");
 
             showSection('dropdownListSection');
             await refreshDropdown();
@@ -415,7 +363,7 @@ $(document).ready(function () {
 
         } catch (err) {
             console.error("Error updating:", err);
-            alert("Failed to update: " + err.message);
+            //alert("Failed to update: " + err.message);
         }
     });
 
@@ -423,36 +371,29 @@ $(document).ready(function () {
     $("#btnUpdateCancel").on("click", function () {
         $("#updateId").val("");
         $("#updateDropdownInput").val("");
-        $("#updateValue").val("");
         showSection('dropdownListSection');
     });
 });
 
-let dropdownIdToDelete = null; // store id temporarily
+
+let userroleIdToDelete = null; // store id temporarily
 
 // Open modal instead of confirm()
 function openDeleteModal(id) {
-    dropdownIdToDelete = id;
+    userroleIdToDelete = id;
     const modal = new bootstrap.Modal(document.getElementById("deleteConfirmModal"));
     modal.show();
 }
 
 // On confirm button click
 document.getElementById("confirmDeleteBtn").addEventListener("click", async function () {
-    if (!dropdownIdToDelete) return;
+    if (!userroleIdToDelete) return;
 
     const userRoleId = getCookie("UserRoleId");
     const token = getCookie("AuthToken"); // read token from cookie
 
-    // Make sure we have a valid user
-    const updatedBy = userRoleId ? parseInt(userRoleId) : 0;
-    if (updatedBy <= 0) {
-        alert("Invalid user role.");
-        return;
-    }
-
     try {
-        const response = await fetch(`/Admin/DeleteDropdown/${dropdownIdToDelete}?updatedBy=${updatedBy}`, {
+        const response = await fetch(`/Admin/DeleteUserRole/${userroleIdToDelete}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`,  // attach token like SaveDropdown
@@ -462,16 +403,18 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", async func
 
         if (response.ok) {
             // Close modal
-            bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal")).hide();
-            alert("Dropdown deleted successfully.");
+            const modal = bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal"));
+            if (modal) modal.hide();
+
+            // Refresh page
             location.reload();
         } else {
-            const data = await response.text();
-            alert("Failed to delete dropdown: " + data);
+            const data = await response.json();
+            alert("Failed to delete role: " + (data.message || "Unknown error"));
         }
     } catch (error) {
-        alert("Error deleting dropdown: " + error.message);
+        alert("Error deleting role: " + error.message);
     }
 
-    dropdownIdToDelete = null;
+    userroleIdToDelete = null;
 });

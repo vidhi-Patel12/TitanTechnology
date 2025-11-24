@@ -31,13 +31,19 @@
 
 @section Scripts {
     <script>
-        const apiBase = "https://localhost:44368"; // your API base
-        const solutionId = "@solutionId"; // Razor injects the route id
+        const solutionId = "@solutionId"; // Razor injects route id
+        const apiBase = "https://api.titentechnology.com"; // external API base
 
         async function loadSolution() {
             const container = document.getElementById("service-details");
             try {
-                const response = await fetch(`${apiBase}/api/Solution/${solutionId}`);
+                //  FIX 1: call your local MVC proxy endpoint
+                const response = await fetch(`/Solution/Get/${solutionId}`, {
+                    method: "GET",
+                    credentials: "include",
+                    headers: { "Accept": "application/json" }
+                });
+
                 if (!response.ok) throw new Error("HTTP " + response.status);
 
                 const solution = await response.json();
@@ -45,12 +51,18 @@
                 const breadcrumbService = document.getElementById("breadcrumb-service");
                 breadcrumbService.innerText = solution.solutionName;
 
+                  const imageUrl = solution.image.startsWith("http")
+    ? `/Solution/Image?path=${encodeURIComponent(solution.image.replace(apiBase + "/", ""))}`
+    : `/Solution/Image?path=${encodeURIComponent(solution.image)}`;
 
+                //  FIX 2: use apiBase for image URL correctly
                 container.innerHTML = `
                     <h2>${solution.solutionName}</h2>
                     <p>${solution.description}</p>
-                    <img src="${apiBase}/${solution.image}" alt="" style="height: 60%;width: 90%;" class="img-fluid rounded" />
-
+                    <img src="${imageUrl}"
+                         alt="${solution.solutionName}"
+                         style="height:30%;width:90%;"
+                         class="img-fluid rounded" />
                 `;
             } catch (err) {
                 console.error("Error loading solution:", err);
@@ -62,6 +74,7 @@
             }
         }
 
+        // Load solution on page ready
         loadSolution();
     </script>
 }

@@ -123,12 +123,14 @@ a.meanmenu-reveal{display:none}
   background: #fff;
 }
 .mean-container .mean-bar::before {
-    color: #fff;
-    content: "Toptech";
-    font-size: 28px;
-    font-weight: 600;
-    left: 10px;
-    position: absolute;
-    top: 18px;
+	content: "";
+	position: absolute;
+	top: -25px;
+	left: 10px;
+	width: 351px;
+	height: 123px;
+	background: url('/assets/images/home-1/header-logo.png') no-repeat left center;
+	background-size: contain;
 }
+
 

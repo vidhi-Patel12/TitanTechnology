@@ -34,8 +34,15 @@ namespace TitanTechnologyView.Models
         [Required(ErrorMessage = "Rate Unit is required")]
         public string RateUnit { get; set; }
 
+        //[Required(ErrorMessage = "Timesheet Type is required")]
+        //public string TimesheetType { get; set; }
+
         [Required(ErrorMessage = "Timesheet Type is required")]
-        public string TimesheetType { get; set; }
+        [MinLength(1, ErrorMessage = "At least one Timesheet Type must be selected")]
+        [NotMapped] // optional: if you use EF and don’t want to persist it
+        public List<string> TimesheetTypes { get; set; } = new List<string>();
+
+        public string? TimesheetType { get; set; } // for comma-separated DB storage
 
         [Required(ErrorMessage = "SAP Module is required")]
         public string SapModule { get; set; }
@@ -43,7 +50,7 @@ namespace TitanTechnologyView.Models
         [Required(ErrorMessage = "Start Date is required")]
         public DateTime? EmployeeStartDate { get; set; }
 
-        [Required(ErrorMessage = "End Date is required")]
+        //[Required(ErrorMessage = "End Date is required")]
         public DateTime? EmployeeEndDate { get; set; }
         public int? CycleStartDay { get; set; }
         public int? CycleEndDay { get; set; }

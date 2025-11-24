@@ -20,11 +20,31 @@ namespace TitanTechnologyView.Controllers
             _apiBaseUrl = $"{apiSettings.Value.BaseUrl}/ProjectEmployee";
             _apiOrigin = apiSettings.Value.Origin;
         }
-        
+
+        private HttpClient CreateClients()
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            // Fetch JWT token from cookie
+            var token = HttpContext.Request.Cookies["AuthToken"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                //  Add Bearer token to Authorization header
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                Console.WriteLine("Warning: AuthToken cookie not found!");
+            }
+
+            return client;
+        }
         // GET: List
         public async Task<IActionResult> Index()
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
             var response = await client.GetAsync(_apiBaseUrl);
 
             if (!response.IsSuccessStatusCode)
@@ -61,7 +81,7 @@ namespace TitanTechnologyView.Controllers
         public async Task<IActionResult> AddEdit(int? id, string? projectCode)
             {
             ViewBag.ApiOrigin = _apiOrigin;
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
 
             // Fetch projects
             var projectResponse = await client.GetAsync($"{_apiOrigin}/api/ProjectMaster");
@@ -155,11 +175,17 @@ namespace TitanTechnologyView.Controllers
 
             // Ensure booleans post properly
             
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
 
             foreach (var employee in model) 
             {
                 //employee.Inactive = employee.Inactive ?? true;
+
+                if (employee.TimesheetTypes != null && employee.TimesheetTypes.Any())
+                    employee.TimesheetType = string.Join(",", employee.TimesheetTypes);
+                else
+                    employee.TimesheetType = null;
+
                 employee.TimesheetRequired = employee.TimesheetRequired ?? true;
 
                 var jsonData = JsonConvert.SerializeObject(employee);
@@ -193,7 +219,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
             var response = await client.DeleteAsync($"{_apiBaseUrl}/{id}");
 
             if (!response.IsSuccessStatusCode)

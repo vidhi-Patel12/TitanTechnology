@@ -26,9 +26,30 @@ namespace TitanTechnologyView.Controllers
 
         private HttpClient CreateClient() => _httpClientFactory.CreateClient();
 
+        private HttpClient CreateClients()
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            // Fetch JWT token from cookie
+            var token = HttpContext.Request.Cookies["AuthToken"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                //  Add Bearer token to Authorization header
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                Console.WriteLine("Warning: AuthToken cookie not found!");
+            }
+
+            return client;
+        }
+
         private async Task<List<T>> FetchListAsync<T>(string url)
         {
-            var client = CreateClient();
+            var client = CreateClients();
             var response = await client.GetAsync(url);
             if (!response.IsSuccessStatusCode) return new List<T>();
 
@@ -39,7 +60,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()                
         {
-            var client = CreateClient();
+            var client = CreateClients();
             var response = await client.GetAsync(_apiUrl);
 
             // Employees
@@ -61,7 +82,7 @@ namespace TitanTechnologyView.Controllers
         {
             // 1. Fetch vendor list from API
             ViewBag.ApiOrigin = _apiOrigin;
-            var client = _httpClientFactory.CreateClient();
+            var client = CreateClients();
 
             ViewBag.EmployeeTypes = await client.GetDropdownAsync(_apiOrigin, "Employee Type");
             ViewBag.Companys = await FetchListAsync<CompanyMasterDto>($"{_apiOrigin}/api/Company");
@@ -100,7 +121,7 @@ namespace TitanTechnologyView.Controllers
           [HttpPost]
         public async Task<IActionResult> SaveEmployee(EmployeeFormDto model)
         {
-            var client = CreateClient();
+            var client = CreateClients();
       
             if (!ModelState.IsValid)
             {
@@ -169,7 +190,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var client = CreateClient();
+            var client = CreateClients();
             var response = await client.GetAsync($"{_apiUrl}/{id}");
             if (!response.IsSuccessStatusCode) return Content("Employee not found");
 
@@ -187,7 +208,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var client = CreateClient();
+            var client = CreateClients();
             await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");
         }

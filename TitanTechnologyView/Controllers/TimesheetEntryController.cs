@@ -9,8 +9,8 @@ namespace TitanTechnologyView.Controllers
 {
     public class TimesheetEntryController : Controller
     {
-        private readonly string _apiOrigin = "https://localhost:44368";
-        private readonly string apiBaseUrl = "https://localhost:44368/api/TimesheetEntry";
+        private readonly string _apiOrigin = "https://api.titentechnology.com";
+        private readonly string apiBaseUrl = "https://api.titentechnology.com/api/TimesheetEntry";
         private readonly IHttpClientFactory _httpClientFactory;
 
         public TimesheetEntryController(IHttpClientFactory httpClientFactory)
@@ -139,14 +139,14 @@ namespace TitanTechnologyView.Controllers
                 var ts = timesheets.FirstOrDefault(t => t.TimesheetId == entry.TimesheetId);
                 var emp = ts != null ? employees.FirstOrDefault(e => e.EmployeeId == ts.EmployeeId) : null;
 
-                if (ts != null && emp != null)
-                {
-                    entry.DisplayText = $"{ts.ProjectCode} - {emp.Name} - {ts.MonthYear:MM/yyyy} - {ts.TimesheetType}";
-                }
-                else
-                {
-                    entry.DisplayText = $"Timesheet #{entry.TimesheetId}";
-                }
+                //if (ts != null && emp != null)
+                //{
+                //    entry.DisplayText = $"{ts.ProjectCode} - {emp.Name} - {ts.MonthYear:MM/yyyy} - {ts.TimesheetType}";
+                //}
+                //else
+                //{
+                //    entry.DisplayText = $"Timesheet #{entry.TimesheetId}";
+                //}
             }
 
             return View(list);
@@ -184,13 +184,13 @@ namespace TitanTechnologyView.Controllers
                                   select new
                                   {
                                       TimesheetId = ts.TimesheetId,
-                                      DisplayText = $"{ts.ProjectCode} - {emp.Name} - {ts.MonthYear:MM/yyyy} - {ts.TimesheetType}",
-                                      StartDate = ts.StartDate.HasValue ? ts.StartDate.Value.ToString("yyyy-MM-dd") : "",
-                                      EndDate = ts.EndDate.HasValue ? ts.EndDate.Value.ToString("yyyy-MM-dd") : ""
-                                  }).ToList();
+                                      //DisplayText = $"{ts.ProjectCode} - {emp.Name} - {ts.MonthYear:MM/yyyy} - {ts.TimesheetType}",
+                                  //    StartDate = ts.StartDate.HasValue ? ts.StartDate.Value.ToString("yyyy-MM-dd") : "",
+                                  //    EndDate = ts.EndDate.HasValue ? ts.EndDate.Value.ToString("yyyy-MM-dd") : ""
+                                 }).ToList();
 
             ViewBag.Timesheets = new SelectList(timesheetItems, "TimesheetId", "DisplayText");
-            ViewBag.TimesheetDates = timesheetItems.ToDictionary(x => x.TimesheetId, x => new { x.StartDate, x.EndDate });
+            //ViewBag.TimesheetDates = timesheetItems.ToDictionary(x => x.TimesheetId, x => new { x.StartDate, x.EndDate });
         }
 
         [HttpGet]

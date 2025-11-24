@@ -11,11 +11,29 @@
     if (target) target.style.display = "block";
 }
 
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+console.log("UserRoleId from cookie:", getCookie("UserRoleId"));
 
-const apiBase = 'https://localhost:44368';
+const token = getCookie("AuthToken");
+console.log("Token:", token);
+
+
+const apiBase = 'https://api.titentechnology.com';
 
 async function loadCareerMaster() {
-    const response = await fetch(`${apiBase}/api/Career`);
+    //const response = await fetch(`${apiBase}/api/Career`);
+    const response = await fetch(`/Admin/GetCareers`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            "Accept": "application/json"
+        }
+    });
     if (!response.ok) throw new Error("HTTP " + response.status);
     return await response.json();
 }
@@ -231,13 +249,6 @@ async function refreshUpdateCareer() {
     }
 }
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-}
-console.log("UserRoleId from cookie:", getCookie("UserRoleId"));
 
 
 async function saveCareer(employementtype, location, jobTitle, jobDescription) {
@@ -256,9 +267,10 @@ async function saveCareer(employementtype, location, jobTitle, jobDescription) {
     formData.append("UpdatedBy", "");
     formData.append("UpdatedDate", "");
 
-    const response = await fetch(`${apiBase}/api/Career/Post`, {
+    const response = await fetch(`/Admin/SaveCareer`, {
         method: "POST",
-        body: formData //  No headers, browser sets boundary automatically
+        credentials: "include", 
+        body: formData 
     });
 
     if (!response.ok) throw new Error("Save failed: " + response.status);
@@ -366,8 +378,9 @@ async function updateCareer(careerId, employementtype, location, jobTitle, jobDe
     formData.append("UpdatedBy", userRoleId ? parseInt(userRoleId) : 0);
     formData.append("UpdatedDate", now);
 
-    const response = await fetch(`${apiBase}/api/Career/Update`, {
+    const response = await fetch(`/Admin/UpdateCareer`, {
         method: "PUT",
+        credentials: "include", 
         body: formData
     });
 
@@ -439,8 +452,12 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", async func
     }
 
     try {
-        const response = await fetch(`${apiBase}/api/Career/${careerIdToDelete}?updatedBy=${updatedBy}`, {
-            method: "DELETE"
+        const response = await fetch(`/Admin/DeleteCareer/${careerIdToDelete}?updatedBy=${updatedBy}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,  // attach token like SaveDropdown
+                "Content-Type": "application/json"
+            }
         });
 
         if (response.ok) {
@@ -482,7 +499,16 @@ async function deleteSolution(id) {
 
 async function getbyidCareer(careerId) {
     try {
-        const response = await fetch(`${apiBase}/api/Career/${careerId}`);
+        //const response = await fetch(`${apiBase}/api/Career/${careerId}`);
+
+        const response = await fetch(`/Admin/GetCareers/${careerId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
         console.log(careerId);
         if (!response.ok) throw new Error("Failed to fetch career");
 
