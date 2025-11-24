@@ -10,7 +10,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>Vendors</h4>
+                    @* <h4>Vendors</h4> *@
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
@@ -31,7 +31,7 @@
                     <div class="contact-contetn">
                         <h4>Vendor</h4>
                     </div>
-                    <form asp-controller="Vendor" asp-action="SaveVendor" method="post" enctype="multipart/form-data">
+                    <form asp-controller="Vendor" asp-action="SaveVendor" method="post" enctype="multipart/form-data" id="companyForm">
                         <input type="hidden" asp-for="VendorId" />
                         <input type="hidden" asp-for="ExistingGstnUpload" />
                         <input type="hidden" asp-for="ExistingPanUpload" />
@@ -55,33 +55,33 @@
                                             </option>
                                         }
                                     </select>
-                                    <span asp-validation-for="CompanyCode" class="text-danger"></span>
+                                    <span asp-validation-for="CompanyCode" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="VendorName" type="text" placeholder="Vendor Name" required />
-                                    <span asp-validation-for="VendorName" class="text-danger"></span>
+                                    <span asp-validation-for="VendorName" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="Address" type="text" placeholder="Address" required />
-                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                    <span asp-validation-for="Address" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="Gstn" type="text" placeholder="GSTN" required />
-                                    <span asp-validation-for="Gstn" class="text-danger"></span>
+                                    <input asp-for="Gstn" type="text" placeholder="GST Number" required />
+                                    <span asp-validation-for="Gstn" class="text-danger field-validation"></span>
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="PanNumber" type="text" placeholder="PAN Number" required />
-                                    <span asp-validation-for="PanNumber" class="text-danger"></span>
+                                    <span asp-validation-for="PanNumber" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -93,44 +93,44 @@
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="ContactPersonNumber" type="text" placeholder="Contact Person Number" required />
-                                    <span asp-validation-for="ContactPersonNumber" class="text-danger"></span>
+                                    <span asp-validation-for="ContactPersonNumber" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="PaymentTerms" type="text" placeholder="Payment Terms" required />
-                                    <span asp-validation-for="PaymentTerms" class="text-danger"></span>
+                                    <span asp-validation-for="PaymentTerms" class="text-danger field-validation"></span>
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="AccountHolderName" type="text" placeholder="AccountHolder Name" required />
-                                    <span asp-validation-for="AccountHolderName" class="text-danger"></span>
+                                    <input asp-for="AccountHolderName" type="text" placeholder="Account Holder Name" required />
+                                    <span asp-validation-for="AccountHolderName" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="AccountNumber1" type="text" placeholder="AccountNumber1" required />
-                                    <span asp-validation-for="AccountNumber1" class="text-danger"></span>
+                                    <input asp-for="AccountNumber1" type="text" placeholder="Account Number 1" required />
+                                    <span asp-validation-for="AccountNumber1" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="IfscCode" type="text" placeholder="IFSC Code" required />
-                                    <span asp-validation-for="IfscCode" class="text-danger"></span>
+                                    <span asp-validation-for="IfscCode" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="BankAccountName" type="text" placeholder="BankAcoount Name" required />
-                                    <span asp-validation-for="BankAccountName" class="text-danger"></span>
+                                    <input asp-for="BankAccountName" type="text" placeholder="Bank Acoount Name" required />
+                                    <span asp-validation-for="BankAccountName" class="text-danger field-validation"></span>
                                 </div>
                             </div>
 
                             <hr class="my-1" />
 
-                            <div class="col-lg-2"><p class="text-end">Gstn Upload</p></div>
+                            <div class="col-lg-2"><p class="text-end">Gst Number</p></div>
                             <div class="col-lg-4">
 
                                 @if (!string.IsNullOrWhiteSpace(Model.ExistingGstnUpload))
@@ -140,7 +140,7 @@
                                 <input asp-for="GstnUpload" type="file" />
                             </div>
 
-                            <div class="col-lg-2"><p class="text-end">PAN Upload</p></div>
+                            <div class="col-lg-2"><p class="text-end">PAN Card</p></div>
                             <div class="col-lg-4">
 
                                 @if (!string.IsNullOrWhiteSpace(Model.ExistingPanUpload))
@@ -215,3 +215,70 @@
     </div>
 </div>
 
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("companyForm");
+        const requiredFields = form.querySelectorAll("input[required], select[required]");
+
+        // Validate on blur (inputs) and change (selects)
+        requiredFields.forEach(field => {
+            field.addEventListener("blur", () => validateField(field));
+            field.addEventListener("change", () => validateField(field));
+        });
+
+        // Validate all on submit
+        form.addEventListener("submit", function (e) {
+            let valid = true;
+            requiredFields.forEach(field => {
+                if (!validateField(field)) valid = false;
+            });
+
+            if (!valid) {
+                e.preventDefault();
+                alert("Please fill all required fields correctly.");
+            }
+        });
+
+        function validateField(field) {
+            const errorSpan = field.parentElement.querySelector(".field-validation");
+            let fieldName = "";
+
+            // Determine the field name for the error message
+            if (field.tagName.toLowerCase() === "input") {
+                fieldName = field.placeholder || "This field";
+            } else if (field.tagName.toLowerCase() === "select") {
+                const selectedOption = field.options[field.selectedIndex];
+                fieldName = selectedOption.text === "-- Select Company Name --" || selectedOption.value === ""
+                            ? "This field"
+                            : selectedOption.text;
+            }
+
+            // Check if value is empty
+            if (!field.value || field.value.trim() === "") {
+                field.classList.add("is-invalid");
+                if (errorSpan) errorSpan.textContent = fieldName + " is required";
+                return false;
+            } else {
+                field.classList.remove("is-invalid");
+                if (errorSpan) errorSpan.textContent = "";
+                return true;
+            }
+        }
+    });
+</script>
+
+
+<!-- CSS for invalid fields -->
+<style>
+    .is-invalid {
+        border: 1px solid red;
+        background-color: #fff5f5;
+    }
+
+    .field-validation {
+        font-size: 0.9rem;
+        color: red;
+    }
+</style>

@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>Career</h4>
+                    @* <h4>Career</h4> *@
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
@@ -59,47 +59,56 @@
                     <div class="contact-contetn">
                         <h4>Add Career</h4>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="dropdown">
-                                <!-- Input field toggles dropdown -->
-                                <input type="text" id="careerInput"
-                                       class="form-control dropdown-toggle"
-                                       placeholder="Select name..."
-                                       data-bs-toggle="dropdown" aria-expanded="false" required>
+                    <form id="careerForm" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="dropdown">
+                                    <!-- Input field toggles dropdown -->
+                                    <input type="text" id="careerInput"
+                                           class="form-control dropdown-toggle"
+                                           placeholder="Select name..."
+                                           data-bs-toggle="dropdown" aria-expanded="false" required>
+                                    <span class="text-danger field-validation"></span>
 
-                                <!-- Dropdown list -->
-                                <ul id="dynamicCareer" class="dropdown-menu w-100">
-                                    <li><span class="dropdown-item-text text-muted">Loading...</span></li>
-                                </ul>
+    
+                                    <!-- Dropdown list -->
+                                    <ul id="dynamicCareer" class="dropdown-menu w-100">
+                                        <li><span class="dropdown-item-text text-muted">Loading...</span></li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div>
-                                <input type="text" id="location" name="Location" class="form-control" placeholder="Enter location" required />
-                            </div>
-                        </div>
-                    </div>
+                            <div class="col-lg-6">
+                                <div>
+                                    <input type="text" id="location" name="Location" class="form-control" placeholder="Enter location" required />
+                                    <span class="text-danger field-validation"></span>
 
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div>
-                                <input type="text" id="jobTitle" name="JobTitle" class="form-control" placeholder="Enter job title" required />
+                                </div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
-                            <div>
-                                <input type="text" id="jobDescription" name="JobDescription" class="form-control" placeholder="Enter job description" required />
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <button type="button" id="btnSave" class="btn col-lg-3 btn-primary mt-2">Save</button>
-                            <button type="button" id="btnCancel" class="btn col-lg-3 btn-secondary mt-2">Cancel</button>
+                        <div class="row">
+                            <div class="col-lg-6 mt-3">
+                                <div>
+                                    <input type="text" id="jobTitle" name="JobTitle" class="form-control" placeholder="Enter job title" required />
+                                    <span class="text-danger field-validation"></span>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mt-3">
+                                <div>
+                                    <input type="text" id="jobDescription" name="JobDescription" class="form-control" placeholder="Enter job description" required />
+                                    <span class="text-danger field-validation"></span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 mt-3">
+                                <button type="button" id="btnSave" class="btn col-lg-3 btn-primary mt-2">Save</button>
+                                <button type="button" id="btnCancel" class="btn col-lg-3 btn-secondary mt-2">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

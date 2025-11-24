@@ -10,7 +10,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>Companys</h4>
+                    @* <h4>Companys</h4> *@
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
@@ -31,13 +31,13 @@
                     <div class="contact-contetn">
                         <h4>Company</h4>
                     </div>
-                    <form asp-controller="Company" asp-action="AddCompany" method="post" enctype="multipart/form-data">
+                    <form asp-controller="Company" asp-action="AddCompany" method="post" enctype="multipart/form-data" id="companyForm">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     @if (string.IsNullOrEmpty(Model.CompanyCode))
                                     {
-                                        <input asp-for="CompanyCode" placeholder="CompanyCode" />
+                                        <input asp-for="CompanyCode" placeholder="Company Code" />
                                     }
                                     else
                                     {
@@ -50,7 +50,7 @@
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="CompanyName" type="text" placeholder="Company Name" required />
-                                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+                                    <span class="text-danger field-validation" data-field="CompanyName"></span>
 
                                 </div>
                             </div>
@@ -58,75 +58,75 @@
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="CompanyAddress" type="text" placeholder="Company Address" required />
-                                    <span asp-validation-for="CompanyAddress" class="text-danger"></span>
+                                    <span asp-validation-for="CompanyAddress" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="Gstn" type="text" placeholder="GSTN" required />
-                                    <span asp-validation-for="Gstn" class="text-danger"></span>
-                                </div>
-                            </div>
-                           
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="PanNumber" type="text" placeholder="PAN Number" required />
-                                    <span asp-validation-for="PanNumber" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="ContactPersonName" type="text" placeholder="Contact Person Name" required />
-                                    <span asp-validation-for="ContactPersonName" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="ContactPersonNumber" type="text" placeholder="Contact Person Number" required />
-                                    <span asp-validation-for="ContactPersonNumber" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="PaymentTerms" type="text" placeholder="Payment Terms" required />
-                                    <span asp-validation-for="PaymentTerms" class="text-danger"></span>
+                                    <input asp-for="Gstn" type="text" placeholder="GST Number" required />
+                                    <span asp-validation-for="Gstn" class="text-danger field-validation"></span>
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="BankName" type="text" placeholder="BankName" required />
-                                    <span asp-validation-for="BankName" class="text-danger"></span>
+                                    <input asp-for="PanNumber" type="text" placeholder="PAN Number" required />
+                                    <span asp-validation-for="PanNumber" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input asp-for="AccountName" type="text" placeholder="Account Name" required />
-                                    <span asp-validation-for="AccountName" class="text-danger"></span>
+                                    <input asp-for="ContactPersonName" type="text" placeholder="Contact Person Name" required />
+                                    <span asp-validation-for="ContactPersonName" class="text-danger field-validation"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="ContactPersonNumber" type="text" placeholder="Contact Person Number" required />
+                                    <span asp-validation-for="ContactPersonNumber" class="text-danger field-validation"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="PaymentTerms" type="text" placeholder="Payment Terms" required />
+                                    <span asp-validation-for="PaymentTerms" class="text-danger field-validation"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="BankName" type="text" placeholder="Bank Name" required />
+                                    <span asp-validation-for="BankName" class="text-danger field-validation"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="single-input-box">
+                                    <input asp-for="AccountName" type="text" placeholder="Account Holder Name" required />
+                                    <span asp-validation-for="AccountName" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="BankAccountNumber" type="text" placeholder="Bank Account Number" required />
-                                    <span asp-validation-for="BankAccountNumber" class="text-danger"></span>
+                                    <span asp-validation-for="BankAccountNumber" class="text-danger field-validation"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="IfscCode" type="text" placeholder="IFSC Code" required />
-                                    <span asp-validation-for="IfscCode" class="text-danger"></span>
+                                    <span asp-validation-for="IfscCode" class="text-danger field-validation"></span>
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input asp-for="Micr" type="text" placeholder="Micr" required />
-                                    <span asp-validation-for="Micr" class="text-danger"></span>
+                                    <span asp-validation-for="Micr" class="text-danger field-validation"></span>
                                 </div>
-                            </div>                            
+                            </div>
 
                             <div class="d-flex gap-3 mt-4">
-                                <button type="submit" class="btn btn-primary px-4">              
+                                <button type="submit" class="btn btn-primary px-4">
                                     Save
                                 </button>
                                 <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
@@ -139,3 +139,56 @@
     </div>
 </div>
 
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("companyForm");
+        const requiredInputs = form.querySelectorAll("input[required]");
+
+        // Validate field on blur
+        requiredInputs.forEach(input => {
+            input.addEventListener("blur", function () {
+                validateField(this);
+            });
+        });
+
+        // Validate on form submit
+        form.addEventListener("submit", function (e) {
+            let valid = true;
+            requiredInputs.forEach(input => {
+                if (!validateField(input)) valid = false;
+            });
+
+            if (!valid) {
+                e.preventDefault();
+                alert("Please fill all required fields correctly.");
+            }
+        });
+
+        function validateField(input) {
+            const errorSpan = input.parentElement.querySelector(".field-validation");
+            if (!input.value.trim()) {
+                input.classList.add("is-invalid");
+                if (errorSpan) errorSpan.textContent = input.placeholder + " is required";
+                return false;
+            } else {
+                input.classList.remove("is-invalid");
+                if (errorSpan) errorSpan.textContent = "";
+                return true;
+            }
+        }
+    });
+</script>
+
+<!-- CSS for invalid fields -->
+<style>
+    .is-invalid {
+        border: 1px solid red;
+        background-color: #fff5f5;
+    }
+
+    .field-validation {
+        font-size: 0.9rem;
+        color: red;
+    }
+</style>

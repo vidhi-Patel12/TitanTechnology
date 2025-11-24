@@ -17,10 +17,32 @@ namespace TitanTechnologyView.Controllers
             _apiUrl = $"{apiSettings.Value.BaseUrl}/Company";
         }
 
+        private HttpClient CreateClients()
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            // Fetch JWT token from cookie
+            var token = HttpContext.Request.Cookies["AuthToken"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                //  Add Bearer token to Authorization header
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                Console.WriteLine("Warning: AuthToken cookie not found!");
+            }
+
+            return client;
+        }
+
         // GET: /Company
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            var client = CreateClients();
             var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.GetAsync(_apiUrl);
 
@@ -47,6 +69,7 @@ namespace TitanTechnologyView.Controllers
                 return View(new CompanyMaster()); // add
             }
 
+            var client = CreateClients();
             var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.GetAsync($"{_apiUrl}/{id}");
 
@@ -69,6 +92,7 @@ namespace TitanTechnologyView.Controllers
                 return View(model);
             }
 
+            var client = CreateClients();
             var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -89,6 +113,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
+            var client = CreateClients();
             var client = _httpClientFactory.CreateClient("IgnoreSSL");
             var response = await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");

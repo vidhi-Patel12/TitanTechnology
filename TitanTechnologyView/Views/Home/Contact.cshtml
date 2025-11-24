@@ -7,13 +7,13 @@
 <div class="hero-area-form style-one d-flex align-items-center">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 mt-5">
+            <div class="col-lg-6">
                 <div class="breadcumb-content">
-                    <h4>Contact Us</h4>
+                    @* <h4>Contact Us</h4> *@
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
-                        <li>Contact</li>
+                        <li>Contact Us</li>
                     </ul>
                 </div>
             </div>
@@ -29,23 +29,27 @@
                     <div class="contact-contetn">
                         <h4>Connect with a Trusted Partner in SAP Digital Transformation</h4>
                     </div>
-                    <form action="#">
+                    <form asp-action="Contact" method="post" id="contactForm">
                         <div class="row">
+
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input type="text" name="name" placeholder="Your Name" required>
+                                    <input type="text" name="Name" placeholder="Your Name" required>
                                 </div>
                             </div>
+
                             <div class="col-lg-6">
                                 <div class="single-input-box">
-                                    <input type="text" name="companyname" placeholder="Company Name" required>
+                                    <input type="text" name="CompanyName" placeholder="Company Name" required>
                                 </div>
                             </div>
+
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input type="text" name="Email" placeholder="Enter E-Mail" required>
                                 </div>
                             </div>
+
                             <div class="col-lg-6">
                                 <div class="single-input-box">
                                     <input type="text" name="Phone" placeholder="Phone Number" required>
@@ -54,16 +58,19 @@
 
                             <div class="col-lg-12">
                                 <div class="single-input-box">
-                                    <textarea name="massage" id="massage" placeholder="Write Massage" required></textarea>
+                                    <textarea name="Message" placeholder="Write Message" required></textarea>
                                 </div>
                             </div>
+
                             <div class="col-lg-12">
                                 <div class="massage-sent-button">
-                                    <button type="submit">Send Massage </button>
+                                    <button type="submit">Send Message</button>
                                 </div>
                             </div>
+
                         </div>
                     </form>
+
                 </div>
             </div>
             <div class="col-lg-4 col-md-12">
@@ -77,7 +84,7 @@
                         </div>
                         <div class="contact-info-content">
                             <p>Call Us</p>
-                            <h4>+980 123 (4567) 890</h4>
+                            <h4>+91 87587 02585</h4>
                         </div>
                     </div>
                     <div class="contact-info-box">
@@ -86,7 +93,9 @@
                         </div>
                         <div class="contact-info-content">
                             <p>Send E-Mail</p>
-                            <h4>example@gmail.com</h4>
+                            <h4>
+                                info@titantechnology.co.in
+                            </h4>
                         </div>
                     </div>
                     <div class="contact-info-box">
@@ -103,3 +112,51 @@
         </div>
     </div>
 </div>
+
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h5 id="successMessage">Message saved & email sent!</h5>
+                <button class="btn btn-success mt-3" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+
+    document.getElementById('contactForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const resp = await fetch('/Home/Contact', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await resp.json(); // data = { success: true, message: "Message saved & emails sent!" }
+
+            // FIX — use data.message
+            document.getElementById('successMessage').innerText = data.message;
+            successModal.show();
+
+            this.reset();
+
+        } catch (err) {
+            console.error(err);
+
+            document.getElementById('successMessage').innerText = "Something went wrong!";
+            successModal.show();
+        }
+    });
+</script>
+
+

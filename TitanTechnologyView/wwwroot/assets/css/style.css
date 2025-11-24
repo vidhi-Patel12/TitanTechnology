@@ -198,7 +198,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
     width: 100%;
     -webkit-box-shadow: 0 2px 5px -2px rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 5px -2px rgba(0, 0, 0, 0.1);
-    background: #2a7284 !important;
+    background: #2C8BBD !important;
     transition: 0.5s;
     z-index: 999 !important;
     -webkit-animation: 300ms running fadeInDown;
@@ -210,7 +210,11 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
    <!--Toptech Hero Area Css Style One-->
 =========================================================---*/
 .style-one.hero-area {
-    background: linear-gradient(to right,#2a7284 40%,rgba(85, 131, 179, 0) 100%), url(../images/home-1/hero-bg.jpg);
+        background-image: url('../images/home-1/ChatGPT Image Sep 23, 2025, 03_45_16 PM.png');
+    /*    background: linear-gradient(to right,#2a7284 40%,rgba(85, 131, 179, 0) 100%), url(../images/home-1/Hero_bg.jpg);*/
+    /*background-image:*/
+    /* Light white only at top-left */
+    /*radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 20%), url('../images/home-1/hero_main_bg.png');*/
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -218,11 +222,14 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
 }
 
 .style-one.hero-area-form {
-    background: url(../images/home-1/breadcumb-bg.png);
+    /*    background: url(../images/home-1/breadcumb-bg.png);*/
+    /*    background: linear-gradient(to bottom right, #2C8BBD 0%, transparent 80%), url(../images/home-1/breadcumb-bg.png);*/
+    /*    #83d4fc*/
+    background: linear-gradient(to bottom right, #5e9ebd 0%, transparent 80%), url(../images/home-1/breadcumb-bg.png);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    height: 500px;
+    height: 330px;
 }
 
 .style-one .hero-content h4 {
@@ -265,13 +272,13 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
     transition: 0.5s;
 }
 
-.style-one .hero-button.style-one a:hover{
-  background: transparent;
-  border: 1px solid #ffffff6e;
-}
+    .style-one .hero-button.style-one a:hover {
+        background: #0c5adb;
+        border: 1px solid #ffffff6e;
+    }
 
 .style-one a.button-two {
-    background: transparent !important;
+    background: #0c5adb !important;
     border: 1px solid #ffffff6e !important;
     padding: 12px 45px !important;
     transition: 0.5s;
@@ -4063,7 +4070,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
 }
 
 .breadcumb-content ul {
-    border: 2px solid #ffffff47;
+/*    border: 2px solid #ffffff47;*/
     display: inline-block;
     padding: 8px 33px;
     border-radius: 5px;
@@ -4073,7 +4080,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
 .breadcumb-content ul li {
     display: inline-block;
     color: #fff;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     font-family: "Rajdhani";
     margin: 0 4px;
@@ -4083,7 +4090,7 @@ Tags: consulting, finance, corporate, business, consultant, multipurpose, techno
     display: inline-block;
     color: #fff;
     font-weight: 500;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
 }
 
@@ -6037,7 +6044,7 @@ button.icons {
    <!--Toptech Careers Area Css-->
 =========================================================---*/
 .inner-style.careers-area {
-    padding: 119px 0 1px;
+    padding: 60px 0 1px;
     background: #F5F8FD;
 }
 

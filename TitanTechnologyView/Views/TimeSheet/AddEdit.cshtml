@@ -1,8 +1,11 @@
-﻿@model TitanTechnologyView.Models.Timesheet
+﻿@using Newtonsoft.Json
+@using System.Globalization
+@model List<TitanTechnologyView.Models.Timesheet>
 
 @{
-    ViewData["Title"] = Model.TimesheetId == 0 ? "Add Timesheet" : "Edit Timesheet";
-    var apiOrigin = (string)(ViewBag.ApiOrigin ?? "");
+    var loginId = Context.Request.Cookies["LoginId"];
+    var employees = ViewBag.Employees as IEnumerable<dynamic>;
+    var emp = employees?.FirstOrDefault(e => e.EmployeeId.ToString() == loginId);
 }
 
 <div class="hero-area-form style-one d-flex align-items-center">
@@ -10,11 +13,10 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>Timesheets</h4>
                     <ul>
                         <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
-                        <li>Timesheets</li>
+                        <li>Timesheet</li>
                     </ul>
                 </div>
             </div>
@@ -22,221 +24,488 @@
     </div>
 </div>
 
-<div class="contact-area style-three inner">
-    <div class="container">
-        <div class="row add-white-bg align-items-center">
-            <div class="col-lg-12 col-md-12">
-                <div class="single-contact-box">
-                    <div class="contact-contetn">
-                        <h4>Timesheet</h4>
-                    </div>
-                    <form asp-controller="TimeSheet" asp-action="SaveTimeSheet" method="post" enctype="multipart/form-data">
-                        
-                        <input type="hidden" asp-for="TimesheetId" />
-                        
-                        <div class="row">
-                            <!-- Project -->
-                            <div class="col-lg-6 mb-4">
-                                <div class="single-input-box">
-                                    <label asp-for="ProjectCode" class="form-label">Project Code</label>
-                                    <select asp-for="ProjectCode" class="form-select" required>
-                                        <option value="">Select ProjectCode </option>
-                                        @if (ViewBag.Projects != null)
-                                        {
-                                            foreach (var project in (List<TitanTechnologyView.Models.ProjectMaster>)ViewBag.Projects)
-                                            {
-                                                <option value="@project.ProjectCode">@project.ProjectCode</option>
-                                            }
-                                        }
-                                    </select>
-                                    <span asp-validation-for="ProjectCode" class="text-danger"></span>
-                                </div>
-                            </div>
+<div class="container mt-5">
+    <h3 class="mb-5">Timesheets</h3>
 
-                            <!-- Employee -->
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <label asp-for="EmployeeId" class="form-label">Employee</label>
-                                    <select asp-for="EmployeeId"
-                                            asp-items="@(ViewBag.Employees != null
-                                            ? new SelectList(ViewBag.Employees, "EmployeeId", "DisplayName", Model?.EmployeeId)
-                                            : new List<SelectListItem>())"
-                                            class="form-select" required>
-                                        <option value=""> Select Employee </option>
-                                    </select>
-                                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <select asp-for="TimesheetType" class="form-select" required>
-                                        <option value=""> Select Timesheet Type </option>
-                                        <option value="Monthly">Monthly</option>
-                                        <option value="Fixed">Fixed</option>
-                                        <option value="Project">Project</option>
-                                        <option value="Quarterly">Quarterly</option>
-                                    </select>
-                                    <span asp-validation-for="TimesheetType" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <input asp-for="MonthYear" type="month" id="MonthYear" placeholder="MonthYear" required />
-                                    <span asp-validation-for="MonthYear" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <!-- StartDate -->
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <label asp-for="StartDate" class="form-label" style="color:black">Start Date</label>
-                                     <input asp-for="StartDate" type="date" id="StartDate" readonly />
-                                    <span asp-validation-for="StartDate" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <!-- EndDate -->
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <label asp-for="EndDate" class="form-label" style="color:black">End Date</label>
-                                    <input asp-for="EndDate" type="date" id="EndDate" readonly />
-                                    <span asp-validation-for="EndDate" class="text-danger"></span>
-                                </div>
-                            </div>
-    
-                            <div class="col-lg-6">
-                                <div class="single-input-box">
-                                    <select asp-for="Status" class="form-select" required>
-                                            <option value="">Select Status</option>
-                                            <option value="Salary Paid">Salary Paid</option>
-                                            <option value="Approved">Approved</option>
-                                            <option value="Invoiced">Invoiced</option>
-                                            <option value="Submitted">Submitted</option>                                                                                   
-                                    </select>
-                                        <span asp-validation-for="Status" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            
-                            <!-- Duplicate Error Message -->
-                            <div class="col-lg-12 mb-3">
-                                <div id="duplicateError" class="alert alert-danger" style="display: none;"></div>
-                            </div>
-
-                            <div class="d-flex gap-3 mt-4">
-                                <button type="submit" class="btn btn-primary px-4">
-                                    Save
-                                   @*  @(Model.EmployeeId == 0 ? "Save" : "Save") *@
-                                </button>
-                                <a asp-action="Index" class="btn btn-outline-secondary px-4">Back</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+    <!-- Employee Info -->
+    <div class="row mb-3">
+        @* <div class="col-md-4">
+                <label class="form-label text-black">Mail Id</label>
+                 <input type="text" class="form-control" value="@Model.Register?.Emial" readonly /> 
+            </div> *@
+        <div class="col-md-3">
+            <div class="single-input-box">
+                <label class="text-black fs-6">Email</label><br />
+                <label class="text-black fs-5 mt-2">@(Context.Request.Cookies["Email"] ?? "")</label>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="single-input-box">
+                <label class="text-black fs-6">Employe Number</label><br />
+                <label class="text-black fs-5 mt-2">EMP@(Context.Request.Cookies["LoginId"] ?? "")</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="single-input-box">
+                <label class="text-black fs-6">Employee Name:</label><br />
+                <label class="text-black fs-5 mt-2">@emp?.Name</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label text-black">Work Month</label>
+            <input type="month" class="form-control" id="MonthYear"
+                   value="@(Model.Any() && Model.First().WorkMonth.HasValue ? Model.First().WorkMonth.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM") : "")" />
+        </div>
+    </div>
+
+    <div class="accordion" id="timesheetAccordion">
+        @* <div class="accordion-item mb-2"
+             data-timesheet-id="@(Model.Any() ? Model.First().TimesheetId.ToString() : "")"> *@
+
+        <!-- Timesheets will be loaded here via JS -->
+    </div>
+
+    <div class="mt-3 mb-5">
+        <button type="button" id="btnSaveTimesheet" class="btn btn-primary">Save Timesheet</button>
+        <a asp-action="Index" class="btn btn-secondary">Back</a>
     </div>
 </div>
 
 @section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
     <script>
-        $(document).ready(function () {
-            // --- Auto set StartDate & EndDate based on MonthYear ---
-            function formatDateLocal(d) {
-                const yyyy = d.getFullYear();
-                const mm = String(d.getMonth() + 1).padStart(2, "0");
-                const dd = String(d.getDate()).padStart(2, "0");
-                return `${yyyy}-${mm}-${dd}`;
-            } 
-            
-            function updateDatesFromMonthYear() {
-                let monthYearVal = $("#MonthYear").val();
-                let timesheetType = $("#TimesheetType").val();
+        document.addEventListener("DOMContentLoaded", function () {
+            const monthInput = document.getElementById("MonthYear");
+            const accordion = document.getElementById("timesheetAccordion");
+            const loginId = "@loginId";
 
-                if (!monthYearVal) {
-                    $("#StartDate").val("");
-                    $("#EndDate").val("");
-                    return;
+            monthInput.addEventListener("change", async function () {
+                const [yearStr, monthStr] = this.value.split('-');
+                const year = parseInt(yearStr, 10);
+                const month = parseInt(monthStr, 10);
+                if (!year || !month) return;
+
+                try {
+                    const response = await fetch(`@Url.Action("LoadByMonth", "Timesheet")?year=${year}&month=${month}`);
+                    const result = await response.json();
+
+                    if (!result.success || result.data.length === 0) {
+                        accordion.innerHTML = `<p class="text-danger">No timesheets found for this month.</p>`;
+                        return;
+                    }
+
+                    const employeeTimesheets = result.data.filter(ts => ts.employeeId.toString() === loginId);
+
+                    if (employeeTimesheets.length === 0) {
+                        accordion.innerHTML = `<p class="text-danger">No timesheets found for this employee.</p>`;
+                        return;
+                    }
+
+                    let html = "";
+                    employeeTimesheets.forEach((ts, i) => {
+                        const monthlyWorkUnit = ts.monthlyworkunit;
+                        const holiday = ts.holiday;
+                        const leave = ts.leave;
+                        const rate = ts.rate;
+                        const extraDays = ts.extradays || 0;
+
+                        let netRate = 0, netPayable = 0;
+
+                        // Calculate initial Net Rate and Net Payable
+
+                if (ts.timesheetType === "T & M") {
+                    netRate = ts.monthlyworkunit * ts.rate;
+                } else if (ts.timesheetType === "Fixed") {
+                    netRate = ts.rate;
+                } else if (ts.timesheetType === "Monthly") {
+                    const monthlyWorkUnit = ts.monthlyworkunit || 0;
+                    const holiday = ts.holiday || 0;
+                    const leave = ts.leave || 0;
+                    netRate = (monthlyWorkUnit - holiday) !== 0
+                        ? ((monthlyWorkUnit - holiday - leave) / (monthlyWorkUnit - holiday)) * ts.rate
+                        : 0;
                 }
+                netPayable = netRate * 0.9;
 
-                const parts = monthYearVal.split("-");
-                if (parts.length !== 2) return;
+                // Handle readonly/disabled states per type
+                const isFixed = ts.timesheetType === "Fixed";
+                const isTM = ts.timesheetType === "T & M";
+                const isMonthly = ts.timesheetType === "Monthly";
 
-                const year = parseInt(parts[0], 10);
-                const month = parseInt(parts[1], 10);
+                const actualWorkDaysHours = monthlyWorkUnit - leave;
 
-                const startDate = new Date(year, month - 1, 1);
-                let endDate;
+                        // let netRate = (monthlyWorkUnit - holiday) !== 0 ? ((monthlyWorkUnit - holiday - leave) / (monthlyWorkUnit - holiday)) * rate : 0;
+                        // let netPayable = netRate * 0.9;
 
-                switch (timesheetType) {
-                    case "Monthly":
-                        // End of the same month
-                        endDate = new Date(year, month, 0); // last day of month
-                        break;
-                    case "Quarterly":
-                        // Add 3 months
-                        endDate = new Date(year, month + 2, 0); // last day of 3rd month
-                        break;
-                    case "Fixed":
-                    case "Project":
-                        // You can set custom logic or keep monthly default
-                        endDate = new Date(year, month, 0);
-                        break;
-                    default:
-                        endDate = new Date(year, month, 0);
-                        break;
-                }
+                        html += `
+                        <div class="accordion-item mb-2">
+                            <h2 class="accordion-header" id="heading${i}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}">
+                                    ${ts.projectCode} - ${ts.projectName}
+                                </button>
+                            </h2>
+                            <div id="collapse${i}" class="accordion-collapse collapse" aria-labelledby="heading${i}" data-bs-parent="#timesheetAccordion">
+                                <div class="accordion-body p-3 border rounded">
+                                    <div class="form-inline-scroll">
+                                        <div class="single-input-box"><label class="text-black">Timesheet Type</label><input type="text" class="form-control timesheet-type" value="${ts.timesheetType}" readonly /></div>
+                                        <div class="single-input-box"><label class="text-black">Rate</label><input type="number" class="form-control rate" value="${ts.rate}" readonly /></div>
+                                        <div class="single-input-box"><label class="text-black">Unit</label><input type="text" class="form-control" value="${ts.unit}" readonly /></div>
+                                        <div class="single-input-box"><label class="text-black">Monthly Work Unit ${isTM ? '(Hours)' : ''}</label>
+                                            <input type="number" class="form-control monthly-work-unit" value="${ts.monthlyworkunit}"
+                                                ${isFixed ? "readonly style='background-color:#eee;'" : ""} />
+                                        </div>
+                                        <div class="single-input-box"><label class="text-black">Holiday</label>
+                                            <input type="number" class="form-control holiday" value="${ts.holiday}"
+                                                ${isTM || isFixed ? "readonly style='background-color:#eee;'" : ""} />
+                                        </div>
+                                        <div class="single-input-box"><label class="text-black">Leave</label>
+                                            <input type="number" class="form-control leave" value="${ts.leave}"
+                                                ${isTM || isFixed ? "readonly style='background-color:#eee;'" : ""} />
+                                        </div>
+                                        <div class="single-input-box">
+                                            <label class="text-black">Extra Days</label>
+                                            <input type="number" class="form-control extra-days" value="${extraDays}" />
+                                        </div>
+                                        <div class="single-input-box"><label class="text-black">Actual Work Days/Hours</label>
+                                            <input type="number" class="form-control actual-workdayshours" value="${actualWorkDaysHours.toFixed(2)}" readonly style="background-color:#eee;" />
+                                        </div>
+                                        <div class="single-input-box"><label class="text-black">Upload Timesheet</label><input type="file" class="form-control" /></div>
+                                        <div class="single-input-box"><label class="text-black">Net Rate</label><input type="number" class="form-control net-rate" value="${netRate.toFixed(2)}" readonly /></div>
+                                        <div class="single-input-box"><label class="text-black">TDS</label><input type="number" class="form-control tdsapplicable" value="${ts.tdsapplicable}" readonly /></div>
+                                        <div class="single-input-box"><label class="text-black">Net Payable</label><input type="number" class="form-control net-payable" value="${netPayable.toFixed(2)}" readonly /></div>
+                                        <div class="single-input-box"><label class="text-black">Net Payable After TDS</label><input type="number" class="form-control net-payable-tds" value="${(netPayable - ts.tdsapplicable).toFixed(2)}" readonly /></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
 
-                $("#StartDate").val(formatDateLocal(startDate));
-                $("#EndDate").val(formatDateLocal(endDate));
-            }
+                    accordion.innerHTML = html;
 
-            // Trigger on change
-            $("#MonthYear, #TimesheetType").on("change", updateDatesFromMonthYear);
-            updateDatesFromMonthYear();
+                    // Add dynamic recalculation when inputs change
+                    accordion.addEventListener("input", function (e) {
+                        const targetItem = e.target.closest(".accordion-item");
+                        if (!targetItem) return;
 
-            // --- Duplicate Check via AJAX ---
-            function checkDuplicate() {
-                var projectCode = $("#ProjectCode").val();
-                var employeeId = $("#EmployeeId").val();
-                var timesheetType = $("#TimesheetType").val();
-                var monthYear = $("#MonthYear").val();
-                var timesheetId = $("#TimesheetId").val();
+                         // const type = targetItem.querySelector(".timesheet-type").value;
 
-                if (projectCode && employeeId && timesheetType && monthYear) {
-                    $.get("@Url.Action("CheckDuplicate", "Timesheet")",
-                        {
-                            projectCode: projectCode,
-                            employeeId: employeeId,
-                            timesheetType: timesheetType,
-                            monthYear: monthYear,
-                            timesheetId: timesheetId
-                        },
-                        function (data) {
-                            if (data.isDuplicate) {
-                                $("#duplicateError").text("❌ You can't enter duplicate values for Project, Employee, Type and Month/Year.");
-                                $("#duplicateError").show();
-                            } else {
-                                $("#duplicateError").hide();
+                        const type = targetItem.querySelector(".timesheet-type").value;
+                        const types = type ? type.split(',').map(t => t.trim()) : [];
+
+                        const monthlyWorkUnit = parseFloat(targetItem.querySelector(".monthly-work-unit").value) || 0;
+                        const holiday = parseFloat(targetItem.querySelector(".holiday").value) || 0;
+                        const leave = parseFloat(targetItem.querySelector(".leave").value) || 0;
+                        const rate = parseFloat(targetItem.querySelector(".rate").value) || 0;
+                        const tds = parseFloat(targetItem.querySelector(".tdsapplicable").value) || 0;
+
+                        // let netRate = (monthlyWorkUnit - holiday) !== 0 ? ((monthlyWorkUnit - holiday - leave) / (monthlyWorkUnit - holiday)) * rate : 0;
+                        // let netPayable = netRate * 0.9;
+
+                            let netRate = 0, netPayable = 0;
+
+                            if (types.includes("T & M")) {
+                                netRate = monthlyWorkUnit * rate;
+                            }                            
+                            else if (types.includes("Monthly") || types.includes("Quarterly") || types.includes("Project Based")) {
+                                netRate = (monthlyWorkUnit - holiday) !== 0
+                                    ? ((monthlyWorkUnit - holiday - leave) / (monthlyWorkUnit - holiday)) * rate
+                                    : 0;
                             }
-                        });
-                } else {
-                    $("#duplicateError").hide();
-                }
-            }
+                            else if (types.includes("Fixed")) {
+                                netRate = rate;
+                            }
 
-            $("#ProjectCode, #EmployeeId, #TimesheetType, #MonthYear").on("change", checkDuplicate);
+                            // if (type === "T & M") {
+                            //     netRate = monthlyWorkUnit * rate;
+                            // } else if (type === "Fixed") {
+                            //     netRate = rate;
+                            // } else if (type === "Monthly") {
+                            //     netRate = (monthlyWorkUnit - holiday) !== 0
+                            //         ? ((monthlyWorkUnit - holiday - leave) / (monthlyWorkUnit - holiday)) * rate
+                            //         : 0;
+                            // }
 
-            $("form").on("submit", function (e) {
-                if ($("#duplicateError").is(":visible")) {
-                    e.preventDefault();
-                    alert("Please fix errors before submitting.");
+                            netPayable = netRate * 0.9;
+
+                        const actualWorkDaysHours = monthlyWorkUnit - leave;
+
+                        const actualWorkInput = targetItem.querySelector(".actual-workdayshours");
+                        if (actualWorkInput) {
+                            actualWorkInput.value = actualWorkDaysHours.toFixed(2);
+                        }
+                        targetItem.querySelector(".net-rate").value = netRate.toFixed(2);
+                        targetItem.querySelector(".net-payable").value = netPayable.toFixed(2);
+                        targetItem.querySelector(".net-payable-tds").value = (netPayable - tds).toFixed(2);
+                    });
+
+                } catch (err) {
+                    console.error(err);
+                    accordion.innerHTML = `<p class="text-danger">Error loading timesheets.</p>`;
                 }
             });
         });
+
+        document.getElementById("btnSaveTimesheet").addEventListener("click", async function () {
+            const accordionItems = document.querySelectorAll("#timesheetAccordion .accordion-item");
+            const timesheets = [];
+
+            const monthInputValue = document.getElementById("MonthYear").value; // "2025-10"
+            const [yearStr, monthStr] = monthInputValue.split('-');
+
+            // Convert to "yyyy-MM-dd" string for DateOnly
+            const workMonthStr = `${yearStr}-${monthStr}-01`;
+
+            accordionItems.forEach(item => {
+                const ts = {
+                    TimesheetId: parseInt(item.dataset.timesheetId) || 0,
+                    ProjectCode: item.querySelector('button').textContent.split(' - ')[0].trim(),
+                    ProjectName: item.querySelector('button').textContent.split(' - ')[1].trim(),
+                    EmployeeId: parseInt("@loginId"), // Razor loginId
+                    WorkMonth: workMonthStr,
+                    TimesheetType: item.querySelector('.timesheet-type')?.value || "",
+                    rate: parseInt(item.querySelector('.rate')?.value) || 0,
+                    unit: item.querySelector('.unit')?.value || "Monthly",
+                    monthlyworkunit: parseInt(item.querySelector('.monthly-work-unit')?.value) || 0,
+                    holiday: parseInt(item.querySelector('.holiday')?.value) || 0,
+                    leave: parseInt(item.querySelector('.leave')?.value) || 0,
+                    extradays: parseInt(item.querySelector('.extra-days')?.value) || 0,
+                    actualworkdayshours: parseInt(item.querySelector('.actual-workdayshours')?.value) || 0,
+                    uploadtimesheet: item.querySelector(".uploadtimesheet")?.files?.[0]?.name || null,
+                    netrate: parseFloat(item.querySelector('.net-rate')?.value) || 0,
+                    tdsapplicable: parseInt(item.querySelector('.tdsapplicable')?.value) || 0,
+                    netpayble: parseFloat(item.querySelector('.net-payable')?.value) || 0,
+                    netpaybleaftertds: parseFloat(item.querySelector('.net-payable-tds')?.value) || 0,
+                };
+                timesheets.push(ts);
+            });
+
+            console.log("Sending timesheets:", timesheets); // Debug
+
+            try {
+                const response = await fetch('@Url.Action("SaveTimesheets", "Timesheet")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(timesheets)
+                });
+
+                if (response.ok) {
+                    alert("Timesheets saved successfully!");
+                    window.location.href = '/Timesheet/Index';
+                } else {
+                    const errorText = await response.text();
+                    alert("saving timesheets: " + errorText);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("saving timesheets.");
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const accordion = document.getElementById("timesheetAccordion");
+            const saveBtn = document.getElementById("btnSaveTimesheet");
+            const loginId = "@loginId";
+
+            // Deserialize Timesheet model data from Razor
+            const existingTimesheets = @Html.Raw(JsonConvert.SerializeObject(Model));
+
+            if (existingTimesheets && existingTimesheets.length > 0) {
+                // Edit mode: change button label
+                saveBtn.textContent = "Update Timesheet";
+
+                let html = "";
+                existingTimesheets.forEach((ts, i) => {
+                    const monthlyWorkUnit = ts.monthlyworkunit || 0;
+                    const holiday = ts.holiday || 0;
+                    const leave = ts.leave || 0;
+                    const rate = ts.rate || 0;
+                    const extradays = ts.extradays || 0;
+                    const tdsapplicable = ts.tdsapplicable || 0;
+
+                    const netRate = (monthlyWorkUnit - holiday) !== 0
+                        ? ((monthlyWorkUnit - holiday - leave) / (monthlyWorkUnit - holiday)) * rate
+                        : 0;
+
+                    const netPayable = netRate * 0.9; // sample calc
+                    const actualWorkDaysHours = monthlyWorkUnit - leave;
+
+                    html += `
+                    <div class="accordion-item mb-2" data-timesheet-id="${ts.TimesheetId}">
+                        <h2 class="accordion-header" id="heading${i}">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
+                                ${ts.ProjectCode} - ${ts.ProjectName}
+                            </button>
+                        </h2>
+                        <div id="collapse${i}" class="accordion-collapse collapse show" aria-labelledby="heading${i}" data-bs-parent="#timesheetAccordion">
+                            <div class="accordion-body p-3 border rounded">
+                                <div class="form-inline-scroll">
+                                    <div class="single-input-box"><label class="text-black">Timesheet Id</label><input type="text" class="form-control" value="${ts.TimesheetId}" readonly /></div>
+
+                                    <div class="single-input-box"><label class="text-black">Timesheet Type</label><input type="text" class="form-control timesheet-type" value="${ts.TimesheetType || ''}" /></div>
+                                    <div class="single-input-box"><label class="text-black">Rate</label><input type="number" class="form-control rate" value="${rate}" /></div>
+                                    <div class="single-input-box"><label class="text-black">Unit</label><input type="text" class="form-control unit" value="${ts.unit || 'Monthly'}" /></div>
+                                    <div class="single-input-box"><label class="text-black">Monthly Work Unit</label><input type="number" class="form-control monthly-work-unit" value="${monthlyWorkUnit}" /></div>
+                                    <div class="single-input-box"><label class="text-black">Holiday</label><input type="number" class="form-control holiday" value="${holiday}" /></div>
+                                    <div class="single-input-box"><label class="text-black">Leave</label><input type="number" class="form-control leave" value="${leave}" /></div>
+                                    <div class="single-input-box"><label class="text-black">Actual Work Days/Hours</label>
+                                        <input type="number" class="form-control actual-workdayshours" value="${actualWorkDaysHours.toFixed(2)}" readonly style="background-color:#eee;" />
+                                    </div>
+                                    <div class="single-input-box"><label class="text-black">Extra Days</label><input type="number" class="form-control extra-days" value="${extradays}" /></div>
+
+                                    <div class="single-input-box"><label class="text-black">Upload Timesheet</label><input type="file" class="form-control uploadtimesheet" /></div>
+                                    <div class="single-input-box"><label class="text-black">Net Rate</label><input type="number" class="form-control net-rate" value="${netRate.toFixed(2)}" readonly /></div>
+                                    <div class="single-input-box"><label class="text-black">TDS Applicable</label><input type="number" class="form-control tdsapplicable" value="${tdsapplicable}"  readonly /></div>
+                                    <div class="single-input-box"><label class="text-black">Net Payable</label><input type="number" class="form-control net-payable" value="${netPayable.toFixed(2)}" readonly /></div>
+                                    <div class="single-input-box"><label class="text-black">Net Payable After TDS</label><input type="number" class="form-control net-payable-tds" value="${(netPayable - tdsapplicable).toFixed(2)}" readonly /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+
+                accordion.innerHTML = html;
+
+                    accordion.addEventListener("input", function (e) {
+                const item = e.target.closest(".accordion-item");
+                if (!item) return;
+
+                const monthlyWorkUnit = parseFloat(item.querySelector(".monthly-work-unit").value) || 0;
+                const holiday = parseFloat(item.querySelector(".holiday").value) || 0;
+                const leave = parseFloat(item.querySelector(".leave").value) || 0;
+                const rate = parseFloat(item.querySelector(".rate").value) || 0;
+                const tds = parseFloat(item.querySelector(".tdsapplicable").value) || 0;
+
+                 const timesheetTypeInput = item.querySelector(".timesheet-type").value || "";
+                 const types = timesheetTypeInput.split(",").map(t => t.trim());
+
+                const extradays = parseFloat(item.querySelector(".extra-days").value) || 0;
+
+                //  Actual Work Days/Hours
+                const actual = monthlyWorkUnit - leave;
+                item.querySelector(".actual-workdayshours").value = actual.toFixed(2);
+
+                // Auto-recalculate Net Rate & Net Payable (optional but useful)
+                // const netRate = (monthlyWorkUnit - holiday) !== 0
+                //     ? ((monthlyWorkUnit - holiday - leave) / (monthlyWorkUnit - holiday)) * rate
+                //     : 0;
+
+                     //  Apply your new calculation logic
+                let netRate = 0;
+
+                if (types.includes("T & M")) {
+                    // Type: T & M
+                    netRate = monthlyWorkUnit * rate;
+                }
+                else if (types.includes("Monthly") || types.includes("Quarterly") || types.includes("Project Based")) {
+                    // Type: Monthly, Quarterly, or Project Based
+                    netRate = (monthlyWorkUnit - holiday) !== 0
+                        ? ((monthlyWorkUnit - holiday - leave) / (monthlyWorkUnit - holiday)) * rate
+                        : 0;
+                }
+                else if (types.includes("Fixed")) {
+                    // Type: Fixed
+                    netRate = rate;
+                }
+
+                const netPayable = netRate * 0.9;
+
+                item.querySelector(".net-rate").value = netRate.toFixed(2);
+                item.querySelector(".net-payable").value = netPayable.toFixed(2);
+                item.querySelector(".net-payable-tds").value = (netPayable - tds).toFixed(2);
+            });
+        }
+
+            // Event listener for Save/Update button
+            saveBtn.addEventListener("click", async function () {
+                const accordionItems = document.querySelectorAll("#timesheetAccordion .accordion-item");
+                const timesheets = [];
+                const [yearStr, monthStr] = document.getElementById("MonthYear").value.split('-');
+                const workMonth = new Date(yearStr, monthStr - 1, 1);
+
+                accordionItems.forEach(item => {
+                    const projectHeader = item.querySelector("button").textContent.split(" - ");
+                    const projectCode = projectHeader[0].trim();
+                    const projectName = projectHeader[1]?.trim() || "";
+                    const actualWorkDaysHours = monthlyWorkUnit - leave;
+
+                    const ts = {
+                        timesheetId: parseInt(item.dataset.timesheetId) || 0,
+                        projectCode,
+                        projectName,
+                        employeeId: parseInt(loginId),
+                        workMonth: workMonth.toISOString().split("T")[0],
+                        timesheetType: item.querySelector(".timesheet-type").value,
+                        rate: parseInt(item.querySelector(".rate").value) || 0,
+                        unit: item.querySelector(".unit").value,
+                        monthlyworkunit: parseInt(item.querySelector(".monthly-work-unit").value) || 0,
+                        holiday: parseInt(item.querySelector(".holiday").value) || 0,
+                        leave: parseInt(item.querySelector(".leave").value) || 0,
+                        extradays : parseInt(item.querySelector(".extra-days").value) || 0,
+                        actualworkdayshours: actualWorkDaysHours,
+                        uploadtimesheet: item.querySelector(".uploadtimesheet")?.files?.[0]?.name || null,
+                        netrate: parseFloat(item.querySelector(".net-rate").value) || 0,
+                        tdsapplicable: parseInt(item.querySelector(".tdsapplicable").value) || 0,
+                        netpayble: parseFloat(item.querySelector(".net-payable").value) || 0,
+                        netpaybleaftertds: parseFloat(item.querySelector(".net-payable-tds").value) || 0
+                    };
+
+                    timesheets.push(ts);
+                    console.log(timesheets);
+                });
+
+                try {
+                    const response = await fetch('@Url.Action("SaveTimesheets", "Timesheet")', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(timesheets)
+                    });
+
+                    if (response.ok) {
+                        alert("Timesheets saved successfully!");
+                        window.location.href = '/Timesheet/Index';
+                    } else {
+                        alert("saving timesheets.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("saving timesheets.");
+                }
+            });
+        });
+
     </script>
+
 }
+
+<style>
+    .form-inline-scroll {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+        .form-inline-scroll .single-input-box {
+            display: flex;
+            flex-direction: column;
+            min-width: 180px;
+            flex: 0 0 auto;
+        }
+
+        .form-inline-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .form-inline-scroll::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+            .form-inline-scroll::-webkit-scrollbar-thumb:hover {
+                background: #999;
+            }
+
+    .accordion-button {
+        font-weight: 600;
+    }
+</style>

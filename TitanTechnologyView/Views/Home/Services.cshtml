@@ -8,9 +8,9 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcumb-content">
-                    <h4>Services</h4>
+                    @* <h4>Services</h4> *@
                     <ul>
-                        <li><a asp-action="Services" asp-controller="Home">Home</a></li>
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li>></li>
                         <li>Services</li>
                     </ul>
@@ -32,93 +32,11 @@
             </div>
         </div>
 
-        <div class="row g-4">
-            <!-- g-4 adds spacing between cards -->
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="single-service-box h-100 text-center p-4 shadow rounded">
-                    <div class="service-icon mb-3">
-                        <img src="~/assets/images/service-inner/service-icon-8.png" alt="">
-                    </div>
-                    <div class="service-content">
-                        <h4>SAP Implementation</h4>
-                        <p>We offer end-to-end SAP implementation services tailored to align with your business objectives and industry demands.</p>
-                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal1">Learn More <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="single-service-box h-100 text-center p-4 shadow rounded">
-                    <div class="service-icon mb-3">
-                        <img src="~/assets/images/service-inner/service-icon-2.png" alt="">
-                    </div>
-                    <div class="service-content">
-                        <h4>SAP Rollout</h4>
-                        <p>Our SAP rollout services enable multinational enterprises to standardize operations across regions while addressing local compliance needs.</p>
-                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal2">Learn More <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="single-service-box h-100 text-center p-4 shadow rounded">
-                    <div class="service-icon mb-3">
-                        <img src="~/assets/images/service-inner/service-icon-3.png" alt="">
-                    </div>
-                    <div class="service-content">
-                        <h4>SAP Migration Services</h4>
-                        <p>Modernize your enterprise with our secure, low-disruption SAP migration services.</p>
-                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal3">Learn More <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="single-service-box h-100 text-center p-4 shadow rounded">
-                    <div class="service-icon mb-3">
-                        <img src="~/assets/images/service-inner/service-icon-4.png" alt="">
-                    </div>
-                    <div class="service-content">
-                        <h4>SAP Staffing</h4>
-                        <p>Accelerate your SAP initiatives with access to a curated network of SAP-certified professionals.</p>
-                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal4">Learn More <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="single-service-box h-100 text-center p-4 shadow rounded">
-                    <div class="service-icon mb-3">
-                        <img src="~/assets/images/service-inner/service-icon-5.png" alt="">
-                    </div>
-                    <div class="service-content">
-                        <h4>SAP AMS</h4>
-                        <p>Our SAP AMS delivers proactive, SLA-driven support to ensure high system availability, performance, and continuous improvement.</p>
-                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal5">Learn More <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="single-service-box h-100 text-center p-4 shadow rounded">
-                    <div class="service-icon mb-3">
-                        <img src="~/assets/images/service-inner/service-icon-6.png" alt="">
-                    </div>
-                    <div class="service-content">
-                        <h4>SAP Integration</h4>
-                        <p>We help you create a connected enterprise through seamless SAP integration with third-party systems and platforms.</p>
-                        <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#serviceModal6">Learn More <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                </div>
-              </div>
-           </div>
-        </div>
+        <div class="row g-4" id="service-list">
+            <!-- Services will be rendered here -->
+        </div>       
     </div>
 </div>
-
-
-
-
 
 <div class="subscribe-area style-three">
     <div class="container">
@@ -142,12 +60,8 @@
         </div>
     </div>
 </div>
-<!--==================================================-->
-<!-- End Toptech Subscribe Area Style Three -->
-<!--==================================================-->
-<!--==================================================-->
-<!-- Start Toptech Process Area Style Three-->
-<!--==================================================-->
+
+<!-- Toptech Process Area Style Three-->
 <div class="process-area style-three inner">
     <div class="container">
         <div class="row add-bg">
@@ -196,195 +110,6 @@
     </div>
 </div>
 
-
-
-<!-- Service Details Modal -->
-<div class="modal fade" id="serviceModal1" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="serviceModalTitle">
-                    SAP Implementation
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body row">
-                <div class="col-md-6">
-                    <p id="serviceModalDescription">We offer end-to-end SAP implementation services tailored to align with your business objectives and industry demands. Leveraging proven methodologies, deep domain expertise, and SAP-certified tools, we deliver agile, scalable, and future-ready solutions that drive measurable value.</p>
-                    <ul id="serviceModalPoints">
-                        <li>
-                            • Strategic SAP Roadmap & Planning
-                        </li>
-                        <li>• Industry-Specific Implementation Expertise</li>
-                        <li>• Custom Configuration & Process Optimization</li>
-                        <li>• Accurate Data Migration & Validation</li>
-                        <li>• End-User Training & Organizational Change Management</li>
-                        <li>• Full Lifecycle Go-Live & Post-Go-Live Support</li>
-                    </ul>
-                </div>
-                <div class="col-md-6 text-center">
-                    <img id="serviceModalImage" src="~/assets/images/SapImage.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="serviceModal2" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="serviceModalTitle">
-                    SAP Rollout
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body row">
-                <div class="col-md-6">
-                    <p id="serviceModalDescription">Our SAP rollout services enable multinational enterprises to standardize operations across regions while addressing local compliance needs. With a strong focus on governance and efficiency, we ensure streamlined rollouts that minimize risk and maximize consistency.</p>
-                    <ul id="serviceModalPoints">
-                        <li>
-                            • Global Template Development & Localization
-                        </li>
-                        <li>• Compliance with Country-Specific Regulations</li>
-                        <li>• Harmonized Data Structures & Process Alignment</li>
-                        <li>• Centralized Program Governance & Reporting</li>
-                        <li>• Local User Training & Change Enablement</li>
-                        <li>• Risk Mitigation Strategies & Quality Assurance</li>
-                    </ul>
-                </div>
-                <div class="col-md-6 text-center">
-                    <img id="serviceModalImage" src="~/assets/images/sap_Rollout.jpeg" alt="" class="img-fluid rounded" alt="Service Image" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="serviceModal3" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="serviceModalTitle">
-                    SAP Migration Services
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body row">
-                <div class="col-md-6">
-                    <p id="serviceModalDescription">Modernize your enterprise with our secure, low-disruption SAP migration services. Whether moving to SAP S/4HANA or transitioning to the cloud, we ensure a seamless migration journey supported by performance tuning, expert advisory, and post-migration stabilization.</p>
-                    <ul id="serviceModalPoints">
-                        <li>
-                            • End-to-End System Analysis & Migration Blueprint
-                        </li>
-                        <li>• Legacy Data Cleansing & Migration Execution</li>
-                        <li>• SAP S/4HANA, RISE with SAP & Cloud Migrations</li>
-                        <li>• Downtime Minimization Planning</li>
-                        <li>• Post-Migration Performance Optimization</li>
-                        <li>• Dedicated Hypercare & Ongoing Support</li>
-                    </ul>
-                </div>
-                <div class="col-md-6 text-center">
-                    <img id="serviceModalImage" src="~/assets/images/SapMigrationService.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="serviceModal4" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="serviceModalTitle">
-                    SAP Staffing
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body row">
-                <div class="col-md-6">
-                    <p id="serviceModalDescription">Accelerate your SAP initiatives with access to a curated network of SAP-certified professionals. Our flexible staffing solutions ensure the right expertise, at the right time, to drive your projects forward—efficiently and cost-effectively.</p>
-                    <ul id="serviceModalPoints">
-                        <li>
-                            • Certified SAP Functional & Technical Experts  
-                        </li>
-                        <li>• Contract, Full-Time & Project-Based Staffing</li>
-                        <li>• Global Network of Pre-Vetted SAP Talent</li>
-                        <li>• Rapid Onboarding & Knowledge Transfer</li>
-                        <li>• Domain-Specific Consultant Placement</li>
-                        <li>• Scalable Resourcing to Match Project Phases</li>
-                    </ul>
-                </div>
-                <div class="col-md-6 text-center">
-                    <img id="serviceModalImage" src="~/assets/images/SapStaffing.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="serviceModal5" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="serviceModalTitle">
-                    SAP AMS
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body row">
-                <div class="col-md-6">
-                    <p id="serviceModalDescription">Our SAP AMS delivers proactive, SLA-driven support to ensure high system availability, performance, and continuous improvement. With 24/7 monitoring, rapid issue resolution, and functional enhancements, we keep your SAP environment running at its peak.</p>
-                    <ul id="serviceModalPoints">
-                        <li>
-                            • Round-the-Clock Monitoring & Support (24x7)
-                        </li>
-                        <li>• Incident, Change & Problem Management</li>
-                        <li>• Strict SLAs for Uptime & Response</li>
-                        <li>• Functional & Technical Optimization</li>
-                        <li>• Continuous Enhancement & Cost Control</li>
-                        <li>• Flexible, Scalable Support Models</li>
-                    </ul>
-                </div>
-                <div class="col-md-6 text-center">
-                    <img id="serviceModalImage" src="~/assets/images/SapAMS images.webp" alt="" class="img-fluid rounded" alt="Service Image" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="serviceModal6" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="serviceModalTitle">
-                    SAP Integration
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body row">
-                <div class="col-md-6">
-                    <p id="serviceModalDescription">We help you create a connected enterprise through seamless SAP integration with third-party systems and platforms. From real-time data flow to intelligent process orchestration, we ensure your technology ecosystem operates in harmony.</p>
-                    <ul id="serviceModalPoints">
-                        <li>
-                            • Full-Spectrum SAP Integration Services
-                        </li>
-                        <li>• Middleware Expertise (SAP PI/PO, SAP CPI)</li>
-                        <li>• Real-Time Data Exchange & Synchronization</li>
-                        <li>• Secure APIs & Custom Connector Development</li>
-                        <li>• Scalable & Resilient Architecture Design</li>
-                        <li>• Comprehensive Integration Testing & QA</li>
-                    </ul>
-                </div>
-                <div class="col-md-6 text-center">
-                    <img  height="200px" width="320px" id="serviceModalImage" src="~/assets/images/SapIntegration image.jpg" alt="" class="img-fluid rounded" alt="Service Image" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <style>
     .single-service-box {
         display: flex;
@@ -409,3 +134,90 @@
     }
 
 </style>
+<script>
+    const apiBase = '/Home'; // your API base
+
+    async function loadServices() {
+        const response = await fetch(`${apiBase}/GetServices`, {
+                method: "GET",
+                credentials: "include", //  Important: send cookies (InternalPortalAuth)
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return await response.json();
+    }
+
+    function renderServices(services) {
+        const list = document.getElementById("service-list");
+        list.innerHTML = "";
+
+        services.forEach((service, index) => {
+            const col = document.createElement("div");
+            col.className = "col-lg-4 col-md-6 col-sm-12";
+
+            // service card
+            col.innerHTML = `
+                <div class="single-service-box h-100 text-center p-4 shadow rounded">
+                    <div class="service-icon mb-3">
+                        <img src="${apiBase}/${service.image}"
+                                        alt=""
+                                            class="img-fluid" style="border-radius: 43px;width: 100%;height: 100%;" />
+                    </div>
+                    <div class="service-content">
+                        <h4>${service.serviceName}</h4>
+                        <p>${service.description}</p>
+                        <a href="#"
+                           class="btn btn-primary mt-2"
+                           data-bs-toggle="modal"
+                           data-bs-target="#serviceModal${index}">
+                           Learn More <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            list.appendChild(col);
+
+            // create modal for each service
+            const modal = document.createElement("div");
+            modal.className = "modal fade";
+            modal.id = `serviceModal${index}`;
+            modal.tabIndex = -1;
+            modal.innerHTML = `
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${service.serviceName}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body row">
+                            <div class="col-md-6">
+                                <p>${service.description}</p>
+                                <ul>
+                                    ${service.points ? service.points.map(p => `<li>• ${p}</li>`).join("") : ""}
+                                </ul>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <img src="${apiBase}/${service.image}" alt="" style="height: 60%;width: 90%;" class="img-fluid rounded" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        });
+    }
+
+    (async function(){
+        try {
+            const services = await loadServices();
+            renderServices(services);
+        } catch (err) {
+            console.error("Error loading services:", err);
+        }
+    })();
+</script>
+

@@ -8,13 +8,31 @@
     document.getElementById(sectionId).style.display = "block";
 }
 
-const apiBase = 'https://localhost:44368';
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+const token = getCookie("AuthToken");
+console.log("Token:", token);
+
+
+const apiBase = 'https://api.titentechnology.com';
 
 document.addEventListener("DOMContentLoaded", async () => {
     const tableBody = document.getElementById("solutionTableBody");
 
     try {
-        const response = await fetch(`${apiBase}/api/Solution`);
+        
+        const response = await fetch(`/Admin/GetSolutions`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Accept": "application/json"
+            }
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -146,8 +164,8 @@ fileInput.addEventListener("change", function () {
     const img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = function () {
-        if (img.width > 100 || img.height > 100) {
-            fileMessage.textContent = "Image must be 100×100 px or smaller and png.";
+        if (img.width > 1000 || img.height > 1000) {
+            fileMessage.textContent = "Image must be 1000×1000 px or smaller and png.";
             fileInput.value = "";
             filePlaceholder.style.display = "block";
             fileMessage.style.display = "block";
@@ -190,8 +208,9 @@ document.getElementById("solutionForm").addEventListener("submit", async functio
     //formData.append("UpdatedDate", null);
 
     try {
-        const response = await fetch(`${apiBase}/api/Solution/Post`, {
+        const response = await fetch(`/Admin/SaveSolution`, {
             method: "POST",
+            credentials: "include",
             body: formData
         });
 
@@ -239,8 +258,16 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", async func
     }
 
     try {
-        const response = await fetch(`${apiBase}/api/Service/${solutionIdToDelete}?updatedBy=${updatedBy}`, {
-            method: "DELETE"
+        //const response = await fetch(`${apiBase}/api/Service/${solutionIdToDelete}?updatedBy=${updatedBy}`, {
+        //    method: "DELETE"
+        //});
+
+        const response = await fetch(`/Admin/DeleteSolution/${solutionIdToDelete}?updatedBy=${updatedBy}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,  // attach token like SaveDropdown
+                "Content-Type": "application/json"
+            }
         });
 
         if (response.ok) {
@@ -296,7 +323,16 @@ function formatDateTimeISO(date) {
 // Load existing solution by ID
 async function loadSolution(solutionId) {
     try {
-        const response = await fetch(`${apiBase}/api/Solution/${solutionId}`);
+        //const response = await fetch(`${apiBase}/api/Solution/${solutionId}`);
+
+        const response = await fetch(`/Admin/GetSolutions/${solutionId}`, {
+            method: "GET",
+            credentials: "include", // sends cookies (AuthToken)
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
         if (response.ok) {
             const solution = await response.json();
 
@@ -388,8 +424,8 @@ updateFileInput.addEventListener("change", function () {
     const img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = function () {
-        if (img.width > 100 || img.height > 100) {
-            updateFileMessage.textContent = "Image must be 100×100 px or smaller and PNG.";
+        if (img.width > 1000 || img.height > 1000) {
+            updateFileMessage.textContent = "Image must be 1000×1000 px or smaller and PNG.";
             updateFileMessage.style.display = "block";
             updateFilePlaceholder.style.display = "block";
             updateFileInput.value = "";
@@ -440,8 +476,9 @@ document.getElementById("updateForm").addEventListener("submit", async function 
     formData.append("UpdatedDate", now);
 
     try {
-        const response = await fetch(`${apiBase}/api/Solution/Update`, {
+        const response = await fetch(`/Admin/UpdateSolution`, {
             method: "PUT",
+            credentials: "include",
             body: formData
         });
 
@@ -469,7 +506,16 @@ async function loadSolutions() {
     const tableBody = document.getElementById("solutionTableBody");
 
     try {
-        const response = await fetch(`${apiBase}/api/Solution`);
+        //const response = await fetch(`${apiBase}/api/Solution`);
+
+        const response = await fetch(`/Admin/GetSolutions`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         const solutions = await response.json();
@@ -530,7 +576,14 @@ document.addEventListener("DOMContentLoaded", loadSolutions);
 
 async function getbyidSolution(solutionId) {
     try {
-        const response = await fetch(`${apiBase}/api/Solution/${solutionId}`);
+        //const response = await fetch(`${apiBase}/api/Solution/${solutionId}`);
+        const response = await fetch(`/Admin/GetSolutions/${solutionId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Accept": "application/json"
+            }
+        });
         if (!response.ok) throw new Error("Failed to fetch solution");
 
         const solution = await response.json();

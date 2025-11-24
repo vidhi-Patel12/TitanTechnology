@@ -1,9 +1,17 @@
+using System.Text.Json.Serialization;
 using TitanTechnologyView.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddControllers().AddJsonOptions(options =>
+//{
+//    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+//    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+//});
+
 
 builder.Services.Configure<ApiSettings>(
     builder.Configuration.GetSection("ApiSettings"));
@@ -18,15 +26,27 @@ builder.Services.AddHttpClient("IgnoreSSL")
                 (message, cert, chain, errors) => true
         });
 
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(policy =>
+//    {
+//        policy.AllowAnyOrigin()
+//              .AllowAnyMethod()
+//              .AllowAnyHeader();
+//    });
+//});
+
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowLocalhost", builder =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        builder.WithOrigins("https://localhost:44368","https://api.titentechnology.com") //  your front-end origin
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials(); //  required for cookies
     });
 });
+
 
 var app = builder.Build();
 
@@ -38,15 +58,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseMiddleware<TitanTechnologyView.Middlewares.ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors("AllowLocalhost");
 
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseMiddleware<TitanTechnologyView.Middlewares.ExceptionMiddleware>();
+
 
 app.UseAuthorization();
 

@@ -23,11 +23,34 @@ namespace TitanTechnologyView.Controllers
             _insertUpdateUrl = $"{apiSettings.Value.BaseUrl}/Employee/InsertUpdate"; // for POST insert/update
         }
 
+
+        private HttpClient CreateClient() => _httpClientFactory.CreateClient();
         private HttpClient CreateClient() => _httpClientFactory.CreateClient("IgnoreSSL");
+
+        private HttpClient CreateClients()
+        {
+            var client = _httpClientFactory.CreateClient("IgnoreSSL");
+
+            // Fetch JWT token from cookie
+            var token = HttpContext.Request.Cookies["AuthToken"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                //  Add Bearer token to Authorization header
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                Console.WriteLine("Warning: AuthToken cookie not found!");
+            }
+
+            return client;
+        }
 
         private async Task<List<T>> FetchListAsync<T>(string url)
         {
-            var client = CreateClient();
+            var client = CreateClients();
             var response = await client.GetAsync(url);
             if (!response.IsSuccessStatusCode) 
             { 
@@ -41,7 +64,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()                
         {
-            var client = CreateClient();
+            var client = CreateClients();
             var response = await client.GetAsync(_apiUrl);
 
             // Employees
@@ -63,6 +86,7 @@ namespace TitanTechnologyView.Controllers
         {
             // 1. Fetch vendor list from API
             ViewBag.ApiOrigin = _apiOrigin;
+            var client = CreateClients();
             var client = CreateClient();
 
             ViewBag.EmployeeTypes = await client.GetDropdownAsync(_apiOrigin, "Employee Type");
@@ -102,14 +126,14 @@ namespace TitanTechnologyView.Controllers
           [HttpPost]
         public async Task<IActionResult> SaveEmployee(EmployeeFormDto model)
         {
-            var client = CreateClient();
+            var client = CreateClients();
       
             if (!ModelState.IsValid)
             {
                 ViewBag.Vendors = await FetchListAsync<VendorDto>($"{_apiOrigin}/api/Vendor");
                 return View("AddEmployee", model);
             }
-
+                      
             using var content = new MultipartFormDataContent();
             // Base fields
             content.Add(new StringContent(model.EmployeeId.ToString()), "EmployeeId");
@@ -129,7 +153,11 @@ namespace TitanTechnologyView.Controllers
             content.Add(new StringContent(model.ContactNumber2 ?? ""), "ContactNumber2");
             content.Add(new StringContent(model.Remarks ?? ""), "Remarks");
             content.Add(new StringContent(model.ReferredBy ?? ""), "ReferredBy");
-            content.Add(new StringContent(model.CreatedBy ?? ""), "CreatedBy");
+            //content.Add(new StringContent(model.CreatedBy ?? ""), "CreatedBy");
+
+            var email = HttpContext.Request.Cookies["Email"];
+
+            content.Add(new StringContent(email ?? ""), "CreatedBy");
 
             // Bank & PAN details
             content.Add(new StringContent(model.PanNumber ?? ""), "PanNumber1");
@@ -167,6 +195,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
+            var client = CreateClients();
             var client = CreateClient();
 
             var response = await client.GetAsync($"{_apiUrl}/{id}");
@@ -190,7 +219,7 @@ namespace TitanTechnologyView.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var client = CreateClient();
+            var client = CreateClients();
             await client.DeleteAsync($"{_apiUrl}/{id}");
             return RedirectToAction("Index");
         }

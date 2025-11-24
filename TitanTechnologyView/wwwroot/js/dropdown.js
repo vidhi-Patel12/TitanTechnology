@@ -11,14 +11,52 @@
     if (target) target.style.display = "block";
 }
 
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+console.log("UserRoleId from cookie:", getCookie("UserRoleId"));
 
-const apiBase = 'https://localhost:44368';
+const token = getCookie("AuthToken");
+console.log("Token:", token);
+
+const apiBase = '';
 
 async function loadDropdownMaster() {
-    const response = await fetch(`${apiBase}/api/DropdownMaster`);
-    if (!response.ok) throw new Error("HTTP " + response.status);
-    return await response.json();
+  
+    try {
+        const response = await fetch(`/Admin/GetDropdowns`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+           
+
+        //console.log("Status:", response.status);
+        //console.log("Headers:", [...response.headers.entries()]);
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const text = await response.text(); // see raw text first
+        //console.log("Raw response text:", text);
+
+        // try parsing to JSON
+        const data = JSON.parse(text);
+       // console.log("Parsed JSON data:", data);
+        return data;
+
+    } catch (err) {
+        console.error("Fetch failed:", err);
+        throw err;
+    }
 }
+
 
 $(document).ready(async function () {
     // ----- TABLE -----
@@ -219,15 +257,6 @@ async function refreshUpdateDropdown() {
     }
 }
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-}
-console.log("UserRoleId from cookie:", getCookie("UserRoleId"));
-
-
 async function saveDropdown(name, value) {
     const now = new Date().toISOString();
 
@@ -247,17 +276,28 @@ async function saveDropdown(name, value) {
 
     console.log(model);
 
-    const response = await fetch(`${apiBase}/api/DropdownMaster`, {
+    const response = await fetch(`/Admin/SaveDropdown`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(model)
     });
 
+
+
     if (!response.ok) throw new Error("Save failed: " + response.status);
-    return await response.json();
+
+    const text = await response.text();
+    if (!text) return { success: true, message: "Empty response (assumed success)" };
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        return { success: true, message: text };
+    }
 }
-
-
 
 $(document).ready(function () {
 
@@ -307,7 +347,6 @@ $("#btnCancel").on("click", function () {
     showSection('dropdownListSection'); // go back to list
 });
 
-
 // When clicking edit button in table
 function editDropdown(id, name, value) {
     $("#updateId").val(id);
@@ -332,14 +371,26 @@ async function updateDropdown(id, name, value) {
         updatedDateTime: now
     };
 
-    const response = await fetch(`${apiBase}/api/DropdownMaster`, {
+    const response = await fetch(`/Admin/SaveDropdown`, {
         method: "POST", // your backend merges insert/update
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(model)
     });
 
+        
     if (!response.ok) throw new Error("Update failed: " + response.status);
-    return await response.json();
+
+    const text = await response.text();
+    if (!text) return { success: true, message: "Empty response (assumed success)" };
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        return { success: true, message: text };
+    }
 }
 
 $(document).ready(function () {
@@ -377,7 +428,6 @@ $(document).ready(function () {
     });
 });
 
-
 let dropdownIdToDelete = null; // store id temporarily
 
 // Open modal instead of confirm()
@@ -390,18 +440,24 @@ function openDeleteModal(id) {
 // On confirm button click
 document.getElementById("confirmDeleteBtn").addEventListener("click", async function () {
     if (!dropdownIdToDelete) return;
-    const userRoleId = getCookie("UserRoleId");
-    // Make sure you have userRoleId defined somewhere
-    const updatedBy = userRoleId ? parseInt(userRoleId) : 0;
 
+    const userRoleId = getCookie("UserRoleId");
+    const token = getCookie("AuthToken"); // read token from cookie
+
+    // Make sure we have a valid user
+    const updatedBy = userRoleId ? parseInt(userRoleId) : 0;
     if (updatedBy <= 0) {
         alert("Invalid user role.");
         return;
     }
 
     try {
-        const response = await fetch(`${apiBase}/api/DropdownMaster/${dropdownIdToDelete}?updatedBy=${updatedBy}`, {
-            method: "DELETE"
+        const response = await fetch(`/Admin/DeleteDropdown/${dropdownIdToDelete}?updatedBy=${updatedBy}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,  // attach token like SaveDropdown
+                "Content-Type": "application/json"
+            }
         });
 
         if (response.ok) {
@@ -410,8 +466,8 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", async func
             alert("Dropdown deleted successfully.");
             location.reload();
         } else {
-            const data = await response.json();
-            alert("Failed to delete dropdown: " + data.message);
+            const data = await response.text();
+            alert("Failed to delete dropdown: " + data);
         }
     } catch (error) {
         alert("Error deleting dropdown: " + error.message);
